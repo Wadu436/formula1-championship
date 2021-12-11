@@ -10,25 +10,48 @@
 </head>
 
 <body style="width: 100%;">
-{% for championship in championships %}
-    <div>
-        <div class="d-flex flex-column align-items-center">
-            <h2 class="fw-light">{{championship}}</h2>
-            <div style="width: fit-content;">
-                <ul class='list-group list-group-numbered fw-light'>
-                {% for driver, score in championship.get_leaderboard %}
-                    <li class='list-group-item d-flex'>
-                        <div class="d-flex justify-content-between w-100 ">
-                            <div class='mx-4 text-uppercase'>{{driver}}</div>
-                            <div>{{score}}</div>
-                        </div>
-                    </li>  
-                {% endfor %}
-                </ul>
+    <div class="row justify-content-center mt-5 mx-0">
+        <div class="col-auto col-md-6 col-sm-8">
+            <div class="table-responsive">
+                <table class="table table table-secondary" style="font-size: 1.5rem;">
+                    <thead class="table-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Points</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for championship in championships %}
+                        {% for driver, score in championship.get_leaderboard %}
+                            <tr>
+                                <th scope="row">{{forloop.counter}}</th>
+                                <td>{{driver.name}}</td>
+                                <td>{{score}}</td>
+                            </tr>
+                            {% endfor %}
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-{% endfor %}
 </body>
-
+            {% comment %} {% for championship in championships %}
+                    <div class="d-flex flex-column align-items-center">
+                        <h2 class="fw-light">{{championship}}</h2>
+                        <div style="width: fit-content;">
+                            <ul class='list-group list-group-numbered fw-light'>
+                            {% for driver, score in championship.get_leaderboard %}
+                                <li class='list-group-item d-flex'>
+                                    <div class="d-flex justify-content-between w-100 ">
+                                        <div class='mx-4 text-uppercase'>{{driver}}</div>
+                                        <div>{{score}}</div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+            {% endfor %} {% endcomment %}
 </html>

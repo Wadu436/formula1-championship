@@ -16,6 +16,13 @@ class ChampionshipTest(TestCase):
             country="at",
         )
 
+        track2: Track = Track.objects.create(
+            location="Italy",
+            name="Monza",
+            abbreviation="ITA",
+            country="it",
+        )
+
         ferrari: Team = Team.objects.create(
             name="Scuderia Ferrari", color="#D40000", country="it"
         )
@@ -104,6 +111,14 @@ class ChampionshipTest(TestCase):
             date_time=now(),
         )
 
+        self.race2: Race = Race.objects.create(
+            championship_order=2,
+            championship=self.championship,
+            track=track2,
+            date_time=now(),
+        )
+
+        ## Race 1
         # Finished entries
         self.race.race_entries.create(
             driver=self.warre,
@@ -111,7 +126,6 @@ class ChampionshipTest(TestCase):
             dna=False,
             qualifying_position=1,
             finish_position=1,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=731),
         )
         self.race.race_entries.create(
@@ -120,7 +134,6 @@ class ChampionshipTest(TestCase):
             dna=False,
             qualifying_position=14,
             finish_position=2,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=8, milliseconds=286),
         )
         self.race.race_entries.create(
@@ -129,7 +142,6 @@ class ChampionshipTest(TestCase):
             dna=False,
             qualifying_position=4,
             finish_position=3,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=871),
         )
         self.race.race_entries.create(
@@ -138,7 +150,6 @@ class ChampionshipTest(TestCase):
             dna=False,
             qualifying_position=2,
             finish_position=5,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=519),
         )
         self.race.race_entries.create(
@@ -147,7 +158,6 @@ class ChampionshipTest(TestCase):
             dna=False,
             qualifying_position=7,
             finish_position=6,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=772),
         )
         self.race.race_entries.create(
@@ -156,7 +166,6 @@ class ChampionshipTest(TestCase):
             dna=False,
             qualifying_position=5,
             finish_position=7,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=7, milliseconds=724),
         )
         self.race.race_entries.create(
@@ -165,7 +174,6 @@ class ChampionshipTest(TestCase):
             dna=False,
             qualifying_position=3,
             finish_position=8,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=402),
         )
         self.race.race_entries.create(
@@ -174,7 +182,6 @@ class ChampionshipTest(TestCase):
             dna=False,
             qualifying_position=13,
             finish_position=11,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=7, milliseconds=298),
         )
         self.race.race_entries.create(
@@ -183,7 +190,6 @@ class ChampionshipTest(TestCase):
             dna=False,
             qualifying_position=6,
             finish_position=12,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=750),
         )
         self.race.race_entries.create(
@@ -192,7 +198,6 @@ class ChampionshipTest(TestCase):
             dna=False,
             qualifying_position=10,
             finish_position=12,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=9, milliseconds=721),
         )
         self.race.race_entries.create(
@@ -201,7 +206,6 @@ class ChampionshipTest(TestCase):
             dna=False,
             qualifying_position=8,
             finish_position=14,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=7, milliseconds=962),
         )
         self.race.race_entries.create(
@@ -210,7 +214,6 @@ class ChampionshipTest(TestCase):
             dna=False,
             qualifying_position=11,
             finish_position=15,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=8, milliseconds=545),
         )
 
@@ -231,25 +234,146 @@ class ChampionshipTest(TestCase):
             dna=True,
         )
 
+        ## Race 2
+        self.race2.race_entries.create(
+            driver=self.jorrick,
+            team=self.jorrick.team,
+            dna=False,
+            qualifying_position=1,
+            finish_position=1,
+            best_lap_time=datetime.timedelta(minutes=1, seconds=23, milliseconds=499),
+        )
+
+        self.race2.race_entries.create(
+            driver=self.brandon,
+            team=self.brandon.team,
+            dna=False,
+            qualifying_position=4,
+            finish_position=2,
+            best_lap_time=datetime.timedelta(minutes=1, seconds=25, milliseconds=466),
+        )
+
+        self.race2.race_entries.create(
+            driver=self.kevin,
+            team=self.kevin.team,
+            dna=False,
+            qualifying_position=10,
+            finish_position=4,
+            best_lap_time=datetime.timedelta(minutes=1, seconds=24, milliseconds=341),
+        )
+
+        self.race2.race_entries.create(
+            driver=self.jeroen,
+            team=self.jeroen.team,
+            dna=False,
+            qualifying_position=7,
+            finish_position=5,
+            best_lap_time=datetime.timedelta(minutes=1, seconds=25, milliseconds=433),
+        )
+
+        self.race2.race_entries.create(
+            driver=self.nam,
+            team=self.nam.team,
+            dna=False,
+            qualifying_position=6,
+            finish_position=6,
+            best_lap_time=datetime.timedelta(minutes=1, seconds=23, milliseconds=977),
+        )
+
+        self.race2.race_entries.create(
+            driver=self.charles,
+            team=self.charles.team,
+            dna=False,
+            qualifying_position=3,
+            finish_position=7,
+            best_lap_time=datetime.timedelta(minutes=1, seconds=25, milliseconds=581),
+        )
+
+        self.race2.race_entries.create(
+            driver=self.arda,
+            team=self.arda.team,
+            dna=False,
+            qualifying_position=8,
+            finish_position=11,
+            best_lap_time=datetime.timedelta(minutes=1, seconds=26, milliseconds=88),
+        )
+
+        self.race2.race_entries.create(
+            driver=self.albion,
+            team=self.albion.team,
+            dna=False,
+            qualifying_position=15,
+            finish_position=12,
+            best_lap_time=datetime.timedelta(minutes=1, seconds=25, milliseconds=138),
+        )
+
+        self.race2.race_entries.create(
+            driver=self.david,
+            team=self.david.team,
+            dna=False,
+            dnf=True,
+            qualifying_position=2,
+            finish_position=13,
+            best_lap_time=datetime.timedelta(minutes=1, seconds=24, milliseconds=149),
+        )
+
+        self.race2.race_entries.create(
+            driver=self.warre,
+            team=self.warre.team,
+            dna=False,
+            dnf=True,
+            qualifying_position=5,
+            finish_position=14,
+            best_lap_time=datetime.timedelta(minutes=1, seconds=25, milliseconds=803),
+        )
+
+        # DNA's
+        self.race2.race_entries.create(
+            driver=self.frank,
+            team=self.frank.team,
+            dna=True,
+        )
+
+        self.race2.race_entries.create(
+            driver=self.martijn_p,
+            team=self.martijn_p.team,
+            dna=True,
+        )
+        self.race2.race_entries.create(
+            driver=self.martijn_vd,
+            team=self.martijn_vd.team,
+            dna=True,
+        )
+        self.race2.race_entries.create(
+            driver=self.bryan,
+            team=self.bryan.team,
+            dna=True,
+        )
+        self.race2.race_entries.create(
+            driver=self.tim,
+            team=self.tim.team,
+            dna=True,
+        )
+
     def test_leaderboard(self):
         leaderboard = self.championship.get_leaderboard()
 
         target_leaderboard = [
+            (self.jorrick, 26),
             (self.warre, 25),
-            (self.martijn_vd, 18),
-            (self.nam, 15),
-            (self.charles, 10),
-            (self.kevin, 8),
+            (self.nam, 23),
+            (self.martijn_vd, 20.2),
+            (self.kevin, 20),
+            (self.brandon, 18),
+            (self.charles, 16),
+            (self.jeroen, 10),
+            (self.tim, 7.2),
             (self.david, 6),
-            (self.tim, 5),
-            (self.bryan, 2.5),
-            (self.frank, 2.5),
-            (self.martijn_p, 2.5),
+            (self.bryan, 4.7),
+            (self.frank, 4.7),
+            (self.martijn_p, 4.7),
             (self.albion, 0),
             (self.arda, 0),
-            (self.brandon, 0),
-            (self.jeroen, 0),
-            (self.jorrick, 0),
         ]
 
         self.assertTrue(
@@ -362,7 +486,6 @@ class RaceTest(TestCase):
             dna=False,
             qualifying_position=1,
             finish_position=1,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=731),
         )
         self.race.race_entries.create(
@@ -371,7 +494,6 @@ class RaceTest(TestCase):
             dna=False,
             qualifying_position=14,
             finish_position=2,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=8, milliseconds=286),
         )
         self.race.race_entries.create(
@@ -380,7 +502,6 @@ class RaceTest(TestCase):
             dna=False,
             qualifying_position=4,
             finish_position=3,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=871),
         )
         self.race.race_entries.create(
@@ -389,7 +510,6 @@ class RaceTest(TestCase):
             dna=False,
             qualifying_position=2,
             finish_position=5,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=519),
         )
         self.race.race_entries.create(
@@ -398,7 +518,6 @@ class RaceTest(TestCase):
             dna=False,
             qualifying_position=7,
             finish_position=6,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=772),
         )
         self.race.race_entries.create(
@@ -407,7 +526,6 @@ class RaceTest(TestCase):
             dna=False,
             qualifying_position=5,
             finish_position=7,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=7, milliseconds=724),
         )
         self.race.race_entries.create(
@@ -416,7 +534,6 @@ class RaceTest(TestCase):
             dna=False,
             qualifying_position=3,
             finish_position=8,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=402),
         )
         self.race.race_entries.create(
@@ -425,7 +542,6 @@ class RaceTest(TestCase):
             dna=False,
             qualifying_position=13,
             finish_position=11,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=7, milliseconds=298),
         )
         self.race.race_entries.create(
@@ -434,7 +550,6 @@ class RaceTest(TestCase):
             dna=False,
             qualifying_position=6,
             finish_position=12,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=750),
         )
         self.race.race_entries.create(
@@ -443,7 +558,6 @@ class RaceTest(TestCase):
             dna=False,
             qualifying_position=10,
             finish_position=12,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=9, milliseconds=721),
         )
         self.race.race_entries.create(
@@ -452,7 +566,6 @@ class RaceTest(TestCase):
             dna=False,
             qualifying_position=8,
             finish_position=14,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=7, milliseconds=962),
         )
         self.race.race_entries.create(
@@ -461,7 +574,6 @@ class RaceTest(TestCase):
             dna=False,
             qualifying_position=11,
             finish_position=15,
-            full_time=datetime.timedelta(minutes=25, seconds=11),
             best_lap_time=datetime.timedelta(minutes=1, seconds=8, milliseconds=545),
         )
 

@@ -1,6 +1,7 @@
 import datetime
 import json
 import math
+from collections import defaultdict
 
 from colorfield.fields import ColorField
 from django.core import serializers, validators
@@ -37,8 +38,28 @@ class Championship(models.Model):
     def __str__(self):
         return f"{self.name}"
 
-    def get_leaderboard(self) -> list[tuple["Driver", int]]:
-        return []
+    def get_leaderboard(
+        self, first_race=None, last_race=None
+    ) -> list[tuple["Driver", int | float]]:
+        first_race = first_race or 0
+        last_race = last_race or self.races.count()
+
+        race_scores: list[dict["Driver", int | float]] = [
+            race.get_points() for race in self.races.all()
+        ]
+
+        total_points: dict["Driver", int | float] = defaultdict(int)
+        for race in race_scores:
+            for driver, points in race.items():
+                total_points[driver] += points
+
+        total_points_list = [
+            (driver, points) for driver, points in total_points.items()
+        ]
+
+        total_points_list.sort(key=lambda item: (-item[1], item[0].name))
+
+        return total_points_list
 
 
 class Driver(models.Model):
@@ -61,7 +82,9 @@ class Driver(models.Model):
 
 class Race(models.Model):
     championship_order = models.IntegerField(validators=[MinValueValidator(1)])
-    championship = models.ForeignKey(Championship, on_delete=models.CASCADE)
+    championship = models.ForeignKey(
+        Championship, on_delete=models.CASCADE, related_name="races"
+    )
     track = models.ForeignKey(Track, on_delete=models.RESTRICT)
 
     date_time = models.DateTimeField()
@@ -127,7 +150,10 @@ class Race(models.Model):
 
         # Calculate score each DNA driver gets
         if dna_entries:
-            dna_score = sum(SCORING_SYSTEM[position] for position in bot_positions)
+            dna_score = sum(
+                SCORING_SYSTEM[position] if position in SCORING_SYSTEM else 0
+                for position in bot_positions
+            )
             dna_score /= 2 * len(dna_entries)  # DNA drivers receive half points
 
             for entry in dna_entries:
@@ -160,9 +186,6 @@ class RaceEntry(models.Model):
         validators=[MinValueValidator(1)], null=True, blank=True
     )
 
-    full_time = models.DurationField(
-        verbose_name="Full Race Time", null=True, blank=True
-    )
     best_lap_time = models.DurationField(null=True, blank=True)
 
     pit_stops = models.PositiveIntegerField(default=1, null=True, blank=True)
@@ -183,7 +206,6 @@ class RaceEntry(models.Model):
                         qualifying_position__isnull=False,
                         grid_penalty__isnull=False,
                         finish_position__isnull=False,
-                        full_time__isnull=False,
                         best_lap_time__isnull=False,
                         pit_stops__isnull=False,
                         dnf__isnull=False,

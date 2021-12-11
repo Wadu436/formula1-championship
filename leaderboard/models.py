@@ -216,4 +216,8 @@ class RaceEntry(models.Model):
         ]
 
     def __str__(self):
-        return f"P{self.finish_position}: {self.driver}"
+        return (
+            f"P{self.finish_position}: {self.driver}"
+            if not self.dna
+            else f"DNA: {self.driver}"
+        )

@@ -59,7 +59,7 @@ class ChampionshipTest(TestCase):
         )
 
         self.championship: Championship = Championship.objects.create(
-            name="NAMR1 F1 Season One Championship"
+            name="NAMR1 F1 Season One Championship", start_date=now()
         )
 
         self.nam: Driver = Driver.objects.create(name="Nam", team=ferrari, country="nl")
@@ -427,7 +427,7 @@ class RaceTest(TestCase):
         )
 
         championship: Championship = Championship.objects.create(
-            name="NAMR1 F1 Season One Championship"
+            name="NAMR1 F1 Season One Championship", start_date=now()
         )
 
         self.nam: Driver = Driver.objects.create(name="Nam", team=ferrari, country="nl")

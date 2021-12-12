@@ -8,7 +8,8 @@ from django.utils.timezone import now
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
 django.setup()
 
-from leaderboard.models import Championship, Driver, Race, RaceEntry, Team, Track
+from leaderboard.models import (Championship, Driver, Race, RaceEntry, Team,
+                                Track)
 
 ADD_DATA = True
 
@@ -71,7 +72,7 @@ if ADD_DATA:
     )
 
     championship: Championship = Championship.objects.create(
-        name="NAMR1 F1 Season One Championship"
+        name="NAMR1 F1 Season One Championship", start_date=datetime.date(year=2021, month=10, day=24)
     )
 
     nam: Driver = Driver.objects.create(name="Nam", team=ferrari, country="nl")

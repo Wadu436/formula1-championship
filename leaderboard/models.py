@@ -34,6 +34,7 @@ class Team(models.Model):
 
 class Championship(models.Model):
     name = models.CharField(max_length=64)
+    start_date = models.DateField()
 
     def __str__(self):
         return f"{self.name}"
@@ -60,6 +61,9 @@ class Championship(models.Model):
         total_points_list.sort(key=lambda item: (-item[1], item[0].name))
 
         return total_points_list
+
+    class Meta:
+        get_latest_by = "start_date"
 
 
 class Driver(models.Model):

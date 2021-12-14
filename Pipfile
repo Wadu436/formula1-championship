@@ -7,6 +7,7 @@ name = "pypi"
 django = "*"
 django-colorfield = "*"
 django-countries = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 black = "*"

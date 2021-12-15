@@ -35,8 +35,8 @@ FROM base as develop
 
 COPY data_entry.py entrypoint.sh ./
 
-RUN sed -i 's/\r$//g' /usr/src/app/entrypoint.sh
-RUN chmod +x /usr/src/app/entrypoint.sh
+RUN sed -i 's/\r$//g' ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
 
 USER app
 

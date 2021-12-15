@@ -1,7 +1,17 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres:13.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=formula1
+      - POSTGRES_PASSWORD=formula1
+      - POSTGRES_DB=dev
   web:
+    depends_on:
+      - db
     build: 
       context: ./app
       target: develop
@@ -12,14 +22,6 @@ services:
       - 8000:8000
     env_file:
       - ./.env.dev
-  db:
-    image: postgres:13.0-alpine
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_USER=formula1
-      - POSTGRES_PASSWORD=formula1
-      - POSTGRES_DB=dev
 
 volumes:
   postgres_data:

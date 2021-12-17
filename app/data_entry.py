@@ -37,37 +37,37 @@ if ADD_DATA:
     )
 
     ferrari: Team = Team.objects.create(
-        name="Scuderia Ferrari", color="#D40000", country="it"
+        name="Scuderia Ferrari", color="#dc0000", country="it"
     )
     red_bull: Team = Team.objects.create(
         name="Red Bull Racing",
-        color="#1D19AC",
+        color="#0600ef",
         country="at",
     )
     alphatauri: Team = Team.objects.create(
         name="AlphaTauri",
-        color="#03BFB5",
+        color="#2b4562",
         country="de",
     )
-    haas: Team = Team.objects.create(name="Haas", color="#D40000", country="it")
+    haas: Team = Team.objects.create(name="Haas", color="#ffffff", country="it")
     mclaren: Team = Team.objects.create(
         name="McLaren",
-        color="#1D19AC",
+        color="#FF9800",
         country="at",
     )
     williams: Team = Team.objects.create(
         name="Williams",
-        color="#03BFB5",
+        color="#005aff",
         country="de",
     )
     alfa_romeo: Team = Team.objects.create(
         name="Alfa Romeo",
-        color="#1D19AC",
+        color="#900000",
         country="at",
     )
     aston_martin: Team = Team.objects.create(
         name="Aston Martin",
-        color="#03BFB5",
+        color="#006f62",
         country="de",
     )
 

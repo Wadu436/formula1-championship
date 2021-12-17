@@ -25,6 +25,7 @@ class Track(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=64)
+    full_name = models.CharField(max_length=64)
     color = ColorField(default="#FF0000")
     country = CountryField()
 

@@ -28,7 +28,6 @@ if ADD_DATA:
         abbreviation="AUT",
         country="at",
     )
-
     track2: Track = Track.objects.create(
         location="Italy",
         name="Monza",
@@ -36,43 +35,55 @@ if ADD_DATA:
         country="it",
     )
 
-    ferrari: Team = Team.objects.create(
-        name="Scuderia Ferrari", color="#dc0000", country="it"
-    )
     red_bull: Team = Team.objects.create(
-        name="Red Bull Racing",
+        name="Red Bull",
+        full_name="Red Bull Racing Honda",
         color="#0600ef",
+        country="at",
+    )
+    ferrari: Team = Team.objects.create(
+        name="Ferrari",
+        full_name="Scuderia Ferrari Mission Winnow",
+        color="#dc0000",
+        country="it",
+    )
+    mclaren: Team = Team.objects.create(
+        name="McLaren",
+        full_name="McLaren F1 Team",
+        color="#FF9800",
         country="at",
     )
     alphatauri: Team = Team.objects.create(
         name="AlphaTauri",
+        full_name="Scuderia AlphaTauri Honda",
         color="#2b4562",
         country="de",
     )
-    haas: Team = Team.objects.create(name="Haas", color="#ffffff", country="it")
-    mclaren: Team = Team.objects.create(
-        name="McLaren",
-        color="#FF9800",
-        country="at",
+    aston_martin: Team = Team.objects.create(
+        name="Aston Martin",
+        full_name="Aston Martin Cognizant F1 Team",
+        color="#006f62",
+        country="de",
     )
     williams: Team = Team.objects.create(
         name="Williams",
+        full_name="Williams Racing",
         color="#005aff",
         country="de",
     )
     alfa_romeo: Team = Team.objects.create(
-        name="Alfa Romeo",
+        name="Alfa Romeo Racing",
+        full_name="Alfa Romeo Racing ORLEN",
         color="#900000",
         country="at",
     )
-    aston_martin: Team = Team.objects.create(
-        name="Aston Martin",
-        color="#006f62",
-        country="de",
+    haas: Team = Team.objects.create(
+        name="Haas", full_name="Uralkali Haas F1 Team", color="#ffffff", country="it"
     )
 
     championship: Championship = Championship.objects.create(
-        name="NAMR1 F1 Season One Championship", start_date=datetime.date(year=2021, month=10, day=24)
+        name="NAMR1 F1 Season One Championship",
+        start_date=datetime.date(year=2021, month=10, day=24),
     )
 
     nam: Driver = Driver.objects.create(name="Nam", team=ferrari, country="nl")

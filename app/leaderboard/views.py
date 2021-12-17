@@ -21,7 +21,14 @@ def get_driver(request, driver_id):
 
 def index(request):
     context = {"championships": Championship.objects.all()}
+    return render(request, "leaderboard/base.html", context={})
     return render(request, "leaderboard/index.html", context=context)
+
+
+def championships(request):
+    context = {"championships": Championship.objects.all()}
+    print(context["championships"])
+    return render(request, "leaderboard/championships.html", context=context)
 
 
 def drivers_standings(request, championship_id):

@@ -16,6 +16,7 @@ urlpatterns = [
         views.latest_drivers_standings,
         name="latest_drivers_standings",
     ),
+    path("championships/", views.championships, name="championships"),
     path(
         "",
         views.index,

@@ -1,0 +1,13 @@
+{% extends "leaderboard/base.html" %}
+
+{% block title %}Championships{% endblock %}
+
+{% block content %}
+<div>
+    {% for championship in championships %}
+        <div>
+            <a href={% url 'drivers_standings' championship.id %}>{{ championship.name }} Driver's Standings</a>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -13,7 +13,7 @@
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" type="text/css" href="{% static 'leaderboard/global.css' %}" />   
+    <link rel="stylesheet" type="text/css" href="{% static 'leaderboard/global.css' %}" />
 </head>
 
 <body style="width: 100%;">
@@ -22,11 +22,11 @@
             <div>
                 <table class="table table-striped leaderboard-table table-borderless" style="font-size: 1rem;">
                     <colgroup>
-                        <col>
-                        <col>
-                        <col>
-                        <col>
-                        <col style="width: 8%;">
+                        <col style="width: 15%;">
+                        <col style="width: 25%;">
+                        <col style="width: 20%;">
+                        <col style="width: 25%;">
+                        <col style="width: 15%;">
                     </colgroup>
                     <thead class="table-white">
                         <tr>
@@ -42,10 +42,12 @@
                         <tr class="leaderboard-row">
                             <td class="align-middle fw-lighter">{{forloop.counter}}</td>
                             <td class="align-middle">{{driver.name}}</td>
-                            <td class="align-middle fw-lighter">{{driver.country.unicode_flag}} {{driver.country.ioc_code}}</td>
+                            <td class="align-middle fw-lighter">{{driver.country.unicode_flag}}
+                                {{driver.country.ioc_code}}</td>
                             <td class="align-middle" style="height: 100%;">
                                 <div class="d-inline-flex align-items-center">
-                                    <span class="team-color-bar mx-2" style="background-color: {{driver.team.color}};"></span>
+                                    <span class="team-color-bar mx-2"
+                                        style="background-color: {{driver.team.color}};"></span>
                                     <span>{{driver.team}}</span>
                                 </div>
                             </td>

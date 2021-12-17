@@ -17,23 +17,39 @@
 </head>
 
 <body style="width: 100%;">
-    <div class="row justify-content-center mt-5 mx-0">
-        <div class="col-auto col-md-6 col-sm-8">
-            <div class="table-responsive">
-                <table class="table table table-secondary" style="font-size: 1.5rem;">
-                    <thead class="table-dark">
+    <div class="row justify-content-center mt-5 mx-0" style="width: 100%;">
+        <div class="col-8">
+            <div>
+                <table class="table table-striped leaderboard-table table-borderless" style="font-size: 1rem;">
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col style="width: 8%;">
+                    </colgroup>
+                    <thead class="table-white">
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Points</th>
+                            <th scope="col" class="leaderboard-header">#</th>
+                            <th scope="col" class="leaderboard-header">Driver</th>
+                            <th scope="col" class="leaderboard-header">Nationality</th>
+                            <th scope="col" class="leaderboard-header">Team</th>
+                            <th scope="col" class="leaderboard-header">Points</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for driver, score in championship.get_leaderboard %}
-                        <tr>
-                            <th scope="row">{{forloop.counter}}</th>
-                            <td>{{driver.name}}</td>
-                            <td>{{score}}</td>
+                        <tr class="leaderboard-row">
+                            <td class="align-middle fw-lighter">{{forloop.counter}}</td>
+                            <td class="align-middle">{{driver.name}}</td>
+                            <td class="align-middle fw-lighter">{{driver.country.unicode_flag}} {{driver.country.ioc_code}}</td>
+                            <td class="align-middle" style="height: 100%;">
+                                <div class="d-inline-flex align-items-center">
+                                    <span class="team-color-bar mx-2" style="background-color: {{driver.team.color}};"></span>
+                                    <span>{{driver.team}}</span>
+                                </div>
+                            </td>
+                            <td class="align-middle">{{score}}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

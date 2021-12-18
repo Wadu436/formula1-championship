@@ -6,7 +6,7 @@ from django.shortcuts import render
 from .models import Championship, Driver
 
 
-# Create your views here.
+# API views
 def get_drivers(request):
     return HttpResponse(
         json.dumps([driver.get_dict() for driver in Driver.objects.all()]),
@@ -19,23 +19,18 @@ def get_driver(request, driver_id):
     return HttpResponse(json.dumps(driver.get_dict()), content_type="application/json")
 
 
-def index(request):
-    context = {"championships": Championship.objects.all()}
-    return render(request, "leaderboard/base.html", context={})
-    return render(request, "leaderboard/index.html", context=context)
-
-
-def championships(request):
-    context = {"championships": Championship.objects.all()}
-    print(context["championships"])
-    return render(request, "leaderboard/championships.html", context=context)
-
-
+# HTML views
 def drivers_standings(request, championship_id):
-    context = {"championship": Championship.objects.get(id=championship_id)}
+    context = {
+        "current_championship": Championship.objects.get(id=championship_id),
+        "championships": Championship.objects.all(),
+    }
     return render(request, "leaderboard/drivers_standings.html", context=context)
 
 
 def latest_drivers_standings(request):
-    context = {"championship": Championship.objects.latest()}
+    context = {
+        "current_championship": Championship.objects.latest(),
+        "championships": Championship.objects.all(),
+    }
     return render(request, "leaderboard/drivers_standings.html", context=context)

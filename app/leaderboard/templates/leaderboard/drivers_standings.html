@@ -1,9 +1,10 @@
 {% extends "leaderboard/base.html" %}
 
-{% block title %}Driver's Standing - {{ championship.name }}{% endblock %}
+{% block title %}Driver's Standing - {{ current_championship.name }}{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center mt-5 mx-0" style="width: 100%;">
+<div class="d-flex flex-column align-items-center mt-3 mx-0" style="width: 100%;">
+    <div class="align-middle fw-lighter fs-1">{{ current_championship.name }}</div>
     <div class="col-8">
         <div>
             <table class="table table-striped leaderboard-table table-borderless" style="font-size: 1rem;">
@@ -24,7 +25,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for driver, score in championship.get_leaderboard %}
+                    {% for driver, score in current_championship.get_leaderboard %}
                     <tr class="leaderboard-row">
                         <td class="align-middle fw-lighter">{{forloop.counter}}</td>
                         <td class="align-middle">{{driver.name}}</td>

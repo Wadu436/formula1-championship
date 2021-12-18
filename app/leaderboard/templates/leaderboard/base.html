@@ -1,6 +1,7 @@
 {% load static %}
 
 {% url 'championships' as championships_url %}
+{% with request.resolver_match.view_name as view_name %}
 
 <html lang="en">
 
@@ -19,9 +20,44 @@
 </head>
 
 <body>
-    <div id="navigation">
-        <a href="{{ championships_url }}">Championships</a>
-    </div>
+    <nav id="navigation" class="d-flex flex-row bg-primary align-items-center">
+        <span class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">{% if current_championship %}{{ current_championship.name }}{% else %}Championship{% endif %}</a>
+            <div id="championship-select" class="dropdown-menu">
+                {% for championship in championships %}
+                {% if championship == current_championship %}
+                <span class="dropdown-item nav-selected">{{championship.name}}</span>
+                {% else %}
+                <a class="dropdown-item" href="{% url 'drivers_standings' championship.id%}">{{championship.name}}</a>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </span>
+        <span class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Leaderboard</a>
+            <div id="championship-select" class="dropdown-menu">
+                {% if view_name == "drivers_standings"%}
+                <span class="dropdown-item nav-selected">Driver's Championship</span>
+                {% else %}
+                <a class="dropdown-item" href="{% url 'drivers_standings' current_championship.id%}">Driver's Championship</a>
+                {% endif %}
+
+                {% if view_name == "constructors_standings"%}
+                <span class="dropdown-item">Constructors's Championship</span>
+                {% else %}
+                <a class="dropdown-item" href="{% url 'drivers_standings' current_championship.id%}">Constructors's Championship</a>
+                {% endif %}            
+            </div>
+        </span>
+        <a class="nav-item nav-link" href="#">Races</a>
+        <span class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Stats</a>
+            <div id="championship-select" class="dropdown-menu">
+                <a class="dropdown-item" href="{% url 'drivers_standings' current_championship.id%}">Fastest Laps</a>
+                <a class="dropdown-item" href="{% url 'drivers_standings' current_championship.id%}">Most Poles</a>
+            </div>
+        </span>
+    </nav>
 
     {% block content %}
         <span>Content</span>
@@ -29,3 +65,5 @@
 </body>
 
 </html>
+
+{% endwith %}

@@ -503,7 +503,7 @@ if ADD_DATA:
         team=jorrick.team,
         dna=False,
         qualifying_position=1,
-        finish_position=1,
+        finish_position=3,
         best_lap_time=datetime.timedelta(minutes=1, seconds=23, milliseconds=499),
     )
 
@@ -512,7 +512,7 @@ if ADD_DATA:
         team=brandon.team,
         dna=False,
         qualifying_position=4,
-        finish_position=2,
+        finish_position=14,
         best_lap_time=datetime.timedelta(minutes=1, seconds=25, milliseconds=466),
     )
 
@@ -539,7 +539,7 @@ if ADD_DATA:
         team=nam.team,
         dna=False,
         qualifying_position=6,
-        finish_position=6,
+        finish_position=7,
         best_lap_time=datetime.timedelta(minutes=1, seconds=23, milliseconds=977),
     )
 
@@ -548,7 +548,7 @@ if ADD_DATA:
         team=charles.team,
         dna=False,
         qualifying_position=3,
-        finish_position=7,
+        finish_position=6,
         best_lap_time=datetime.timedelta(minutes=1, seconds=25, milliseconds=581),
     )
 
@@ -576,7 +576,7 @@ if ADD_DATA:
         dna=False,
         dnf=True,
         qualifying_position=2,
-        finish_position=13,
+        finish_position=2,
         best_lap_time=datetime.timedelta(minutes=1, seconds=24, milliseconds=149),
     )
 
@@ -586,7 +586,7 @@ if ADD_DATA:
         dna=False,
         dnf=True,
         qualifying_position=5,
-        finish_position=14,
+        finish_position=1,
         best_lap_time=datetime.timedelta(minutes=1, seconds=25, milliseconds=803),
     )
 

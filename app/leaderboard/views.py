@@ -1,7 +1,8 @@
 import json
 
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls import reverse
 
 from .models import Championship, Driver
 
@@ -37,8 +38,5 @@ def constructors_standings(request, championship_id):
 
 
 def latest_drivers_standings(request):
-    context = {
-        "current_championship": Championship.objects.latest(),
-        "championships": Championship.objects.all(),
-    }
-    return render(request, "leaderboard/drivers_standings.html", context=context)
+    latest_championship = Championship.objects.latest()
+    return redirect(reverse("drivers_standings", args=[latest_championship.id]))

@@ -41,13 +41,13 @@
             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Leaderboard</a>
             <div id="championship-select" class="dropdown-menu">
                 {% if view_name == "drivers_standings"%}
-                <span class="dropdown-item nav-selected">Driver's Championship</span>
+                <span class="dropdown-item active nav-selected">Driver's Championship</span>
                 {% else %}
                 <a class="dropdown-item" href="{% url 'drivers_standings' current_championship.id%}">Driver's Championship</a>
                 {% endif %}
 
                 {% if view_name == "constructors_standings"%}
-                <span class="dropdown-item nav-selected">Constructors's Championship</span>
+                <span class="dropdown-item active nav-selected">Constructors's Championship</span>
                 {% else %}
                 <a class="dropdown-item" href="{% url 'constructors_standings' current_championship.id%}">Constructors's Championship</a>
                 {% endif %}            

@@ -43,6 +43,6 @@
 }
 
 .nav-selected {
-    background-color: rgb(var(--bs-primary-rgb));
-    color: white;
+    background-color: rgb(var(--bs-primary-rgb)) !important;
+    color: white !important;
 }

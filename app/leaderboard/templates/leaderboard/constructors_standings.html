@@ -10,7 +10,8 @@
         <div>
             <table class="table table-striped leaderboard-table table-borderless" style="font-size: 1rem;">
                 <colgroup>
-                    <col style="width: 15%;">
+                    <col style="width: 10%">
+                    <col style="width: 1%;">
                     <col style="width: 35%;">
                     <col style="width: 35%;">
                     <col style="width: 15%;">
@@ -18,6 +19,7 @@
                 <thead class="table-white">
                     <tr>
                         <th scope="col" class="leaderboard-header">#</th>
+                        <th scope="col" class="leaderboard-header"></th>
                         <th scope="col" class="leaderboard-header">Team</th>
                         <th scope="col" class="leaderboard-header">Nationality</th>
                         <th scope="col" class="leaderboard-header">Points</th>
@@ -27,13 +29,10 @@
                     {% for team, score in current_championship.get_constructors_standings %}
                     <tr class="leaderboard-row">
                         <td class="align-middle fw-lighter">{{forloop.counter}}</td>
-                        <td class="align-middle" style="height: 100%;">
-                            <div class="d-inline-flex align-items-center">
-                                <span class="team-color-bar mx-2"
-                                    style="background-color: {{team.color}};"></span>
-                                <span>{{team.name}}</span>
-                            </div>
-                        </td>                        
+                        <td class="align-middle">
+                            <span class="team-color-bar mx-2" style="background-color: {{team.color}};"></span>
+                        </td>
+                        <td class="align-middle" style="height: 100%;">{{team.name}}</td>                        
                         <td class="align-middle fw-lighter">{{team.country.unicode_flag}}{{team.country.ioc_code}}</td>
                         <td class="align-middle fw-lighter">{{score}}</td>
                     </tr>

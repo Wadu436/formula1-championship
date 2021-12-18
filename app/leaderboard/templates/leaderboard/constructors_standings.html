@@ -29,7 +29,7 @@
                     {% for team, score in current_championship.get_constructors_standings %}
                     <tr class="leaderboard-row">
                         <td class="align-middle fw-lighter">{{forloop.counter}}</td>
-                        <td class="align-middle">
+                        <td class="align-middle" style="height: 2rem;">
                             <span class="team-color-bar mx-2" style="background-color: {{team.color}};"></span>
                         </td>
                         <td class="align-middle" style="height: 100%;">{{team.name}}</td>                        

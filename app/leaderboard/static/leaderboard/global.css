@@ -8,7 +8,14 @@
 .team-color-bar {
     display: inline-block;
     width: 5px;
-    height: 28px;
+    height: 1.2rem;
+    border-radius: 2px;
+    transition-duration: 100ms;
+}
+tr:hover .team-color-bar {
+    display: inline-block;
+    width: 5px;
+    height: 2rem;
     border-radius: 2px;
 }
 

@@ -25,11 +25,15 @@
             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">{% if current_championship %}{{ current_championship.name }}{% else %}Championship{% endif %}</a>
             <div id="championship-select" class="dropdown-menu">
                 {% for championship in championships %}
+
                 {% if championship == current_championship %}
                 <span class="dropdown-item nav-selected">{{championship.name}}</span>
                 {% else %}
-                <a class="dropdown-item" href="{% url 'drivers_standings' championship.id%}">{{championship.name}}</a>
+                
+                <a class="dropdown-item" href="{% url view_name championship.id%}">{{championship.name}}</a>
+
                 {% endif %}
+
                 {% endfor %}
             </div>
         </span>
@@ -45,7 +49,7 @@
                 {% if view_name == "constructors_standings"%}
                 <span class="dropdown-item">Constructors's Championship</span>
                 {% else %}
-                <a class="dropdown-item" href="{% url 'drivers_standings' current_championship.id%}">Constructors's Championship</a>
+                <a class="dropdown-item" href="{% url 'constructors_standings' current_championship.id%}">Constructors's Championship</a>
                 {% endif %}            
             </div>
         </span>

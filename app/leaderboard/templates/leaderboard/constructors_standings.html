@@ -1,44 +1,40 @@
 {% extends "leaderboard/base.html" %}
 
-{% block title %}Driver Standings - {{ current_championship.name }}{% endblock %}
+{% block title %}Constructor Standings - {{ current_championship.name }}{% endblock %}
 
 {% block content %}
 <div class="d-flex flex-column align-items-center mt-3 mx-0" style="width: 100%;">
-    <div class="fw-lighter fs-1">{{ current_championship.name }}</div>
-    <div class="fw-lighter fs-3">Driver Standings</div>
+    <div class="align-middle fw-lighter fs-1">{{ current_championship.name }}</div>
+    <div class="fw-lighter fs-3">Constructor Standings</div>
     <div class="col-8">
         <div>
             <table class="table table-striped leaderboard-table table-borderless" style="font-size: 1rem;">
                 <colgroup>
                     <col style="width: 15%;">
-                    <col style="width: 25%;">
-                    <col style="width: 20%;">
-                    <col style="width: 25%;">
+                    <col style="width: 35%;">
+                    <col style="width: 35%;">
                     <col style="width: 15%;">
                 </colgroup>
                 <thead class="table-white">
                     <tr>
                         <th scope="col" class="leaderboard-header">#</th>
-                        <th scope="col" class="leaderboard-header">Driver</th>
-                        <th scope="col" class="leaderboard-header">Nationality</th>
                         <th scope="col" class="leaderboard-header">Team</th>
+                        <th scope="col" class="leaderboard-header">Nationality</th>
                         <th scope="col" class="leaderboard-header">Points</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for driver, score in current_championship.get_drivers_standings %}
+                    {% for team, score in current_championship.get_constructors_standings %}
                     <tr class="leaderboard-row">
                         <td class="align-middle fw-lighter">{{forloop.counter}}</td>
-                        <td class="align-middle">{{driver.name}}</td>
-                        <td class="align-middle fw-lighter">{{driver.country.unicode_flag}}
-                            {{driver.country.ioc_code}}</td>
                         <td class="align-middle" style="height: 100%;">
                             <div class="d-inline-flex align-items-center">
                                 <span class="team-color-bar mx-2"
-                                    style="background-color: {{driver.team.color}};"></span>
-                                <span>{{driver.team}}</span>
+                                    style="background-color: {{team.color}};"></span>
+                                <span>{{team.name}}</span>
                             </div>
-                        </td>
+                        </td>                        
+                        <td class="align-middle fw-lighter">{{team.country.unicode_flag}}{{team.country.ioc_code}}</td>
                         <td class="align-middle fw-lighter">{{score}}</td>
                     </tr>
                     {% endfor %}

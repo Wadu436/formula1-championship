@@ -40,14 +40,14 @@ class Championship(models.Model):
     def __str__(self):
         return f"{self.name}"
 
-    def get_leaderboard(
+    def get_drivers_standings(
         self, first_race=None, last_race=None
     ) -> list[tuple["Driver", int | float]]:
         first_race = first_race or 0
         last_race = last_race or self.races.count()
 
         race_scores: list[dict["Driver", int | float]] = [
-            race.get_points() for race in self.races.all()
+            race.get_points()[0] for race in self.races.all()
         ]
 
         total_points: dict["Driver", int | float] = defaultdict(int)
@@ -58,6 +58,27 @@ class Championship(models.Model):
         total_points_list = [
             (driver, points) for driver, points in total_points.items()
         ]
+
+        total_points_list.sort(key=lambda item: (-item[1], item[0].name))
+
+        return total_points_list
+
+    def get_constructors_standings(
+        self, first_race=None, last_race=None
+    ) -> list[tuple["Team", int | float]]:
+        first_race = first_race or 0
+        last_race = last_race or self.races.count()
+
+        team_scores: list[dict["Team", int | float]] = [
+            race.get_points()[1] for race in self.races.all()
+        ]
+
+        total_points: dict["Team", int | float] = defaultdict(int)
+        for race in team_scores:
+            for team, points in race.items():
+                total_points[team] += points
+
+        total_points_list = [(team, points) for team, points in total_points.items()]
 
         total_points_list.sort(key=lambda item: (-item[1], item[0].name))
 
@@ -110,7 +131,7 @@ class Race(models.Model):
             f"{self.championship} Race {self.championship_order}: {self.track.location}"
         )
 
-    def get_points(self) -> dict[Driver, int | float]:
+    def get_points(self) -> tuple[dict[Driver, int | float], dict[Team, int | float]]:
         SCORING_SYSTEM = {
             1: 25,
             2: 18,
@@ -127,6 +148,7 @@ class Race(models.Model):
         # Get entries
         dna_entries: QuerySet[RaceEntry] = self.race_entries.filter(dna=True)
         non_dna_entries: QuerySet[RaceEntry] = self.race_entries.filter(dna=False)
+        entries: QuerySet[RaceEntry] = self.race_entries.all()
 
         points = dict()
 
@@ -167,7 +189,13 @@ class Race(models.Model):
         # Assign fastest lap point
         points[fastest_driver] += 1
 
-        return points
+        # Find all Driver's Team
+        teams: dict[Team, int | float] = {entry.team: 0 for entry in entries}
+
+        for entry in entries:
+            teams[entry.team] += points[entry.driver]
+
+        return (points, teams)
 
 
 class RaceEntry(models.Model):

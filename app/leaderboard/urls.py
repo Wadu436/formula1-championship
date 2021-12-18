@@ -14,6 +14,11 @@ urlpatterns = [
         name="drivers_standings",
     ),
     path(
+        "constructors_standings/<int:championship_id>",
+        views.constructors_standings,
+        name="constructors_standings",
+    ),
+    path(
         "",
         views.latest_drivers_standings,
         name="index",

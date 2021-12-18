@@ -356,7 +356,7 @@ class ChampionshipTest(TestCase):
         )
 
     def test_leaderboard(self):
-        leaderboard = self.championship.get_leaderboard()
+        leaderboard = self.championship.get_drivers_standings()
 
         target_leaderboard = [
             (self.jorrick, 26),
@@ -595,7 +595,7 @@ class RaceTest(TestCase):
         )
 
     def test_get_points(self):
-        points = self.race.get_points()
+        points, _ = self.race.get_points()
 
         target_drivers: list[tuple[Driver, int | float]] = [
             (self.nam, 15),

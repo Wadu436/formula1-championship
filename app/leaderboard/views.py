@@ -28,6 +28,14 @@ def drivers_standings(request, championship_id):
     return render(request, "leaderboard/drivers_standings.html", context=context)
 
 
+def constructors_standings(request, championship_id):
+    context = {
+        "current_championship": Championship.objects.get(id=championship_id),
+        "championships": Championship.objects.all(),
+    }
+    return render(request, "leaderboard/constructors_standings.html", context=context)
+
+
 def latest_drivers_standings(request):
     context = {
         "current_championship": Championship.objects.latest(),

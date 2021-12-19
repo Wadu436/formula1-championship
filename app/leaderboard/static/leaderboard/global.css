@@ -43,7 +43,7 @@ body {
 }
 
 .race-card-container {
-    flex-basis: 33%;
+    width: 30rem;
     padding: 1rem;
 }
 
@@ -51,7 +51,7 @@ body {
     border-top: 2px solid black;
     border-right: 2px solid black;
     border-top-right-radius: 10px;
-    min-height: 14rem;
+    /* min-height: 14rem; */
 }
 
 .schedule-header {
@@ -59,6 +59,6 @@ body {
 }
 
 .schedule-image-container {
-    width:auto; 
-    max-width: 60%;
+    width: auto; 
+    max-width: 45%;
 }

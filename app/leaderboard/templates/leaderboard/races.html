@@ -13,28 +13,51 @@
 {% block content %}
 <div class="d-flex flex-column align-items-center mt-3 mx-0" style="width: 100%;">
     <div class="align-middle fw-lighter fs-1">{{ current_championship.name }}</div>
-    <div class="fw-lighter fs-3">Constructor Standings</div>
-    <div class="col-8">
-        <div>
+    <div class="fw-lighter fs-3">Race Schedule</div>
+    <div class="col-9">
+        <div class="d-flex flex-wrap" style="align-items: stretch;">
             {% for race in current_championship.races.all %}
-            <div class="race_card">
-                <div class="mx-2 my-1">
-                    <div class="d-flex justify-content-between align-items-center w-100">
+            
+            <div class="race-card-container">
+            <div class="race-card">
+                <div class="ps-2 pe-3 pt-2 pb-2 w-80 d-flex flex-column h-100">
+                    <div class="d-flex justify-content-between align-items-center w-100 schedule-header fw-light fs-5">
                         <span>Round {{ race.championship_order }}</span>
                         <div class="d-flex align-items-center">
                             {% if race.date_time %}
-                            <span class="me-2 schedule-time" data-schedule-date={{race.date_time.timestamp}}>{{ race.date_time|date:"F d, H:i" }}</span>
+                            <span class="mx-2 schedule-time" data-schedule-date={{race.date_time.timestamp}}>{{ race.date_time|date:"F d, H:i" }}</span>
                             {% else %}
-                            <span class="me-2">TBD</span>
+                            <span class="mx-2">TBD</span>
                             {% endif %}
                             <i class="flag2x {{ race.track.country.flag_css }}"></i>
                         </div>
                     </div>
+                    <div class="d-flex w-100 h-100 justify-content-between">
+                        <div class="d-flex flex-column justify-content-between" style="width:45%"> 
+                            <div class="pt-2">
+                                <div class="h5 mb-0">{{race.track.country.name}}</div>
+                                <div class="mt-0 lh-1">{{race.track.name}}</div>
+                            </div>
+                            <div class="fw-light" style="font-size:0.95rem">
+                                Laps: {{race.laps}}
+                            </div>
+                        </div>
+                        {% if race.track.image %}
+                        <div class="d-flex flex-column justify-content-end schedule-image-container">
+                            <img style="width: 100%" src="{{ race.track.image.url }}" alt="" >                                          
+                        </div>
+                        {% endif %}
+                    </div>
                     
-                    <div>{{race.track.country.name}}</div>
-                    <div>{{race.track.name}}</div>
+                    {% comment %} {% if race.finished %}
+                        <div class="mt-1 fw-light" style="font-size: 0.9rem;">Race Winner: {{race.winner.driver.name}}</div>
+                    {% else %}
+                        <div class="mt-1 fw-light" style="font-size: 0.9rem;">Previous Race Winner: {{race.winner.driver.name}}</div>
+                    {% endif %} {% endcomment %}
                 </div>
             </div>
+        </div>
+        
             {% endfor %}
         </div>
     </div>

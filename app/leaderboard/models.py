@@ -2,6 +2,7 @@ import datetime
 import json
 import math
 from collections import defaultdict
+from typing import Optional
 
 from colorfield.fields import ColorField
 from django.core import serializers, validators
@@ -9,6 +10,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Q
 from django.db.models.query import QuerySet
+from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
 
 
@@ -18,6 +20,12 @@ class Track(models.Model):
     name = models.CharField(max_length=64, null=True, blank=True)
     abbreviation = models.CharField(max_length=8)
     country = CountryField()
+
+    full_laps = models.IntegerField(verbose_name="Laps in a full race (100%)")
+    long_laps = models.IntegerField(verbose_name="Laps in a long race (50%)")
+    medium_laps = models.IntegerField(verbose_name="Laps in a mediun race (25%)")
+
+    image = models.ImageField(null=True, blank=True, default=None)
 
     def __str__(self):
         return f"{self.location}"
@@ -107,6 +115,12 @@ class Driver(models.Model):
 
 
 class Race(models.Model):
+    class RaceLength(models.TextChoices):
+        FULL = "F", _("Full Race (100%)")
+        LONG = "L", _("Long Race (50%)")
+        MEDIUM = "M", _("Medium Race (25%)")
+        SHORT = "S", _("Short Race (5 laps)")
+
     championship_order = models.IntegerField(validators=[MinValueValidator(1)])
     championship = models.ForeignKey(
         Championship, on_delete=models.CASCADE, related_name="races"
@@ -120,6 +134,11 @@ class Race(models.Model):
 
     schedule_image = models.ImageField(blank=True, null=True)
     detail_image = models.ImageField(blank=True, null=True)
+
+    length = models.CharField(
+        max_length=1,
+        choices=RaceLength.choices,
+    )
 
     class Meta:
         constraints = [
@@ -204,6 +223,24 @@ class Race(models.Model):
 
         return (points, teams)
 
+    def winner(self) -> Optional["RaceEntry"]:
+        if self.finished:
+            winning_entry = self.race_entries.get(finish_position=1)
+            return winning_entry
+
+        return None
+
+    def laps(self) -> int:
+        track: Track = self.track
+        match self.length:
+            case 'S':
+                return 5
+            case 'M':
+                return track.medium_laps
+            case 'L':
+                return track.long_laps
+            case 'F':
+                return track.full_laps
 
 class RaceEntry(models.Model):
     race = models.ForeignKey(

@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
 
-:root {
-    font-family: 'Roboto', sans-serif !important;
+body {
+    font-family: "Roboto", sans-serif !important;
     --bs-primary-rgb: 230,0,0; 
 }
 
@@ -42,9 +42,23 @@
     color: black;
 }
 
-.race_card {
+.race-card-container {
+    flex-basis: 33%;
+    padding: 1rem;
+}
+
+.race-card {
     border-top: 2px solid black;
     border-right: 2px solid black;
     border-top-right-radius: 10px;
-    margin: 1rem;
+    min-height: 14rem;
+}
+
+.schedule-header {
+    text-transform: uppercase;
+}
+
+.schedule-image-container {
+    width:auto; 
+    max-width: 60%;
 }

@@ -4,6 +4,7 @@ import os
 import django
 import django.utils.timezone as tz
 import pytz
+from django.core.files import File
 from django.utils.timezone import now
 
 # Configure Django
@@ -28,25 +29,52 @@ if ADD_DATA:
         name="Red Bull Ring",
         abbreviation="AUT",
         country="at",
+        full_laps=63,
+        long_laps=31,
+        medium_laps=16,
     )
+    with open("track_images/Schedule Austria.png", "rb") as file:
+        track.image.save("Schedule_Austria.png", File(file))
+        track.save()
+
     track2: Track = Track.objects.create(
         location="Italy",
         name="Monza Circuit",
         abbreviation="ITA",
         country="it",
+        full_laps=56,
+        long_laps=28,
+        medium_laps=14,
     )
+    with open("track_images/Schedule Monza.png", "rb") as file:
+        track2.image.save("Schedule_Monza.png", File(file))
+        track2.save()
+
     track3: Track = Track.objects.create(
         location="The Netherlands",
         name="Circuit Zandvoort",
         abbreviation="NED",
         country="nl",
+        full_laps=66,
+        long_laps=33,
+        medium_laps=17,
     )
+    with open("track_images/Schedule Netherlands.png", "rb") as file:
+        track3.image.save("Schedule_Netherlands.png", File(file))
+        track3.save()
+
     track4: Track = Track.objects.create(
         location="Mexico",
         name="Autódromo Hermanos Rodríguez",
         abbreviation="MXC",
         country="mx",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
     )
+    with open("track_images/Schedule Mexico.png", "rb") as file:
+        track4.image.save("Schedule_Mexico.png", File(file))
+        track4.save()
 
     red_bull: Team = Team.objects.create(
         name="Red Bull",
@@ -131,6 +159,7 @@ if ADD_DATA:
         track=track,
         date_time=TIMEZONE.localize(datetime.datetime(2021, 10, 24, 15, 30)),
         finished=True,
+        length="M",
     )
 
     race2: Race = Race.objects.create(
@@ -139,6 +168,7 @@ if ADD_DATA:
         track=track2,
         date_time=TIMEZONE.localize(datetime.datetime(2021, 10, 24, 17, 15)),
         finished=True,
+        length="M",
     )
 
     race3: Race = Race.objects.create(
@@ -146,12 +176,14 @@ if ADD_DATA:
         championship=championship,
         track=track3,
         date_time=TIMEZONE.localize(datetime.datetime(2021, 10, 29, 22, 00)),
+        length="M",
     )
-    race3: Race = Race.objects.create(
+    race4: Race = Race.objects.create(
         championship_order=4,
         championship=championship,
         track=track4,
         date_time=None,
+        length="M",
     )
 
     ## Race 1
@@ -403,6 +435,7 @@ if ADD_DATA:
         championship=championship,
         track=track,
         date_time=now(),
+        length="M",
     )
 
     race2: Race = Race.objects.create(
@@ -410,6 +443,7 @@ if ADD_DATA:
         championship=championship,
         track=track2,
         date_time=now(),
+        length="M",
     )
 
     ## Race 1

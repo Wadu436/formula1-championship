@@ -113,10 +113,13 @@ class Race(models.Model):
     )
     track = models.ForeignKey(Track, on_delete=models.RESTRICT)
 
-    date_time = models.DateTimeField()
+    date_time = models.DateTimeField(blank=True, null=True)
     finished = models.BooleanField(default=False)
 
     wet_race = models.BooleanField(default=False)
+
+    schedule_image = models.ImageField(blank=True, null=True)
+    detail_image = models.ImageField(blank=True, null=True)
 
     class Meta:
         constraints = [
@@ -132,6 +135,7 @@ class Race(models.Model):
         )
 
     def get_points(self) -> tuple[dict[Driver, int | float], dict[Team, int | float]]:
+        # TODO: Properly handle fastest lap if fastest lap goes to bot or driver below 10th place
         SCORING_SYSTEM = {
             1: 25,
             2: 18,
@@ -149,6 +153,9 @@ class Race(models.Model):
         dna_entries: QuerySet[RaceEntry] = self.race_entries.filter(dna=True)
         non_dna_entries: QuerySet[RaceEntry] = self.race_entries.filter(dna=False)
         entries: QuerySet[RaceEntry] = self.race_entries.all()
+
+        if len(entries) == 0:
+            return (dict(), dict())
 
         points = dict()
 
@@ -175,6 +182,9 @@ class Race(models.Model):
         # greater than the number of DNAs, only take the appropriate number
         bot_positions = bot_positions[: len(dna_entries)]
 
+        # Assign fastest lap point
+        points[fastest_driver] += 1
+
         # Calculate score each DNA driver gets
         if dna_entries:
             dna_score = sum(
@@ -185,9 +195,6 @@ class Race(models.Model):
 
             for entry in dna_entries:
                 points[entry.driver] = dna_score
-
-        # Assign fastest lap point
-        points[fastest_driver] += 1
 
         # Find all Driver's Team
         teams: dict[Team, int | float] = {entry.team: 0 for entry in entries}

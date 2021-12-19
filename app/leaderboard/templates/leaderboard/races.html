@@ -1,0 +1,44 @@
+{% extends "leaderboard/base.html" %}
+
+{% load leaderboard_extras %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
+<script src="{% static 'leaderboard/jquery-3.6.0.min.js' %}"></script>
+{% endblock %}
+
+{% block title %}Races - {{ current_championship.name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center mt-3 mx-0" style="width: 100%;">
+    <div class="align-middle fw-lighter fs-1">{{ current_championship.name }}</div>
+    <div class="fw-lighter fs-3">Constructor Standings</div>
+    <div class="col-8">
+        <div>
+            {% for race in current_championship.races.all %}
+            <div class="race_card">
+                <div class="mx-2 my-1">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                        <span>Round {{ race.championship_order }}</span>
+                        <div class="d-flex align-items-center">
+                            {% if race.date_time %}
+                            <span class="me-2 schedule-time" data-schedule-date={{race.date_time.timestamp}}>{{ race.date_time|date:"F d, H:i" }}</span>
+                            {% else %}
+                            <span class="me-2">TBD</span>
+                            {% endif %}
+                            <i class="flag2x {{ race.track.country.flag_css }}"></i>
+                        </div>
+                    </div>
+                    
+                    <div>{{race.track.country.name}}</div>
+                    <div>{{race.track.name}}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'leaderboard/date_timezone.js' %}"></script>
+{% endblock %}

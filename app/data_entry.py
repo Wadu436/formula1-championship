@@ -2,6 +2,8 @@ import datetime
 import os
 
 import django
+import django.utils.timezone as tz
+import pytz
 from django.utils.timezone import now
 
 # Configure Django
@@ -29,9 +31,21 @@ if ADD_DATA:
     )
     track2: Track = Track.objects.create(
         location="Italy",
-        name="Monza",
+        name="Monza Circuit",
         abbreviation="ITA",
         country="it",
+    )
+    track3: Track = Track.objects.create(
+        location="The Netherlands",
+        name="Circuit Zandvoort",
+        abbreviation="NED",
+        country="nl",
+    )
+    track4: Track = Track.objects.create(
+        location="Mexico",
+        name="Autódromo Hermanos Rodríguez",
+        abbreviation="MXC",
+        country="mx",
     )
 
     red_bull: Team = Team.objects.create(
@@ -109,18 +123,35 @@ if ADD_DATA:
         start_date=datetime.date(year=2021, month=10, day=24),
     )
 
+    TIMEZONE = pytz.timezone("Europe/Brussels")
+
     race: Race = Race.objects.create(
         championship_order=1,
         championship=championship,
         track=track,
-        date_time=now(),
+        date_time=TIMEZONE.localize(datetime.datetime(2021, 10, 24, 15, 30)),
+        finished=True,
     )
 
     race2: Race = Race.objects.create(
         championship_order=2,
         championship=championship,
         track=track2,
-        date_time=now(),
+        date_time=TIMEZONE.localize(datetime.datetime(2021, 10, 24, 17, 15)),
+        finished=True,
+    )
+
+    race3: Race = Race.objects.create(
+        championship_order=3,
+        championship=championship,
+        track=track3,
+        date_time=TIMEZONE.localize(datetime.datetime(2021, 10, 29, 22, 00)),
+    )
+    race3: Race = Race.objects.create(
+        championship_order=4,
+        championship=championship,
+        track=track4,
+        date_time=None,
     )
 
     ## Race 1

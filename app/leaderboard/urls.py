@@ -9,14 +9,29 @@ urlpatterns = [
     path("api/driver/<int:driver_id>", views.get_driver, name="get_driver"),
     ## html urls
     path(
-        "drivers_standings/<int:championship_id>",
+        "championships/<int:championship_id>/drivers_standings/",
         views.drivers_standings,
         name="drivers_standings",
     ),
     path(
-        "constructors_standings/<int:championship_id>",
+        "championships/<int:championship_id>/constructors_standings/",
         views.constructors_standings,
         name="constructors_standings",
+    ),
+    path(
+        "championships/<int:championship_id>/races/",
+        views.races,
+        name="races",
+    ),
+    path(
+        "championships/<int:championship_id>/stats/fastest_laps/",
+        views.drivers_standings,
+        name="stats_fastest_laps",
+    ),
+    path(
+        "championships/<int:championship_id>/stats/most_poles/",
+        views.drivers_standings,
+        name="stats_most_poles",
     ),
     path(
         "",

@@ -40,3 +40,11 @@ def constructors_standings(request, championship_id):
 def latest_drivers_standings(request):
     latest_championship = Championship.objects.latest()
     return redirect(reverse("drivers_standings", args=[latest_championship.id]))
+
+
+def races(request, championship_id):
+    context = {
+        "current_championship": Championship.objects.get(id=championship_id),
+        "championships": Championship.objects.all(),
+    }
+    return render(request, "leaderboard/races.html", context=context)

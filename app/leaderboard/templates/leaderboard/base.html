@@ -17,6 +17,7 @@
         crossorigin="anonymous"></script>
 
     <link rel="stylesheet" type="text/css" href="{% static 'leaderboard/global.css' %}" />
+    {% block head %}{% endblock %}
 </head>
 
 <body>
@@ -40,25 +41,16 @@
         <span class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Leaderboard</a>
             <div id="championship-select" class="dropdown-menu">
-                {% if view_name == "drivers_standings"%}
-                <span class="dropdown-item active nav-selected">Driver's Championship</span>
-                {% else %}
                 <a class="dropdown-item" href="{% url 'drivers_standings' current_championship.id%}">Driver's Championship</a>
-                {% endif %}
-
-                {% if view_name == "constructors_standings"%}
-                <span class="dropdown-item active nav-selected">Constructors's Championship</span>
-                {% else %}
-                <a class="dropdown-item" href="{% url 'constructors_standings' current_championship.id%}">Constructors's Championship</a>
-                {% endif %}            
+                <a class="dropdown-item" href="{% url 'constructors_standings' current_championship.id%}">Constructors's Championship</a>          
             </div>
         </span>
-        <a class="nav-item nav-link" href="#">Races</a>
+        <a class="nav-item nav-link" href="{% url 'races' current_championship.id%}">Races</a>
         <span class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Stats</a>
             <div id="championship-select" class="dropdown-menu">
-                <a class="dropdown-item" href="{% url 'drivers_standings' current_championship.id%}">Fastest Laps</a>
-                <a class="dropdown-item" href="{% url 'drivers_standings' current_championship.id%}">Most Poles</a>
+                <a class="dropdown-item" href="{% url 'stats_fastest_laps' current_championship.id%}">Fastest Laps</a>
+                <a class="dropdown-item" href="{% url 'stats_most_poles' current_championship.id%}">Most Poles</a>
             </div>
         </span>
     </nav>

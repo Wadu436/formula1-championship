@@ -1,49 +1,58 @@
 {% extends "leaderboard/base.html" %}
-
-{% load leaderboard_extras %}
-{% load static %}
-
-{% block head %}
-<link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
-{% endblock %}
-
-{% block title %}Tracks{% endblock %}
-
-{% block content %} 
-<div class="d-flex flex-column align-items-center" style="width: 100%;">
+{% load leaderboard_extras %} {% load static %} {% block head %}
+<link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}" />
+{% endblock %} {% block title %}Tracks{% endblock %} {% block content %}
+<div class="d-flex flex-column align-items-center" style="width: 100%">
     <div class="col-8">
         <div class="d-flex align-items-center">
             <i class="flag3x {{ track.country.flag_css }}"></i>
             <span class="align-middle fw-lighter fs-1 ms-2">{{track.name}}</span>
         </div>
 
-        <div class="d-flex track-box">
+        <div class="d-flex track-box justify-content-center">
             {% if track.detail_image %}
-            <div id="track-map" class="d-flex flex-column" style="flex-basis: 60%;">
-                <img src="{{ track.detail_image.url }}" alt="" style="width: 100%">
+            <div id="track-map" class="d-flex flex-column p-3" style="flex-basis: 60%">
+                <img src="{{ track.detail_image.url }}" alt="" style="width: 100%" />
             </div>
             {% endif %}
-            <div id="track-info" style="flex-basis: 40%">
-                <div class="container pt-2">
-                    <div class="row">
-                        <div class="col info-card mx-4 my-2">
-                            <div class="h6">Full Race</div>
-                            <div class="h4">{{ track.full_laps }} Laps</div>
-                        </div>
-                        <div class="col info-card mx-4 my-2">
-                            <div class="h6">Long Race</div>
-                            <div class="h4">{{ track.long_laps }} Laps</div>
-                        </div>
+            {% if track.detail_image %}
+            <div id="track-detail" class="p-3" style="flex-basis: 40%">
+            {%else%}
+            <div id="track-detail" class="p-3" style="flex-basis: auto%">
+            {% endif %}
+                <div>
+                    <div class="fs-6 fw-light">Last Race</div>
+                    <div id="last-race" class="h3">
+                        {% if last_race %}
+                        {{ last_race.championship.name }} Round {{ last_race.championship_order }}
+                        {% else %} N/A {% endif %}
                     </div>
-                    <div class="row">
-                        <div class="col info-card mx-4 my-2">
-                            <div class="h6">Medium Race</div>
-                            <div class="h4">{{ track.medium_laps }} Laps</div>
+                </div>
+                <div>
+                    <div class="fs-6 fw-light">Last Podium</div>
+                    <div id="podium" class="">
+                        {% if last_race %} {% for entry in last_race.podium %}
+                        <div class="d-flex justify-content-between align-items-end">
+                            {% if entry %}
+                            <div class="me-2 h3">{{entry.driver.name}}</div>
+                            <div class="h5">({{ entry.team.name }})</div>
+                            {% else %}
+                            <div class="me-2 h3">Bot</div>
+                            <div class="h5">(AI)</div>
+                            {% endif %}
                         </div>
-                        <div class="col info-card mx-4 my-2">
-                            <div class="h6">Short Race</div>
-                            <div class="h4">5 Laps</div>
+                        {% endfor %} {% else %} <div class="h3">N/A</div> {% endif %}
+                    </div>
+                </div>
+                <div>
+                    <div class="fs-6 fw-light">Fastest Laps</div>
+                    <div id="podium" class="">
+                        {% if last_race %} {% for entry in track.fastest_laps|slice:":3" %}
+                        <div class="d-flex justify-content-start align-items-end">
+                            <div class="me-2 h3">{{ entry.best_lap_time|duration }}</div>
+                            <div class="me-2 h5">{{ entry.driver.name }}</div>
                         </div>
+                        {% endfor %} {% else %} <div class="h3">N/A</div> {% endif %}
                     </div>
                 </div>
             </div>

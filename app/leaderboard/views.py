@@ -74,8 +74,10 @@ def track_overview(request):
 def track_detail(request, track_id):
     track = Track.objects.filter(id=track_id).first()
     if track:
+        last_race = track.races.filter(finished=True).order_by("date_time").last()
         context = {
             "track": track,
+            "last_race": last_race,
             "championships": Championship.objects.all(),
         }
         return render(request, "leaderboard/track_detail.html", context=context)
@@ -85,15 +87,15 @@ def track_detail(request, track_id):
 
 # Latest redirect views
 def latest_drivers_standings(request):
-    latest_championship = Championship.objects.latest()
+    latest_championship = Championship.objects.latest("start_date")
     return redirect(reverse("drivers_standings", args=[latest_championship.id]))
 
 
 def latest_constructors_standings(request):
-    latest_championship = Championship.objects.latest()
+    latest_championship = Championship.objects.latest("start_date")
     return redirect(reverse("constructors_standings", args=[latest_championship.id]))
 
 
 def latest_races(request):
-    latest_championship = Championship.objects.latest()
+    latest_championship = Championship.objects.latest("start_date")
     return redirect(reverse("races", args=[latest_championship.id]))

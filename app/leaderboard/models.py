@@ -31,6 +31,9 @@ class Track(models.Model):
     def __str__(self):
         return f"{self.location}"
 
+    def fastest_laps(self) -> QuerySet["RaceEntry"]:
+        return RaceEntry.objects.filter(race__track=self).order_by('best_lap_time')
+
 
 class Team(models.Model):
     name = models.CharField(max_length=64)
@@ -126,7 +129,7 @@ class Race(models.Model):
     championship = models.ForeignKey(
         Championship, on_delete=models.CASCADE, related_name="races"
     )
-    track = models.ForeignKey(Track, on_delete=models.RESTRICT)
+    track = models.ForeignKey(Track, on_delete=models.RESTRICT, related_name="races")
 
     date_time = models.DateTimeField(blank=True, null=True)
     finished = models.BooleanField(default=False)
@@ -242,6 +245,18 @@ class Race(models.Model):
                 return track.long_laps
             case 'F':
                 return track.full_laps
+
+    def podium(self) -> list[Optional["RaceEntry"]]:
+        podium = []
+        for entry in self.race_entries.order_by('finish_position'):
+            while len(podium) < entry.finish_position - 1 and len(podium) < 3:
+                podium.append(None)
+            if len(podium) >= 3:
+                return podium
+            podium.append(entry)
+        while len(podium) < 3:
+            podium.append(None)
+        return podium
 
 class RaceEntry(models.Model):
     race = models.ForeignKey(

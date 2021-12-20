@@ -109,3 +109,36 @@ body {
     border-right: 1px solid gray;
     border-bottom-right-radius: 10px;
 }
+
+.nav-link {
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.nav-link:hover {
+    color: white;
+    opacity: 0.8;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color:white;
+}
+
+.navbar-light:hover .navbar-nav:hover .nav-link:hover {
+    color:white
+}
+
+@media screen and (max-width: 992px) {
+    .nav-item {
+        margin-left: 0px !important;
+    }
+
+    .vr {
+        background-color: transparent;
+    }
+
+    .minMarginTop {
+        margin-top: -18px;
+    }
+}

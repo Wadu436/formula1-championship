@@ -37,8 +37,13 @@ urlpatterns = [
     ),
     path(
         "tracks/",
-        views.tracks,
+        views.track_overview,
         name="track_overview",
+    ),
+    path(
+        "tracks/<int:track_id>",
+        views.track_detail,
+        name="track_detail",
     ),
     path(
         "",

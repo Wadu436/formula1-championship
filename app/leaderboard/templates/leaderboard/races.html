@@ -46,9 +46,9 @@
                                 Laps: {{race.laps}}
                             </div>
                         </div>
-                        {% if race.track.image %}
+                        {% if race.track.overview_image %}
                         <div class="d-flex flex-column justify-content-end schedule-image-container">
-                            <img style="width: 100%" src="{{ race.track.image.url }}" alt="">
+                            <img style="width: 100%" src="{{ race.track.overview_image.url }}" alt="">
                         </div>
                         {% endif %}
                     </div>

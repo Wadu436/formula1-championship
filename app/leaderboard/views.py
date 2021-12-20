@@ -63,12 +63,24 @@ def races(request, championship_id):
         return latest_races(request)
 
 
-def tracks(request):
+def track_overview(request):
     context = {
         "tracks": Track.objects.order_by("location"),
         "championships": Championship.objects.all(),
     }
     return render(request, "leaderboard/tracks.html", context=context)
+
+
+def track_detail(request, track_id):
+    track = Track.objects.filter(id=track_id).first()
+    if track:
+        context = {
+            "track": track,
+            "championships": Championship.objects.all(),
+        }
+        return render(request, "leaderboard/track_detail.html", context=context)
+    else:
+        return redirect(reverse("track_overview"))
 
 
 # Latest redirect views

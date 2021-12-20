@@ -25,7 +25,8 @@ class Track(models.Model):
     long_laps = models.IntegerField(verbose_name="Laps in a long race (50%)")
     medium_laps = models.IntegerField(verbose_name="Laps in a mediun race (25%)")
 
-    image = models.ImageField(null=True, blank=True, default=None)
+    overview_image = models.ImageField(null=True, blank=True, default=None)
+    detail_image = models.ImageField(null=True, blank=True, default=None)
 
     def __str__(self):
         return f"{self.location}"

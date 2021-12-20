@@ -34,7 +34,10 @@ if ADD_DATA:
         medium_laps=16,
     )
     with open("track_images/Schedule Austria.png", "rb") as file:
-        track.image.save("Schedule_Austria.png", File(file))
+        track.overview_image.save("Schedule_Austria.png", File(file))
+        track.save()
+    with open("track_images/Layout Austria.png", "rb") as file:
+        track.detail_image.save("Layout_Austria.png", File(file))
         track.save()
 
     track2: Track = Track.objects.create(
@@ -47,7 +50,7 @@ if ADD_DATA:
         medium_laps=14,
     )
     with open("track_images/Schedule Monza.png", "rb") as file:
-        track2.image.save("Schedule_Monza.png", File(file))
+        track2.overview_image.save("Schedule_Monza.png", File(file))
         track2.save()
 
     track3: Track = Track.objects.create(
@@ -60,7 +63,7 @@ if ADD_DATA:
         medium_laps=17,
     )
     with open("track_images/Schedule Netherlands.png", "rb") as file:
-        track3.image.save("Schedule_Netherlands.png", File(file))
+        track3.overview_image.save("Schedule_Netherlands.png", File(file))
         track3.save()
 
     track4: Track = Track.objects.create(
@@ -73,7 +76,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Mexico.png", "rb") as file:
-        track4.image.save("Schedule_Mexico.png", File(file))
+        track4.overview_image.save("Schedule_Mexico.png", File(file))
         track4.save()
 
     track5: Track = Track.objects.create(
@@ -86,7 +89,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Monaco.png", "rb") as file:
-        track5.image.save("Schedule_Monaco.png", File(file))
+        track5.overview_image.save("Schedule_Monaco.png", File(file))
         track5.save()
 
     track6: Track = Track.objects.create(
@@ -99,7 +102,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Brazil.png", "rb") as file:
-        track6.image.save("Schedule_Brazil.png", File(file))
+        track6.overview_image.save("Schedule_Brazil.png", File(file))
         track6.save()
 
     track7: Track = Track.objects.create(
@@ -112,7 +115,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Australia.png", "rb") as file:
-        track7.image.save("Schedule_Australia.png", File(file))
+        track7.overview_image.save("Schedule_Australia.png", File(file))
         track7.save()
 
     track8: Track = Track.objects.create(
@@ -125,7 +128,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Spain.png", "rb") as file:
-        track8.image.save("Schedule_Spain.png", File(file))
+        track8.overview_image.save("Schedule_Spain.png", File(file))
         track8.save()
 
     track9: Track = Track.objects.create(
@@ -138,7 +141,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Japan.png", "rb") as file:
-        track9.image.save("Schedule_Japan.png", File(file))
+        track9.overview_image.save("Schedule_Japan.png", File(file))
         track9.save()
 
     track10: Track = Track.objects.create(
@@ -151,7 +154,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule France.png", "rb") as file:
-        track10.image.save("Schedule_France.png", File(file))
+        track10.overview_image.save("Schedule_France.png", File(file))
         track10.save()
 
     track11: Track = Track.objects.create(
@@ -164,7 +167,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Portugal.png", "rb") as file:
-        track11.image.save("Schedule_Portugal.png", File(file))
+        track11.overview_image.save("Schedule_Portugal.png", File(file))
         track11.save()
 
     track12: Track = Track.objects.create(
@@ -177,7 +180,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Singapore.png", "rb") as file:
-        track12.image.save("Schedule_Singapore.png", File(file))
+        track12.overview_image.save("Schedule_Singapore.png", File(file))
         track12.save()
 
     track13: Track = Track.objects.create(
@@ -190,7 +193,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Imola.png", "rb") as file:
-        track13.image.save("Schedule_Imola.png", File(file))
+        track13.overview_image.save("Schedule_Imola.png", File(file))
         track13.save()
 
     track14: Track = Track.objects.create(
@@ -203,7 +206,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Belgium.png", "rb") as file:
-        track14.image.save("Schedule_Belgium.png", File(file))
+        track14.overview_image.save("Schedule_Belgium.png", File(file))
         track14.save()
 
     track15: Track = Track.objects.create(
@@ -216,7 +219,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Bahrain.png", "rb") as file:
-        track15.image.save("Schedule_Bahrain.png", File(file))
+        track15.overview_image.save("Schedule_Bahrain.png", File(file))
         track15.save()
 
     track16: Track = Track.objects.create(
@@ -229,7 +232,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Great Britain.png", "rb") as file:
-        track16.image.save("Schedule_Great_Britain.png", File(file))
+        track16.overview_image.save("Schedule_Great_Britain.png", File(file))
         track16.save()
 
     track17: Track = Track.objects.create(
@@ -242,7 +245,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Azerbaijan.png", "rb") as file:
-        track17.image.save("Schedule_Azerbaijan.png", File(file))
+        track17.overview_image.save("Schedule_Azerbaijan.png", File(file))
         track17.save()
 
     track18: Track = Track.objects.create(
@@ -255,7 +258,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule China.png", "rb") as file:
-        track18.image.save("Schedule_China.png", File(file))
+        track18.overview_image.save("Schedule_China.png", File(file))
         track18.save()
 
     track19: Track = Track.objects.create(
@@ -268,7 +271,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Hungary.png", "rb") as file:
-        track19.image.save("Schedule_Hungary.png", File(file))
+        track19.overview_image.save("Schedule_Hungary.png", File(file))
         track19.save()
 
     track20: Track = Track.objects.create(
@@ -281,7 +284,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule USA.png", "rb") as file:
-        track20.image.save("Schedule_USA.png", File(file))
+        track20.overview_image.save("Schedule_USA.png", File(file))
         track20.save()
 
     track21: Track = Track.objects.create(
@@ -294,7 +297,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Canada.png", "rb") as file:
-        track21.image.save("Schedule_Canada.png", File(file))
+        track21.overview_image.save("Schedule_Canada.png", File(file))
         track21.save()
 
     track22: Track = Track.objects.create(
@@ -307,7 +310,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Russia.png", "rb") as file:
-        track22.image.save("Schedule_Russia.png", File(file))
+        track22.overview_image.save("Schedule_Russia.png", File(file))
         track22.save()
 
     track23: Track = Track.objects.create(
@@ -320,7 +323,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Saudi Arabia.png", "rb") as file:
-        track23.image.save("Schedule_Saudi_Arabia.png", File(file))
+        track23.overview_image.save("Schedule_Saudi_Arabia.png", File(file))
         track23.save()
 
     track24: Track = Track.objects.create(
@@ -333,7 +336,7 @@ if ADD_DATA:
         medium_laps=15,
     )
     with open("track_images/Schedule Abu Dhabi.png", "rb") as file:
-        track24.image.save("Schedule_Abu_Dhabi.png", File(file))
+        track24.overview_image.save("Schedule_Abu_Dhabi.png", File(file))
         track24.save()
 
     red_bull: Team = Team.objects.create(

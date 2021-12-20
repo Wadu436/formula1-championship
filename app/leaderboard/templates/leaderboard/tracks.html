@@ -16,7 +16,7 @@
         <div class="d-flex flex-wrap justify-content-center">
             {% for track in tracks %}
             <div class="track-card-container" >
-                <a class="track-card w-80 d-flex flex-column h-100" href="#">
+                <a class="track-card w-80 d-flex flex-column h-100" href="{% url 'track_detail' track.id %}">
                     <div class="d-flex w-100 h-100 justify-content-between mt-2">
                         <div class="d-flex flex-column justify-content-between" >
                             <div class="pt-2">
@@ -26,9 +26,9 @@
                             </div>
                             <i class="flag2x {{ track.country.flag_css }}"></i>
                         </div>
-                        {% if track.image %}
+                        {% if track.overview_image %}
                         <div class="d-flex flex-column justify-content-end schedule-image-container">
-                            <img style="width: 100%" src="{{ track.image.url }}" alt="">
+                            <img style="width: 100%" src="{{ track.overview_image.url }}" alt="">
                         </div>
                         {% endif %}
                     </div>

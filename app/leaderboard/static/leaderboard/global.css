@@ -97,3 +97,15 @@ body {
     padding: 2px 7px 5px 5px;
     color:black;
 }
+
+.track-box {
+    border-top: 5px solid var(--bs-primary);
+    border-right: 5px solid var(--bs-primary);
+    border-top-right-radius: 10px;
+}
+
+.info-card {
+    border-bottom: 1px solid gray;
+    border-right: 1px solid gray;
+    border-bottom-right-radius: 10px;
+}

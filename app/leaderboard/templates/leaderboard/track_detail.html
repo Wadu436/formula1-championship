@@ -1,0 +1,53 @@
+{% extends "leaderboard/base.html" %}
+
+{% load leaderboard_extras %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
+{% endblock %}
+
+{% block title %}Tracks{% endblock %}
+
+{% block content %} 
+<div class="d-flex flex-column align-items-center" style="width: 100%;">
+    <div class="col-8">
+        <div class="d-flex align-items-center">
+            <i class="flag3x {{ track.country.flag_css }}"></i>
+            <span class="align-middle fw-lighter fs-1 ms-2">{{track.name}}</span>
+        </div>
+
+        <div class="d-flex track-box">
+            {% if track.detail_image %}
+            <div id="track-map" class="d-flex flex-column" style="flex-basis: 60%;">
+                <img src="{{ track.detail_image.url }}" alt="" style="width: 100%">
+            </div>
+            {% endif %}
+            <div id="track-info" style="flex-basis: 40%">
+                <div class="container pt-2">
+                    <div class="row">
+                        <div class="col info-card mx-4 my-2">
+                            <div class="h6">Full Race</div>
+                            <div class="h4">{{ track.full_laps }} Laps</div>
+                        </div>
+                        <div class="col info-card mx-4 my-2">
+                            <div class="h6">Long Race</div>
+                            <div class="h4">{{ track.long_laps }} Laps</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col info-card mx-4 my-2">
+                            <div class="h6">Medium Race</div>
+                            <div class="h4">{{ track.medium_laps }} Laps</div>
+                        </div>
+                        <div class="col info-card mx-4 my-2">
+                            <div class="h6">Short Race</div>
+                            <div class="h4">5 Laps</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

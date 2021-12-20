@@ -36,6 +36,11 @@ urlpatterns = [
         name="stats_most_poles",
     ),
     path(
+        "tracks/",
+        views.tracks,
+        name="track_overview",
+    ),
+    path(
         "",
         views.latest_drivers_standings,
         name="index",

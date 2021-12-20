@@ -3,6 +3,7 @@
 body {
     font-family: "Roboto", sans-serif !important;
     --bs-primary-rgb: 230,0,0; 
+    --bs-primary: #e60000;
 }
 
 .team-color-bar {
@@ -45,6 +46,9 @@ body {
 .race-card-container {
     width: 30rem;
     padding: 1rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 3rem;
 }
 
 .race-card {
@@ -60,5 +64,36 @@ body {
 
 .schedule-image-container {
     width: auto; 
-    max-width: 45%;
+    max-width: 40%;
+}
+
+.vr {
+    opacity: 0.6;
+    background-color: white;
+}
+
+.track-card-container {
+    width: 30rem;
+    padding: 1rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 3rem;
+}
+
+.track-card {
+    border-top: 2px solid black;
+    border-right: 2px solid black;
+    border-top-right-radius: 10px;
+    text-decoration: none;
+    /* top | right | bottom | left */
+    padding: 5px 10px 5px 5px;
+    color:black;
+}
+
+.track-card:hover {
+    border-top: 5px solid var(--bs-primary);
+    border-right: 5px solid var(--bs-primary);
+    /* top | right | bottom | left */
+    padding: 2px 7px 5px 5px;
+    color:black;
 }

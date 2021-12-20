@@ -30,14 +30,18 @@
                 {% if championship == current_championship %}
                 <span class="dropdown-item nav-selected">{{championship.name}}</span>
                 {% else %}
-                
-                <a class="dropdown-item" href="{% url view_name championship.id%}">{{championship.name}}</a>
 
+                {% if in_championship %}
+                <a class="dropdown-item" href="{% url view_name championship.id%}">{{championship.name}}</a>
+                {% else %}
+                <a class="dropdown-item" href="{% url 'drivers_standings' championship.id%}">{{championship.name}}</a>
+                {% endif %}
                 {% endif %}
 
                 {% endfor %}
             </div>
         </span>
+        {% if current_championship %}
         <span class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Leaderboard</a>
             <div id="championship-select" class="dropdown-menu">
@@ -53,6 +57,9 @@
                 <a class="dropdown-item" href="{% url 'stats_most_poles' current_championship.id%}">Most Poles</a>
             </div>
         </span>
+        {% endif %}
+        <div class="vr my-2"></div>
+        <a class="nav-item nav-link" href="{% url 'track_overview' %}">Tracks</a>
     </nav>
 
     {% block content %}

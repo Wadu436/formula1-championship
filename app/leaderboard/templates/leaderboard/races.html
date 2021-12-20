@@ -18,9 +18,10 @@
         <div class="d-flex flex-wrap justify-content-center">
             {% for race in current_championship.races.all %}
             <div class="race-card-container">
-                <div class="race-card ps-2 pe-3 pt-2 pb-2 w-80 d-flex flex-column h-100" style="{% if race.finished %}background-color: #f8f8f8;{% endif %}">
+                <div class="race-card ps-2 pe-3 pt-2 pb-2 w-80 d-flex flex-column h-100"
+                    style="{% if race.finished %}background-color: #f8f8f8;{% endif %}">
                     <div class="d-flex justify-content-between align-items-center w-100 schedule-header fw-light fs-5">
-                        <div> 
+                        <div>
                             <span>Round {{ race.championship_order }}</span>
                             {% if race.finished %}<span class='fs-6'>(Ended)</span> {% endif %}
                         </div>
@@ -36,9 +37,9 @@
                     </div>
 
                     <div class="d-flex w-100 h-100 justify-content-between mt-2">
-                        <div class="d-flex flex-column justify-content-end" style="width:45%">
+                        <div class="d-flex flex-column justify-content-end">
                             <div class="pt-2">
-                                <div class="h4 mb-0">{{race.track.country.name}}</div>
+                                <div class="h4 mb-0">{{race.track.location}}</div>
                                 <div class="fs-5 mt-0 lh-1">{{race.track.name}}</div>
                             </div>
                             <div>

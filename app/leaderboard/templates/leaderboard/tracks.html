@@ -1,0 +1,41 @@
+{% extends "leaderboard/base.html" %}
+
+{% load leaderboard_extras %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
+{% endblock %}
+
+{% block title %}Tracks{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center mt-3 mx-0" style="width: 100%;">
+    <div class="align-middle fw-lighter fs-1">Tracks</div>
+    <div class="col-10">
+        <div class="d-flex flex-wrap justify-content-center">
+            {% for track in tracks %}
+            <div class="track-card-container" >
+                <a class="track-card w-80 d-flex flex-column h-100" href="#">
+                    <div class="d-flex w-100 h-100 justify-content-between mt-2">
+                        <div class="d-flex flex-column justify-content-between" >
+                            <div class="pt-2">
+                                <div class="h4 mb-0" style="text-transform: uppercase;">
+                                    {{track.location}}</div>
+                                <div class="fs-5 mt-0 lh-1">{{track.name}}</div>
+                            </div>
+                            <i class="flag2x {{ track.country.flag_css }}"></i>
+                        </div>
+                        {% if track.image %}
+                        <div class="d-flex flex-column justify-content-end schedule-image-container">
+                            <img style="width: 100%" src="{{ track.image.url }}" alt="">
+                        </div>
+                        {% endif %}
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -51,7 +51,7 @@ if ADD_DATA:
         track2.save()
 
     track3: Track = Track.objects.create(
-        location="The Netherlands",
+        location="Netherlands",
         name="Circuit Zandvoort",
         abbreviation="NED",
         country="nl",
@@ -75,6 +75,266 @@ if ADD_DATA:
     with open("track_images/Schedule Mexico.png", "rb") as file:
         track4.image.save("Schedule_Mexico.png", File(file))
         track4.save()
+
+    track5: Track = Track.objects.create(
+        location="Monaco",
+        name="Circuit de Monaco",
+        abbreviation="MON",
+        country="mc",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Monaco.png", "rb") as file:
+        track5.image.save("Schedule_Monaco.png", File(file))
+        track5.save()
+
+    track6: Track = Track.objects.create(
+        location="Brazil",
+        name="Interlagos Circuit",
+        abbreviation="SAP",
+        country="br",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Brazil.png", "rb") as file:
+        track6.image.save("Schedule_Brazil.png", File(file))
+        track6.save()
+
+    track7: Track = Track.objects.create(
+        location="Australia",
+        name="Albert Park Circuit",
+        abbreviation="AUS",
+        country="au",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Australia.png", "rb") as file:
+        track7.image.save("Schedule_Australia.png", File(file))
+        track7.save()
+
+    track8: Track = Track.objects.create(
+        location="Spain",
+        name="Circuit de Barcelona-Catalunya",
+        abbreviation="SPA",
+        country="es",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Spain.png", "rb") as file:
+        track8.image.save("Schedule_Spain.png", File(file))
+        track8.save()
+
+    track9: Track = Track.objects.create(
+        location="Japan",
+        name="Suzuka International Racing Course",
+        abbreviation="JPN",
+        country="jp",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Japan.png", "rb") as file:
+        track9.image.save("Schedule_Japan.png", File(file))
+        track9.save()
+
+    track10: Track = Track.objects.create(
+        location="France",
+        name="Circuit Paul Ricard",
+        abbreviation="FRA",
+        country="fr",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule France.png", "rb") as file:
+        track10.image.save("Schedule_France.png", File(file))
+        track10.save()
+
+    track11: Track = Track.objects.create(
+        location="Portugal",
+        name="Algarve International Circuit",
+        abbreviation="POR",
+        country="pt",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Portugal.png", "rb") as file:
+        track11.image.save("Schedule_Portugal.png", File(file))
+        track11.save()
+
+    track12: Track = Track.objects.create(
+        location="Singapore",
+        name="Marina Bay Street Circuit",
+        abbreviation="SIN",
+        country="sg",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Singapore.png", "rb") as file:
+        track12.image.save("Schedule_Singapore.png", File(file))
+        track12.save()
+
+    track13: Track = Track.objects.create(
+        location="Italy",
+        name="Imola Circuit",
+        abbreviation="EMI",
+        country="it",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Imola.png", "rb") as file:
+        track13.image.save("Schedule_Imola.png", File(file))
+        track13.save()
+
+    track14: Track = Track.objects.create(
+        location="Belgium",
+        name="Circuit de Spa-Francorchamps",
+        abbreviation="BEL",
+        country="be",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Belgium.png", "rb") as file:
+        track14.image.save("Schedule_Belgium.png", File(file))
+        track14.save()
+
+    track15: Track = Track.objects.create(
+        location="Bahrain",
+        name="Bahrain International Circuit",
+        abbreviation="BHR",
+        country="bh",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Bahrain.png", "rb") as file:
+        track15.image.save("Schedule_Bahrain.png", File(file))
+        track15.save()
+
+    track16: Track = Track.objects.create(
+        location="Great Britain",
+        name="Silverstone Circuit",
+        abbreviation="GBR",
+        country="gb",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Great Britain.png", "rb") as file:
+        track16.image.save("Schedule_Great_Britain.png", File(file))
+        track16.save()
+
+    track17: Track = Track.objects.create(
+        location="Azerbaijan",
+        name="Baku City Circuit",
+        abbreviation="AZE",
+        country="az",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Azerbaijan.png", "rb") as file:
+        track17.image.save("Schedule_Azerbaijan.png", File(file))
+        track17.save()
+
+    track18: Track = Track.objects.create(
+        location="China",
+        name="Shanghai International Circuit",
+        abbreviation="CHN",
+        country="cn",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule China.png", "rb") as file:
+        track18.image.save("Schedule_China.png", File(file))
+        track18.save()
+
+    track19: Track = Track.objects.create(
+        location="Hungary",
+        name="Hungaroring",
+        abbreviation="HUN",
+        country="hu",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Hungary.png", "rb") as file:
+        track19.image.save("Schedule_Hungary.png", File(file))
+        track19.save()
+
+    track20: Track = Track.objects.create(
+        location="United States",
+        name="Circuit of the Americas",
+        abbreviation="USA",
+        country="us",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule USA.png", "rb") as file:
+        track20.image.save("Schedule_USA.png", File(file))
+        track20.save()
+
+    track21: Track = Track.objects.create(
+        location="Canada",
+        name="Circuit Gilles Villeneuve",
+        abbreviation="CAN",
+        country="ca",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Canada.png", "rb") as file:
+        track21.image.save("Schedule_Canada.png", File(file))
+        track21.save()
+
+    track22: Track = Track.objects.create(
+        location="Russia",
+        name="Sochi Autodrom",
+        abbreviation="RUS",
+        country="ru",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Russia.png", "rb") as file:
+        track22.image.save("Schedule_Russia.png", File(file))
+        track22.save()
+
+    track23: Track = Track.objects.create(
+        location="Saudi Arabia",
+        name="Jeddah Corniche Circuit",
+        abbreviation="SAU",
+        country="sa",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Saudi Arabia.png", "rb") as file:
+        track23.image.save("Schedule_Saudi_Arabia.png", File(file))
+        track23.save()
+
+    track24: Track = Track.objects.create(
+        location="Abu Dhabi",
+        name="Yas Marina Circuit",
+        abbreviation="ARE",
+        country="ae",
+        full_laps=60,
+        long_laps=30,
+        medium_laps=15,
+    )
+    with open("track_images/Schedule Abu Dhabi.png", "rb") as file:
+        track24.image.save("Schedule_Abu_Dhabi.png", File(file))
+        track24.save()
 
     red_bull: Team = Team.objects.create(
         name="Red Bull",

@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
-from .models import Championship, Driver
+from .models import Championship, Driver, Track
 
 
 # API views
@@ -27,6 +27,7 @@ def drivers_standings(request, championship_id):
         context = {
             "current_championship": championship,
             "championships": Championship.objects.all(),
+            "in_championship_page": True,
         }
         return render(request, "leaderboard/drivers_standings.html", context=context)
     else:
@@ -39,6 +40,7 @@ def constructors_standings(request, championship_id):
         context = {
             "current_championship": Championship.objects.get(id=championship_id),
             "championships": Championship.objects.all(),
+            "in_championship_page": True,
         }
         return render(
             request, "leaderboard/constructors_standings.html", context=context
@@ -54,10 +56,19 @@ def races(request, championship_id):
         context = {
             "current_championship": Championship.objects.get(id=championship_id),
             "championships": Championship.objects.all(),
+            "in_championship_page": True,
         }
         return render(request, "leaderboard/races.html", context=context)
     else:
         return latest_races(request)
+
+
+def tracks(request):
+    context = {
+        "tracks": Track.objects.order_by("location"),
+        "championships": Championship.objects.all(),
+    }
+    return render(request, "leaderboard/tracks.html", context=context)
 
 
 # Latest redirect views

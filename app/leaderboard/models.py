@@ -2,6 +2,7 @@ import datetime
 import json
 import math
 from collections import defaultdict
+from itertools import chain
 from typing import Optional
 
 from colorfield.fields import ColorField
@@ -32,7 +33,7 @@ class Track(models.Model):
         return f"{self.location}"
 
     def fastest_laps(self) -> QuerySet["RaceEntry"]:
-        return RaceEntry.objects.filter(race__track=self).order_by('best_lap_time')
+        return RaceEntry.objects.filter(race__track=self).order_by("best_lap_time")
 
 
 class Team(models.Model):
@@ -158,7 +159,6 @@ class Race(models.Model):
         )
 
     def get_points(self) -> tuple[dict[Driver, int | float], dict[Team, int | float]]:
-        # TODO: Properly handle fastest lap if fastest lap goes to bot or driver below 10th place
         SCORING_SYSTEM = {
             1: 25,
             2: 18,
@@ -173,59 +173,61 @@ class Race(models.Model):
         }
 
         # Get entries
-        dna_entries: QuerySet[RaceEntry] = self.race_entries.filter(dna=True)
-        non_dna_entries: QuerySet[RaceEntry] = self.race_entries.filter(dna=False)
-        entries: QuerySet[RaceEntry] = self.race_entries.all()
+        dna_entries: QuerySet[RaceEntry] = self.dna_entries.all()
+        player_entries: QuerySet[RaceEntry] = self.race_entries.filter(bot=False)
+        bot_entries: QuerySet[RaceEntry] = self.race_entries.filter(bot=True)
+        entries = self.race_entries.all()
 
-        if len(entries) == 0:
+        fastest_entry: RaceEntry = self.race_entries.order_by("best_lap_time").first()
+
+        num_entries = len(dna_entries) + len(player_entries)
+
+        if num_entries == 0 or self.finished == False:
             return (dict(), dict())
 
-        points = dict()
+        # Calculate Points
+        total_points = {
+            entry: SCORING_SYSTEM.get(entry.finish_position, 0) for entry in entries
+        }
 
-        # Setup data for fastest lap
-        fastest_driver = None
-        fastest_time = None
+        # Fastest driver points
+        if fastest_entry.finish_position >= 10:
+            total_points[fastest_entry] += 1
 
-        # Setup data for DNA points
-        bot_positions = [i + 1 for i in range(len(dna_entries) + len(non_dna_entries))]
+        player_points: dict[Driver, int | float] = {
+            entry.driver: total_points[entry] for entry in player_entries
+        }
+        bot_points: list[int | float] = [total_points[entry] for entry in bot_entries]
 
-        for entry in non_dna_entries:
-            # Check fastest lap
-            if not fastest_time or entry.best_lap_time < fastest_time:
-                fastest_driver = entry.driver
-                fastest_time = entry.best_lap_time
+        # Distribute DNA points
+        if len(dna_entries) > 0:
+            # Sum of the first #DNA_ENTRIES bot scores
+            total_bot_points = sum(sorted(bot_points, reverse=True)[: len(dna_entries)])
+            print(sorted(bot_points, reverse=True))
+            print(total_bot_points)
+            dna_score = total_bot_points / (
+                2 * len(dna_entries)
+            )  # DNA Drivers receive half points
+            print(dna_score)
+            dna_score = round(dna_score, 1)
+            print(dna_score)
+            if dna_score > 0:
+                for entry in dna_entries:
+                    player_points[entry.driver] = dna_score
+            else:
+                for entry in dna_entries:
+                    player_points[entry.driver] = 0
+            
 
-            # Figure out which positions were taken by bots
-            if entry.finish_position in bot_positions:
-                bot_positions.remove(entry.finish_position)
+        # Calculate Team Scores
+        team_points: dict[Team, int | float] = {
+            entry.team: 0 for entry in chain(player_entries, dna_entries)
+        }
 
-            points[entry.driver] = SCORING_SYSTEM.get(entry.finish_position, 0)
+        for entry in chain(player_entries, dna_entries):
+            team_points[entry.team] += player_points[entry.driver]
 
-        # If for some reason the number of left-over positions are
-        # greater than the number of DNAs, only take the appropriate number
-        bot_positions = bot_positions[: len(dna_entries)]
-
-        # Assign fastest lap point
-        points[fastest_driver] += 1
-
-        # Calculate score each DNA driver gets
-        if dna_entries:
-            dna_score = sum(
-                SCORING_SYSTEM[position] if position in SCORING_SYSTEM else 0
-                for position in bot_positions
-            )
-            dna_score /= 2 * len(dna_entries)  # DNA drivers receive half points
-
-            for entry in dna_entries:
-                points[entry.driver] = dna_score
-
-        # Find all Driver's Team
-        teams: dict[Team, int | float] = {entry.team: 0 for entry in entries}
-
-        for entry in entries:
-            teams[entry.team] += points[entry.driver]
-
-        return (points, teams)
+        return (player_points, team_points)
 
     def winner(self) -> Optional["RaceEntry"]:
         if self.finished:
@@ -237,18 +239,18 @@ class Race(models.Model):
     def laps(self) -> int:
         track: Track = self.track
         match self.length:
-            case 'S':
+            case "S":
                 return 5
-            case 'M':
+            case "M":
                 return track.medium_laps
-            case 'L':
+            case "L":
                 return track.long_laps
-            case 'F':
+            case "F":
                 return track.full_laps
 
     def podium(self) -> list[Optional["RaceEntry"]]:
         podium = []
-        for entry in self.race_entries.order_by('finish_position'):
+        for entry in self.race_entries.order_by("finish_position"):
             while len(podium) < entry.finish_position - 1 and len(podium) < 3:
                 podium.append(None)
             if len(podium) >= 3:
@@ -258,14 +260,29 @@ class Race(models.Model):
             podium.append(None)
         return podium
 
+
 class RaceEntry(models.Model):
     race = models.ForeignKey(
-        Race, on_delete=models.CASCADE, related_name="race_entries"
+        Race,
+        on_delete=models.CASCADE,
+        related_name="race_entries",
     )
-    driver = models.ForeignKey(Driver, on_delete=models.RESTRICT)
-    team = models.ForeignKey(Team, on_delete=models.RESTRICT)
+    driver = models.ForeignKey(
+        Driver,
+        on_delete=models.RESTRICT,
+        null=True,
+        blank=True,
+        related_name="race_entries",
+    )
+    team = models.ForeignKey(
+        Team,
+        on_delete=models.RESTRICT,
+        null=True,
+        blank=True,
+        related_name="race_entries",
+    )
 
-    dna = models.BooleanField(verbose_name="Did Not Attend", default=False)
+    bot = models.BooleanField(verbose_name="Is Bot", default=False)
 
     # Should be not null if not DNA
     qualifying_position = models.IntegerField(
@@ -294,8 +311,17 @@ class RaceEntry(models.Model):
             ),
             models.CheckConstraint(
                 check=(
-                    Q(dna=True)
+                    Q(
+                        bot=True,
+                        driver__isnull=True,
+                        team__isnull=True,
+                        best_lap_time__isnull=False,
+                        finish_position__isnull=False,
+                    )
                     | Q(
+                        bot=False,
+                        driver__isnull=False,
+                        team__isnull=False,
                         qualifying_position__isnull=False,
                         grid_penalty__isnull=False,
                         finish_position__isnull=False,
@@ -309,8 +335,17 @@ class RaceEntry(models.Model):
         ]
 
     def __str__(self):
-        return (
-            f"P{self.finish_position}: {self.driver}"
-            if not self.dna
-            else f"DNA: {self.driver}"
-        )
+        if not self.bot:
+            return f"P{self.finish_position}: {self.driver}"
+        else:
+            return f"P{self.finish_position}: Bot"
+
+
+class DNAEntry(models.Model):
+    race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name="dna_entries")
+    driver = models.ForeignKey(
+        Driver, on_delete=models.RESTRICT, related_name="dna_entries"
+    )
+    team = models.ForeignKey(
+        Team, on_delete=models.RESTRICT, related_name="dna_entries"
+    )

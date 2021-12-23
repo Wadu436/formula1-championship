@@ -49,6 +49,12 @@ body {
     padding-left: 2rem;
     padding-right: 2rem;
     padding-bottom: 3rem;
+    text-decoration: none;
+    color:black;
+}
+
+.race-card-container:hover {
+    color:black;
 }
 
 .race-card {
@@ -141,4 +147,8 @@ body {
     .minMarginTop {
         margin-top: -18px;
     }
+}
+
+.fastest-lap {
+    color: #b200ff;
 }

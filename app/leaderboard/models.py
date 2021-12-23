@@ -260,6 +260,45 @@ class Race(models.Model):
             podium.append(None)
         return podium
 
+    def match_history(self) -> list[tuple["RaceEntry", int]]:
+        SCORING_SYSTEM = {
+            1: 25,
+            2: 18,
+            3: 15,
+            4: 12,
+            5: 10,
+            6: 8,
+            7: 6,
+            8: 4,
+            9: 2,
+            10: 1,
+        }
+
+        # Get entries
+        dna_entries: QuerySet[RaceEntry] = self.dna_entries.all()
+        player_entries: QuerySet[RaceEntry] = self.race_entries.filter(bot=False)
+        bot_entries: QuerySet[RaceEntry] = self.race_entries.filter(bot=True)
+        entries: QuerySet[RaceEntry] = self.race_entries.order_by('finish_position')
+
+        fastest_entry: RaceEntry = self.race_entries.order_by("best_lap_time").first()
+
+        num_entries = len(dna_entries) + len(player_entries)
+
+        if num_entries == 0 or self.finished == False:
+            return (dict(), dict())
+
+        # Calculate Points
+        total_points = {
+            entry: SCORING_SYSTEM.get(entry.finish_position, 0) for entry in entries
+        }
+
+        # Fastest driver points
+        if fastest_entry.finish_position >= 10:
+            total_points[fastest_entry] += 1
+
+        return [(entry, total_points[entry]) for entry in entries]
+        
+
 
 class RaceEntry(models.Model):
     race = models.ForeignKey(
@@ -303,6 +342,8 @@ class RaceEntry(models.Model):
     dnf = models.BooleanField(
         verbose_name="Did Not Finish", default=False, null=True, blank=True
     )
+
+    tires = models.CharField(max_length=32, null=True, blank=True)
 
     class Meta:
         constraints = [

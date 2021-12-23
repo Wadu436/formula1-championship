@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
-from .models import Championship, Driver, Track
+from .models import Championship, Driver, Race, Track
 
 
 # API views
@@ -83,6 +83,21 @@ def track_detail(request, track_id):
         return render(request, "leaderboard/track_detail.html", context=context)
     else:
         return redirect(reverse("track_overview"))
+
+
+def match_history(request, race_id):
+    race = Race.objects.filter(id=race_id).first()
+    if race:
+        context = {
+            "race": race,
+            "current_championship": race.championship,
+            "championships": Championship.objects.all(),
+            "in_championship_page": True,
+            "fastest_lap": race.race_entries.order_by("best_lap_time").first()
+        }
+        return render(request, "leaderboard/match_history.html", context=context)
+    else:
+        return latest_races(request)
 
 
 # Latest redirect views

@@ -458,6 +458,7 @@ if ADD_DATA:
         qualifying_position=1,
         finish_position=1,
         best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=731),
+        tires="SM",
     )
     race.race_entries.create(
         driver=martijn_vd,
@@ -465,6 +466,7 @@ if ADD_DATA:
         qualifying_position=14,
         finish_position=2,
         best_lap_time=datetime.timedelta(minutes=1, seconds=8, milliseconds=286),
+        tires="SM",
     )
     race.race_entries.create(
         driver=nam,
@@ -472,11 +474,13 @@ if ADD_DATA:
         qualifying_position=4,
         finish_position=3,
         best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=871),
+        tires="MS",
     )
     race.race_entries.create(
         bot=True,
         finish_position=4,
         best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=871),
+        tires="MS",
     )
     race.race_entries.create(
         driver=charles,
@@ -484,6 +488,7 @@ if ADD_DATA:
         qualifying_position=2,
         finish_position=5,
         best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=519),
+        tires="MS",
     )
     race.race_entries.create(
         driver=kevin,
@@ -491,6 +496,7 @@ if ADD_DATA:
         qualifying_position=7,
         finish_position=6,
         best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=772),
+        tires="SM",
     )
     race.race_entries.create(
         driver=david,
@@ -498,6 +504,7 @@ if ADD_DATA:
         qualifying_position=5,
         finish_position=7,
         best_lap_time=datetime.timedelta(minutes=1, seconds=7, milliseconds=724),
+        tires="SM",
     )
     race.race_entries.create(
         driver=tim,
@@ -505,16 +512,19 @@ if ADD_DATA:
         qualifying_position=3,
         finish_position=8,
         best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=402),
+        tires="SM",
     )
     race.race_entries.create(
         bot=True,
         finish_position=9,
         best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=871),
+        tires="SM",
     )
     race.race_entries.create(
         bot=True,
         finish_position=10,
         best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=871),
+        tires="SM",
     )
     race.race_entries.create(
         driver=brandon,
@@ -522,6 +532,7 @@ if ADD_DATA:
         qualifying_position=13,
         finish_position=11,
         best_lap_time=datetime.timedelta(minutes=1, seconds=7, milliseconds=298),
+        tires="MH",
     )
     race.race_entries.create(
         driver=jorrick,
@@ -529,6 +540,7 @@ if ADD_DATA:
         qualifying_position=6,
         finish_position=12,
         best_lap_time=datetime.timedelta(minutes=1, seconds=6, milliseconds=750),
+        tires="SM",
     )
     race.race_entries.create(
         driver=arda,
@@ -536,6 +548,7 @@ if ADD_DATA:
         qualifying_position=10,
         finish_position=13,
         best_lap_time=datetime.timedelta(minutes=1, seconds=9, milliseconds=721),
+        tires="SH",
     )
     race.race_entries.create(
         driver=jeroen,
@@ -543,6 +556,7 @@ if ADD_DATA:
         qualifying_position=8,
         finish_position=14,
         best_lap_time=datetime.timedelta(minutes=1, seconds=7, milliseconds=962),
+        tires="SM",
     )
     race.race_entries.create(
         driver=albion,
@@ -550,6 +564,7 @@ if ADD_DATA:
         qualifying_position=11,
         finish_position=15,
         best_lap_time=datetime.timedelta(minutes=1, seconds=8, milliseconds=545),
+        tires="SMHMIHSMHWHMSMHIWHSMHMSM",
     )
 
     # DNA entries

@@ -17,7 +17,11 @@
     <div class="col-10">
         <div class="d-flex flex-wrap justify-content-center">
             {% for race in current_championship.races.all %}
+            {% if race.finished %}
+            <a class="race-card-container" href="{% url 'match_history' race.id %}">
+            {% else %}
             <div class="race-card-container">
+            {% endif %}
                 <div class="race-card ps-2 pe-3 pt-2 pb-2 w-80 d-flex flex-column h-100"
                     style="{% if race.finished %}background-color: #f8f8f8;{% endif %}">
                     <div class="d-flex justify-content-between align-items-center w-100 schedule-header fw-light fs-5">
@@ -54,7 +58,12 @@
                     </div>
 
                 </div>
+            {% if race.finished %}
+            </a>
+            {% else %}
             </div>
+            {% endif %}
+            
             {% endfor %}
         </div>
     </div>

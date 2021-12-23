@@ -1,0 +1,79 @@
+{% extends "leaderboard/base.html" %}
+
+{% load leaderboard_extras %}
+{% load static %}
+
+{% block title %}Match History - {{ race.championship }} Round {{ race.championship_order }}{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center mt-3 mx-0" style="width: 100%;">
+    <div class="fw-lighter fs-1">{{ race.championship }} Round {{ race.championship_order }}</div>
+    <div class="fw-lighter fs-3">Match History</div>
+    <div class="col-8">
+        <div>
+            <table class="table table-striped leaderboard-table table-borderless" style="font-size: 1rem;">
+                <colgroup>
+                    <col style="width: 10%;">
+                    <col style="width: 20%;">
+                    <col style="width: 10%;">
+                    <col style="width: 20%;">
+                    <col style="width: 25%;">
+                    <col style="width: 15%;">
+                </colgroup>
+                <thead class="table-white">
+                    <tr>
+                        <th scope="col" class="leaderboard-header">#</th>
+                        <th scope="col" class="leaderboard-header">Driver</th>
+                        <th scope="col" class="leaderboard-header">Nationality</th>
+                        <th scope="col" class="leaderboard-header">Team</th>
+                        <th scope="col" class="leaderboard-header">Compounds Used</th>
+                        <th scope="col" class="leaderboard-header">Fastest Lap</th>
+                        <th scope="col" class="leaderboard-header">Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry, score in race.match_history %}
+
+                    {% if not entry.bot %}
+                        {% alias entry.driver.name as name %}
+                        {% alias entry.driver.country.unicode_flag as nationality_flag%}
+                        {% alias entry.driver.country.ioc_code as nationality%}
+                        {% alias entry.team.color as team_color%}
+                        {% alias entry.team as team%}
+                    {% else %}
+                        {% alias "Bot" as name %}
+                        {% alias "🤖" as nationality_flag%}
+                        {% alias "BOT" as nationality %}
+                        {% alias "pink" as team_color %}
+                        {% alias "Dutcho" as team %}
+                    {% endif %}
+
+                    <tr id="row{{forloop.counter}}" class="leaderboard-row">
+                        <td class="align-middle fw-lighter">{{entry.finish_position}}</td>
+                        <td class="align-middle">{{name}}</td>
+                        <td class="align-middle fw-lighter">{{nationality_flag}}
+                            {{nationality}}</td>
+                        <td class="align-middle" style="height: 100%;">
+                            <div class="d-inline-flex align-items-center" style="height: 2rem;">
+                                <span class="team-color-bar mx-2"
+                                    style="background-color: {{team_color}};"
+                                    ></span>
+                                <span>{{team}}</span>
+                            </div>
+                        </td>
+                        <td class="align-middle fw-lighter">
+                            {% tires entry.tires as t%}
+                            {% for tire in t %}
+                            <img src="{% static tire %}" alt="" style="height: 1.5rem;">
+                            {% endfor %}
+                        </td>
+                        <td class="align-middle {% if entry == fastest_lap %}fastest-lap{%endif%}" >{{entry.best_lap_time|duration}}</td>
+                        <td class="align-middle fw-lighter">{{score}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

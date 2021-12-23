@@ -137,9 +137,6 @@ class Race(models.Model):
 
     wet_race = models.BooleanField(default=False)
 
-    schedule_image = models.ImageField(blank=True, null=True)
-    detail_image = models.ImageField(blank=True, null=True)
-
     length = models.CharField(
         max_length=1,
         choices=RaceLength.choices,

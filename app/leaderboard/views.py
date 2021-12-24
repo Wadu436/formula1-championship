@@ -52,11 +52,11 @@ def constructors_standings(request, championship_id):
 def races(request, championship_id):
     championship = Championship.objects.filter(id=championship_id).first()
     if championship:
-
         context = {
-            "current_championship": Championship.objects.get(id=championship_id),
+            "current_championship": championship,
             "championships": Championship.objects.all(),
             "in_championship_page": True,
+            "races": championship.races.order_by('championship_order')
         }
         return render(request, "leaderboard/races.html", context=context)
     else:

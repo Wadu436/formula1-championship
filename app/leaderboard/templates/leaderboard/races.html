@@ -16,7 +16,7 @@
     <div class="fw-lighter fs-3">Race Schedule</div>
     <div class="col-10">
         <div class="d-flex flex-wrap justify-content-center">
-            {% for race in current_championship.races.all %}
+            {% for race in races %}
             {% if race.finished %}
             <a class="race-card-container" href="{% url 'match_history' race.id %}">
             {% else %}

@@ -188,7 +188,7 @@ class Race(models.Model):
         }
 
         # Fastest driver points
-        if fastest_entry.finish_position >= 10:
+        if fastest_entry.finish_position <= 10:
             total_points[fastest_entry] += 1
 
         player_points: dict[Driver, int | float] = {
@@ -290,7 +290,7 @@ class Race(models.Model):
         }
 
         # Fastest driver points
-        if fastest_entry.finish_position >= 10:
+        if fastest_entry.finish_position <= 10:
             total_points[fastest_entry] += 1
 
         return [(entry, total_points[entry]) for entry in entries]

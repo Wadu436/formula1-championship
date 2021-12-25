@@ -55,13 +55,13 @@
                             <a class="dropdown-item" href="{% url 'constructors_standings' current_championship.id%}">Constructors's Championship</a>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown ms-5">
+                    {% comment %} <li class="nav-item dropdown ms-5">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Stats</a>
                         <ul class="dropdown-menu">
                             <a class="dropdown-item" href="{% url 'stats_fastest_laps' current_championship.id%}">Fastest Laps</a>
                             <a class="dropdown-item" href="{% url 'stats_most_poles' current_championship.id%}">Most Poles</a>
                         </ul>
-                    </li>
+                    </li> {% endcomment %}
                     <li class="nav-item ms-5">
                         <a class="nav-link" href="{% url 'races' current_championship.id%}">Races</a>
                     </li>

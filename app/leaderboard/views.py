@@ -27,7 +27,7 @@ def drivers_standings(request, championship_id):
         context = {
             "current_championship": championship,
             "championships": Championship.objects.all(),
-            "in_championship_page": True,
+            "in_championship": True,
         }
         return render(request, "leaderboard/drivers_standings.html", context=context)
     else:
@@ -40,7 +40,7 @@ def constructors_standings(request, championship_id):
         context = {
             "current_championship": Championship.objects.get(id=championship_id),
             "championships": Championship.objects.all(),
-            "in_championship_page": True,
+            "in_championship": True,
         }
         return render(
             request, "leaderboard/constructors_standings.html", context=context
@@ -55,7 +55,7 @@ def races(request, championship_id):
         context = {
             "current_championship": championship,
             "championships": Championship.objects.all(),
-            "in_championship_page": True,
+            "in_championship": True,
             "races": championship.races.order_by('championship_order')
         }
         return render(request, "leaderboard/races.html", context=context)
@@ -92,7 +92,7 @@ def match_history(request, race_id):
             "race": race,
             "current_championship": race.championship,
             "championships": Championship.objects.all(),
-            "in_championship_page": True,
+            "in_championship": True,
             "fastest_lap": race.race_entries.order_by("best_lap_time").first()
         }
         return render(request, "leaderboard/match_history.html", context=context)

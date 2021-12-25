@@ -156,3 +156,8 @@ body {
 #rules p {
     margin-bottom: 0.25rem;
 }
+
+#last-race a {
+    color:var(--bs-body-color);
+    text-decoration: none;
+}

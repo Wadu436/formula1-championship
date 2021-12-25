@@ -324,20 +324,18 @@ class RaceEntry(models.Model):
     qualifying_position = models.IntegerField(
         verbose_name="Qualifying Position",
         validators=[MinValueValidator(1)],
-        null=True,
-        blank=True,
     )
     grid_penalty = models.PositiveIntegerField(default=0)
     finish_position = models.IntegerField(
-        validators=[MinValueValidator(1)], null=True, blank=True
+        validators=[MinValueValidator(1)],
     )
 
-    best_lap_time = models.DurationField(null=True, blank=True)
+    best_lap_time = models.DurationField()
 
-    pit_stops = models.PositiveIntegerField(default=1, null=True, blank=True)
+    pit_stops = models.PositiveIntegerField(default=1)
 
     dnf = models.BooleanField(
-        verbose_name="Did Not Finish", default=False, null=True, blank=True
+        verbose_name="Did Not Finish", default=False
     )
 
     tires = models.CharField(max_length=32, null=True, blank=True)
@@ -347,25 +345,23 @@ class RaceEntry(models.Model):
             models.UniqueConstraint(
                 fields=["race", "driver"], name="raceentry_unique_driver_race"
             ),
+            models.UniqueConstraint(
+                fields=["race", "qualifying_position"], name="raceentry_unique_driver_qualifying_position"
+            ),
+            models.UniqueConstraint(
+                fields=["race", "finish_position"], name="raceentry_unique_driver_finish_position"
+            ),
             models.CheckConstraint(
                 check=(
                     Q(
                         bot=True,
                         driver__isnull=True,
-                        team__isnull=True,
-                        best_lap_time__isnull=False,
-                        finish_position__isnull=False,
+                        team__isnull=True,   
                     )
                     | Q(
                         bot=False,
                         driver__isnull=False,
                         team__isnull=False,
-                        qualifying_position__isnull=False,
-                        grid_penalty__isnull=False,
-                        finish_position__isnull=False,
-                        best_lap_time__isnull=False,
-                        pit_stops__isnull=False,
-                        dnf__isnull=False,
                     )
                 ),
                 name="raceentry_dna_notnull",

@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin
 
 from . import models
@@ -23,11 +24,39 @@ class ChampionshpipAdmin(admin.ModelAdmin):
 class DriverAdmin(admin.ModelAdmin):
     list_display = ("name", "team")
 
+class RaceEntryInlineFormset(forms.models.BaseInlineFormSet):
+    def clean(self):
+        # get forms that actually have valid data
+        # Amount of forms
+        num_entries = len(self.forms)
+        for form in self.forms:
+            try:
+                if form.cleaned_data:
+                    # Validate common
+                    if not 0 < form.cleaned_data['finish_position'] <= num_entries:
+                        raise forms.ValidationError(f"Finish position {form.cleaned_data['finish_position']} needs to be between 1 and {num_entries} (The number of race entries)")
+                    if not 0 < form.cleaned_data['qualifying_position'] <= num_entries:
+                        raise forms.ValidationError(f"Qualifying position {form.cleaned_data['qualifying_position']} needs to be between 1 and {num_entries} (The number of race entries)")
+
+                    # Bot
+                    if form.cleaned_data['bot']:
+                        form.cleaned_data['driver'] = None
+                        form.cleaned_data['team'] = None
+                    else:
+                        if not (form.cleaned_data['driver'] and form.cleaned_data['team']):
+                            raise forms.ValidationError(f"Not all non-bot entries have a driver or a team.")
+                    
+            except AttributeError:
+                # annoyingly, if a subform is invalid Django explicity raises
+                # an AttributeError for cleaned_data
+                pass
+        # if count < 1:
+        #     raise forms.ValidationError('Error :)')
 
 class RaceEntryInline(admin.TabularInline):
     model = models.RaceEntry
     template = "leaderboard/admin/raceentry_tabular_inline.html"
-
+    formset = RaceEntryInlineFormset
     class Media:
         js = (
             "leaderboard/jquery-3.6.0.min.js",

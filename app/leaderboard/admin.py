@@ -60,12 +60,20 @@ class RaceEntryInline(admin.TabularInline):
             "leaderboard/admin/raceentry_tabular.js",
         )
 
+class DNAEntryInline(admin.TabularInline):
+    model = models.DNAEntry
+    extra = 0
+    class Media:
+        js = (
+            "leaderboard/jquery-3.6.0.min.js",
+            "leaderboard/admin/raceentry_tabular.js",
+        )
 
 @admin.register(models.Race, site=admin.site)
 class RaceAdmin(admin.ModelAdmin):
     list_display = ("__str__", "championship", "track")
     list_filter = ("championship", "track")
     inlines = [
-        RaceEntryInline,
+        RaceEntryInline, DNAEntryInline
     ]
     # change_form_template = "leaderboard/admin/race_change_form.html"

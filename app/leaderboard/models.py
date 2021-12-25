@@ -383,3 +383,7 @@ class DNAEntry(models.Model):
     team = models.ForeignKey(
         Team, on_delete=models.RESTRICT, related_name="dna_entries"
     )
+
+    def __str__(self):
+        return f"DNA: {self.driver}"
+        

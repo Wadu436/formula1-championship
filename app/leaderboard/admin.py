@@ -1,5 +1,6 @@
-from django import forms
+from django import db, forms
 from django.contrib import admin
+from django.forms.widgets import CheckboxSelectMultiple
 
 from . import models
 
@@ -18,7 +19,9 @@ class TrackAdmin(admin.ModelAdmin):
 @admin.register(models.Championship, site=admin.site)
 class ChampionshpipAdmin(admin.ModelAdmin):
     list_display = ("name",)
-
+    formfield_overrides = {
+        db.models.ManyToManyField: {'widget': CheckboxSelectMultiple},
+    }
 
 @admin.register(models.Driver, site=admin.site)
 class DriverAdmin(admin.ModelAdmin):

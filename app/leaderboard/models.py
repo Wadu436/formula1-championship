@@ -46,27 +46,49 @@ class Team(models.Model):
         return f"{self.name}"
 
 
+class Driver(models.Model):
+    name = models.CharField(max_length=64)
+    nickname = models.CharField(max_length=64, null=True, blank=True)
+    team = models.ForeignKey(Team, null=True, blank=True, on_delete=models.RESTRICT)
+    country = CountryField()
+
+    def __str__(self):
+        return f"{self.name}"
+
+    def get_dict(self):
+        data = {
+            "id": self.pk,
+            "name": self.name,
+            "team": self.team.pk if self.team else None,
+        }
+        return data
+
 class Championship(models.Model):
     name = models.CharField(max_length=64)
     start_date = models.DateField()
+    drivers = models.ManyToManyField(Driver)
 
     def __str__(self):
         return f"{self.name}"
 
     def get_drivers_standings(
         self, first_race=None, last_race=None
-    ) -> list[tuple["Driver", int | float]]:
+    ) -> list[tuple[Driver, int | float]]:
         first_race = first_race or 0
         last_race = last_race or self.races.count()
 
-        race_scores: list[dict["Driver", int | float]] = [
+        race_scores: list[dict[Driver, int | float]] = [
             race.get_points()[0] for race in self.races.all()
         ]
 
-        total_points: dict["Driver", int | float] = defaultdict(int)
+        total_points: dict[Driver, int | float] = defaultdict(int)
         for race in race_scores:
             for driver, points in race.items():
                 total_points[driver] += points
+
+        for driver in self.drivers.all():
+            if driver not in total_points:
+                total_points[driver] = 0
 
         total_points_list = [
             (driver, points) for driver, points in total_points.items()
@@ -91,6 +113,10 @@ class Championship(models.Model):
             for team, points in race.items():
                 total_points[team] += points
 
+        for driver in self.drivers.all():
+            if driver not in total_points:
+                total_points[driver.team] = 0
+
         total_points_list = [(team, points) for team, points in total_points.items()]
 
         total_points_list.sort(key=lambda item: (-item[1], item[0].name))
@@ -99,25 +125,6 @@ class Championship(models.Model):
 
     class Meta:
         get_latest_by = "start_date"
-
-
-class Driver(models.Model):
-    name = models.CharField(max_length=64)
-    nickname = models.CharField(max_length=64, null=True, blank=True)
-    team = models.ForeignKey(Team, null=True, blank=True, on_delete=models.RESTRICT)
-    country = CountryField()
-
-    def __str__(self):
-        return f"{self.name}"
-
-    def get_dict(self):
-        data = {
-            "id": self.pk,
-            "name": self.name,
-            "team": self.team.pk if self.team else None,
-        }
-        return data
-
 
 class Race(models.Model):
     class RaceLength(models.TextChoices):

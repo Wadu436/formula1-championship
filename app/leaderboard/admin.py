@@ -33,9 +33,9 @@ class RaceEntryInlineFormset(forms.models.BaseInlineFormSet):
             try:
                 if form.cleaned_data:
                     # Validate common
-                    if not 0 < form.cleaned_data['finish_position'] <= num_entries:
+                    if 'finish_position' not in form.cleaned_data or not 0 < form.cleaned_data['finish_position'] <= num_entries:
                         raise forms.ValidationError(f"Finish position {form.cleaned_data['finish_position']} needs to be between 1 and {num_entries} (The number of race entries)")
-                    if not 0 < form.cleaned_data['qualifying_position'] <= num_entries:
+                    if 'qualifying_position' not in form.cleaned_data or not 0 < form.cleaned_data['qualifying_position'] <= num_entries:
                         raise forms.ValidationError(f"Qualifying position {form.cleaned_data['qualifying_position']} needs to be between 1 and {num_entries} (The number of race entries)")
 
                     # Bot
@@ -47,16 +47,13 @@ class RaceEntryInlineFormset(forms.models.BaseInlineFormSet):
                             raise forms.ValidationError(f"Not all non-bot entries have a driver or a team.")
                     
             except AttributeError:
-                # annoyingly, if a subform is invalid Django explicity raises
-                # an AttributeError for cleaned_data
                 pass
-        # if count < 1:
-        #     raise forms.ValidationError('Error :)')
 
 class RaceEntryInline(admin.TabularInline):
     model = models.RaceEntry
     template = "leaderboard/admin/raceentry_tabular_inline.html"
     formset = RaceEntryInlineFormset
+    extra = 0
     class Media:
         js = (
             "leaderboard/jquery-3.6.0.min.js",

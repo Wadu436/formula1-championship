@@ -325,14 +325,14 @@ class RaceEntry(models.Model):
         verbose_name="Qualifying Position",
         validators=[MinValueValidator(1)],
     )
-    grid_penalty = models.PositiveIntegerField(default=0)
+    grid_penalty = models.IntegerField(default=0, validators=[MinValueValidator(0)],)
     finish_position = models.IntegerField(
         validators=[MinValueValidator(1)],
     )
 
     best_lap_time = models.DurationField()
 
-    pit_stops = models.PositiveIntegerField(default=1)
+    pit_stops = models.IntegerField(default=1, validators=[MinValueValidator(0)],)
 
     dnf = models.BooleanField(
         verbose_name="Did Not Finish", default=False

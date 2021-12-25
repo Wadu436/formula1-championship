@@ -35,8 +35,18 @@
   $(document).ready(function () {
     updateOnChange(); // To be 100% sure
 
-    $("#race_entries-group tbody").bind("DOMSubtreeModified", function () {
-      updateOnChange();
-    });
+    $("#race_entries-group tbody").on(
+      "DOMNodeInserted",
+      "tr.form-row",
+      function () {
+        updateOnChange();
+
+        // Set finish position
+        $(this).find("td.field-finish_position > input")[0].value = $(this)
+          .parent()
+          .children()
+          .filter(".dynamic-race_entries").length;
+      }
+    );
   });
 }

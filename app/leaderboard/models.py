@@ -66,7 +66,7 @@ class Driver(models.Model):
 class Championship(models.Model):
     name = models.CharField(max_length=64)
     start_date = models.DateField()
-    drivers = models.ManyToManyField(Driver)
+    drivers = models.ManyToManyField(Driver, blank=True)
 
     def __str__(self):
         return f"{self.name}"

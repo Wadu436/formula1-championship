@@ -207,14 +207,10 @@ class Race(models.Model):
         if len(dna_entries) > 0:
             # Sum of the first #DNA_ENTRIES bot scores
             total_bot_points = sum(sorted(bot_points, reverse=True)[: len(dna_entries)])
-            print(sorted(bot_points, reverse=True))
-            print(total_bot_points)
             dna_score = total_bot_points / (
                 2 * len(dna_entries)
             )  # DNA Drivers receive half points
-            print(dna_score)
             dna_score = round(dna_score, 1)
-            print(dna_score)
             if dna_score > 0:
                 for entry in dna_entries:
                     player_points[entry.driver] = dna_score

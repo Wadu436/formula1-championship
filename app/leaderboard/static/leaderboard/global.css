@@ -152,3 +152,7 @@ body {
 .fastest-lap {
     color: #b200ff !important;
 }
+
+#rules p {
+    margin-bottom: 0.25rem;
+}

@@ -77,6 +77,16 @@ class RaceAdmin(admin.ModelAdmin):
     list_display = ("__str__", "championship", "track")
     list_filter = ("championship", "track")
     inlines = [
-        RaceEntryInline, DNAEntryInline
+        RaceEntryInline, DNAEntryInline,
     ]
     # change_form_template = "leaderboard/admin/race_change_form.html"
+
+class RuleEntryInline(admin.TabularInline):
+    model = models.RuleEntry
+    extra = 0
+
+@admin.register(models.RuleChapter, site=admin.site)
+class RulesAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    name = "Rules"
+    inlines = [RuleEntryInline, ]

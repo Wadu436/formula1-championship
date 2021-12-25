@@ -393,4 +393,12 @@ class DNAEntry(models.Model):
 
     def __str__(self):
         return f"DNA: {self.driver}"
-        
+
+class RuleChapter(models.Model):
+    number=models.IntegerField()
+    name=models.CharField(max_length=64)
+
+class RuleEntry(models.Model):
+    chapter=models.ForeignKey(RuleChapter, on_delete=models.RESTRICT, related_name="entries")
+    number=models.IntegerField()
+    text=models.TextField()

@@ -46,6 +46,11 @@ urlpatterns = [
         name="track_detail",
     ),
     path(
+        "rules",
+        views.rules, 
+        name="rules",
+    ),
+    path(
         "",
         views.latest_drivers_standings,
         name="index",

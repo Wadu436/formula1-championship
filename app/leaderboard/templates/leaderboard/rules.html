@@ -1,0 +1,32 @@
+{% extends "leaderboard/base.html" %}
+
+{% load leaderboard_extras %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'flags/sprite-hq.css' %}">
+{% endblock %}
+
+{% block title %}Rules{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center mt-3 mx-0" style="width: 100%;">
+    <div class="align-middle fw-lighter fs-1">Rules</div>
+    <div id="rules" class="col-10 container">
+        {% for rule in rules %}
+        <div class='mb-4'>
+        <div class='row h5'>
+            <div class='col col-sm-auto'>{{rule.number}}</div>
+            <div class='col'>{{rule.name}}</div>
+        </div>
+        {% for entry in rule.entries.all %}
+            <div class='row'>
+                <div class='col col-sm-auto'>{{rule.number}}.{{entry.number}}</div>
+                <div class='col'>{{entry.text|linebreaks}}</div>
+            </div>
+        {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -11,8 +11,8 @@ from django.utils.timezone import now
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
 django.setup()
 
-from leaderboard.models import (Championship, Driver, Race, RaceEntry, Team,
-                                Track)
+from leaderboard.models import (Championship, Driver, Race, RaceEntry,
+                                RuleChapter, RuleEntry, Team, Track)
 
 ADD_DATA = True
 
@@ -23,6 +23,8 @@ Driver.objects.all().delete()
 Championship.objects.all().delete()
 Team.objects.all().delete()
 Track.objects.all().delete()
+RuleEntry.objects.all().delete()
+RuleChapter.objects.all().delete()
 
 if ADD_DATA:
     track: Track = Track.objects.create(
@@ -1012,3 +1014,31 @@ if ADD_DATA:
         driver=tim,
         team=tim.team,
     )
+
+    # Add rules
+    rules1 = RuleChapter.objects.create(number=1, name="EVIDENCE")
+    rules1.entries.create(number=1, text="To protest a penalty or report another driver for intentional dangerous driving, the driver must provide video evidence (e.g. shadow play/downloaded replay).")
+
+    rules2 = RuleChapter.objects.create(number=2, name="SAFETY CAR")
+    rules2.entries.create(number=1, text="""All drivers except for the leading car must turn on AI (pause menu) during the safety car queue.
+The leading car is tasked with letting others know when driving will continue.""")
+    rules2.entries.create(number=2, text="""Failure to comply with this rule is at your own risk, any penalties because of this will not be removed.
+Alt-tabbing during AI is at your own risk (some of us have experienced glitches while doing so), any penalties because of this will not be removed.
+If you have AI on, and someone else hits you , your penalty may be nullified (given that you can prove what happened).""")
+    rules2.entries.create(number=3, text="""Intentionally crashing your vehicle (because of tilt or any other reason) which results in a safety car will lead to a point deduction from your total.
+The point deductions are as follows:
+- 16 points for positions 1 - 5 in the most current standings.
+- 8 points for positions 6-10 in the most current standings.
+- 4 points for positions 11-15 in the most current standings.""")
+
+    rules3 = RuleChapter.objects.create(number=3, name="COMPETITORS APPLICATIONS")
+    rules3.entries.create(number=1, text="""Applications to compete in the Championship may be submitted to NAMR1#8420 before the season starts.
+Those who are late are still able to apply as substitute drivers.""")
+    rules3.entries.create(number=2, text="""When a substitute is called into a race for a missing driver, they must take the place of the most skilled AI driver.""")
+
+    rules4 = RuleChapter.objects.create(number=4, name="CHAMPIONSHIP")
+    rules4.entries.create(number=1, text="The NAMR1 Formula 1 Championship driver's title will be awarded to the driver who has scored the highest number of points.")
+    rules4.entries.create(number=2, text="""The title of NAMR1 Formula One Champion Constructor will be awarded to the competitor which has scored the highest number of points, results from both cars.
+The teams with only one driver get an additional 1.75x multiplier to make up for their missing driver.""")
+    rules4.entries.create(number=3, text="""If a driver can not attend, their points will be calculated with the formula:
+DNA = Total points earned by AI Drivers ÷ 2 ÷ Amount of missing drivers.""")

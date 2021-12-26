@@ -41,17 +41,17 @@ urlpatterns = [
         name="track_overview",
     ),
     path(
-        "tracks/<int:track_id>",
+        "tracks/<int:track_id>/",
         views.track_detail,
         name="track_detail",
     ),
     path(
-        "rules",
+        "rules/",
         views.rules, 
         name="rules",
     ),
     path(
-        "",
+        "/",
         views.latest_drivers_standings,
         name="index",
     ),

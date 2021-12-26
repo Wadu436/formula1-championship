@@ -114,7 +114,7 @@ class Championship(models.Model):
                 total_points[team] += points
 
         for driver in self.drivers.all():
-            if driver not in total_points:
+            if driver.team not in total_points:
                 total_points[driver.team] = 0
 
         total_points_list = [(team, points) for team, points in total_points.items()]

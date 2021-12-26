@@ -1,0 +1,26 @@
+# Entrypoints
+#api:
+#  insecure: true
+entryPoints:
+  web:
+    address: :80
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: :443
+
+# Certificates
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: warre.dujardin@gmail.com
+      storage: /etc/traefik/acme/acme.json
+      httpChallenge:
+        entryPoint: web
+
+providers:
+  docker:
+    exposedbydefault: false

@@ -1,6 +1,20 @@
 version: '3.4'
 
 services:
+  traefik:
+    restart: unless-stopped
+    depends_on:
+    - nginx
+    image: "traefik:v2.5"
+    container_name: "traefik"
+    ports:
+      - 80:80
+      - 8080:8080
+      - 443:443
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik.yml:/traefik.yml:ro"
+      - "traefik_acme:/etc/traefik/acme:rw"
   db:
     image: postgres:13.0-alpine
     volumes:
@@ -11,25 +25,38 @@ services:
     build: 
       context: ./app
       target: production
-    command: gunicorn project.wsgi:application --bind 0.0.0.0:8000
-    expose:
-      - 8000
+    command: gunicorn project.wsgi:application --bind 0.0.0.0:80
     env_file:
       - ./.env.prod
     volumes:
       - static_volume:/home/app/web/staticfiles/
+      - media_volume:/home/app/web/mediafiles/
     depends_on:
       - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.web.rule=Host(`f1.namr1.nl`) && PathPrefix(`/`)"
+      - "traefik.http.routers.web.entrypoints=websecure"
+      - "traefik.http.services.web.loadbalancer.server.port=80"
+      - "traefik.http.routers.web.tls=true"
+      - "traefik.http.routers.web.tls.certresolver=letsencrypt"
   nginx:
     build: ./nginx
-    ports:
-      - 80:80
     depends_on:
       - web
     volumes:
       - static_volume:/home/app/web/staticfiles/
-
+      - media_volume:/home/app/web/mediafiles/
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nginx.rule=Host(`f1.namr1.nl`) && (PathPrefix(`/static/`) || PathPrefix(`/media/`))"
+      - "traefik.http.routers.nginx.entrypoints=websecure"
+      - "traefik.http.services.nginx.loadbalancer.server.port=80"
+      - "traefik.http.routers.nginx.tls=true"
+      - "traefik.http.routers.nginx.tls.certresolver=letsencrypt"
 
 volumes:
   postgres_data:
   static_volume:
+  media_volume:
+  traefik_acme:

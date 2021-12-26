@@ -2,6 +2,7 @@ import datetime
 import json
 import math
 from collections import defaultdict
+from decimal import Decimal
 from itertools import chain
 from typing import Optional
 
@@ -82,15 +83,15 @@ class Championship(models.Model):
 
     def get_drivers_standings(
         self, first_race=None, last_race=None
-    ) -> list[tuple[Driver, int | float]]:
+    ) -> list[tuple[Driver, int | Decimal]]:
         first_race = first_race or 0
         last_race = last_race or self.races.count()
 
-        race_scores: list[dict[Driver, int | float]] = [
+        race_scores: list[dict[Driver, int | Decimal]] = [
             race.get_points()[0] for race in self.races.all()
         ]
 
-        total_points: dict[Driver, int | float] = defaultdict(int)
+        total_points: dict[Driver, int | Decimal] = defaultdict(int)
         for race in race_scores:
             for driver, points in race.items():
                 total_points[driver] += points
@@ -109,15 +110,15 @@ class Championship(models.Model):
 
     def get_constructors_standings(
         self, first_race=None, last_race=None
-    ) -> list[tuple["Team", int | float]]:
+    ) -> list[tuple["Team", int | Decimal]]:
         first_race = first_race or 0
         last_race = last_race or self.races.count()
 
-        team_scores: list[dict["Team", int | float]] = [
+        team_scores: list[dict["Team", int | Decimal]] = [
             race.get_points()[1] for race in self.races.all()
         ]
 
-        total_points: dict["Team", int | float] = defaultdict(int)
+        total_points: dict["Team", int | Decimal] = defaultdict(int)
         for race in team_scores:
             for team, points in race.items():
                 total_points[team] += points
@@ -177,7 +178,7 @@ class Race(models.Model):
             f"{self.championship} Race {self.championship_order}: {self.track.location}"
         )
 
-    def get_points(self) -> tuple[dict[Driver, int | float], dict[Team, int | float]]:
+    def get_points(self) -> tuple[dict[Driver, int | Decimal], dict[Team, int | Decimal]]:
         SCORING_SYSTEM = {
             1: 25,
             2: 18,
@@ -213,18 +214,16 @@ class Race(models.Model):
         if fastest_entry.finish_position <= 10:
             total_points[fastest_entry] += 1
 
-        player_points: dict[Driver, int | float] = {
+        player_points: dict[Driver, int | Decimal] = {
             entry.driver: total_points[entry] for entry in player_entries
         }
-        bot_points: list[int | float] = [total_points[entry] for entry in bot_entries]
+        bot_points: list[int | Decimal] = [total_points[entry] for entry in bot_entries]
 
         # Distribute DNA points
         if len(dna_entries) > 0:
             # Sum of the first #DNA_ENTRIES bot scores
             total_bot_points = sum(sorted(bot_points, reverse=True)[: len(dna_entries)])
-            dna_score = total_bot_points / (
-                2 * len(dna_entries)
-            )  # DNA Drivers receive half points
+            dna_score = Decimal(total_bot_points) / Decimal(2 * len(dna_entries))  # DNA Drivers receive half points
             dna_score = round(dna_score, 1)
             if dna_score > 0:
                 for entry in dna_entries:
@@ -235,7 +234,7 @@ class Race(models.Model):
             
 
         # Calculate Team Scores
-        team_points: dict[Team, int | float] = {
+        team_points: dict[Team, int | Decimal] = {
             entry.team: 0 for entry in chain(player_entries, dna_entries)
         }
 

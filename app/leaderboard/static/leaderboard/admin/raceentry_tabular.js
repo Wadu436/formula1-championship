@@ -50,5 +50,13 @@
         }
       }
     );
+
+    $("#dna_entries-group tbody").on(
+      "DOMNodeInserted",
+      "tr.form-row",
+      function () {
+        updateOnChange();
+      }
+    );
   });
 }

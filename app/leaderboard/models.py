@@ -117,6 +117,9 @@ class Championship(models.Model):
             if driver.team not in total_points:
                 total_points[driver.team] = 0
 
+        for multiplier in self.multipliers.all():
+            total_points[multiplier.constructor] *= multiplier.multiplier
+
         total_points_list = [(team, points) for team, points in total_points.items()]
 
         total_points_list.sort(key=lambda item: (-item[1], item[0].name))

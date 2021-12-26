@@ -38,6 +38,7 @@ class RaceEntryInlineFormset(forms.models.BaseInlineFormSet):
         num_entries = len(self.forms)
         qualifying_positions = set()
         finish_positions = set()
+        drivers = set()
         for form in self.forms:
             try:
                 if form.cleaned_data:
@@ -65,7 +66,12 @@ class RaceEntryInlineFormset(forms.models.BaseInlineFormSet):
 
                         if not (form.cleaned_data['driver'] and form.cleaned_data['team']):
                             raise forms.ValidationError(f"Not all non-bot entries have a driver or a team.")
+                        else:
+                            if form.cleaned_data['driver'] in drivers:
+                                raise forms.ValidationError(f"A driver can only have one entry per race ({form.cleaned_data['driver'].name}).") 
+                            drivers.add(form.cleaned_data['driver'])
 
+                        
                     # Bot
                     else:
                         form.instance.driver = None

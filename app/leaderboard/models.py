@@ -322,6 +322,7 @@ class RaceEntry(models.Model):
     qualifying_position = models.IntegerField(
         verbose_name="Qualifying Position",
         validators=[MinValueValidator(1)],
+        blank=True,
     )
     grid_penalty = models.IntegerField(default=0, validators=[MinValueValidator(0)],)
     finish_position = models.IntegerField(

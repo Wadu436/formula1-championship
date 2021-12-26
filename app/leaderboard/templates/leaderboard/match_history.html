@@ -9,7 +9,8 @@
 <div class="d-flex flex-column align-items-center mt-3 mx-0" style="width: 100%;">
     <div class="fw-lighter fs-1">{{ race.championship }} Round {{ race.championship_order }}</div>
     <div class="fw-lighter fs-3">Match History</div>
-    <div class="fw-lighter fs-3"><i class="flag2x {{ race.track.country.flag_css }}"></i> {{ race.track.location }} - {{ race.track.name }} - {{ race.laps }} laps</div>
+    <div class="fw-lighter fs-3"><i class="flag2x {{ race.track.country.flag_css }}"></i> {{ race.track.location }} -
+        {{ race.track.name }} - {{ race.laps }} laps</div>
     <div class="col-8">
         <div>
             <table class="table table-striped leaderboard-table table-borderless" style="font-size: 1rem;">
@@ -36,17 +37,17 @@
                     {% for entry, score in race.match_history %}
 
                     {% if not entry.bot %}
-                        {% alias entry.driver.name as name %}
-                        {% alias entry.driver.country.unicode_flag as nationality_flag%}
-                        {% alias entry.driver.country.ioc_code as nationality%}
-                        {% alias entry.team.color as team_color%}
-                        {% alias entry.team as team%}
+                    {% alias entry.driver.name as name %}
+                    {% alias entry.driver.country.unicode_flag as nationality_flag%}
+                    {% alias entry.driver.country.ioc_code as nationality%}
+                    {% alias entry.team.color as team_color%}
+                    {% alias entry.team as team%}
                     {% else %}
-                        {% alias "Bot" as name %}
-                        {% alias "🤖" as nationality_flag%}
-                        {% alias "BOT" as nationality %}
-                        {% alias "pink" as team_color %}
-                        {% alias "Dutcho" as team %}
+                    {% alias "Bot" as name %}
+                    {% alias "🤖" as nationality_flag%}
+                    {% alias "BOT" as nationality %}
+                    {% alias "pink" as team_color %}
+                    {% alias "Dutcho" as team %}
                     {% endif %}
 
                     <tr id="row{{forloop.counter}}" class="leaderboard-row">
@@ -56,9 +57,7 @@
                             {{nationality}}</td>
                         <td class="align-middle" style="height: 100%;">
                             <div class="d-inline-flex align-items-center" style="height: 2rem;">
-                                <span class="team-color-bar mx-2"
-                                    style="background-color: {{team_color}};"
-                                    ></span>
+                                <span class="team-color-bar mx-2" style="background-color: {{team_color}};"></span>
                                 <span>{{team}}</span>
                             </div>
                         </td>
@@ -68,7 +67,12 @@
                             <img src="{% static tire %}" alt="" style="height: 1.5rem;">
                             {% endfor %}
                         </td>
-                        <td class="align-middle {% if entry == fastest_lap %}fastest-lap{%endif%}" >{{entry.best_lap_time|duration}}</td>
+                        {% if entry.best_lap_time %}
+                        <td class="align-middle {% if entry == fastest_lap %}fastest-lap{%endif%}">
+                            {{entry.best_lap_time|duration}}</td>
+                        {% else %}
+                        <td class="align-middle">--:--:---</td>
+                        {% endif %}
                         <td class="align-middle fw-lighter">{{score}}</td>
                     </tr>
                     {% endfor %}

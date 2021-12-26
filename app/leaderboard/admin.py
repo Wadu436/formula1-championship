@@ -38,32 +38,52 @@ class RaceEntryInlineFormset(forms.models.BaseInlineFormSet):
             try:
                 if form.cleaned_data:
                     # Validate common
-                    if 'finish_position' not in form.cleaned_data:
-                        raise forms.ValidationError("Every entry needs a 'finish position'")
-                    if form.cleaned_data['finish_position'] in finish_positions:
-                        raise forms.ValidationError("Every 'finish position' needs to be unique ")
-                    if not 0 < form.cleaned_data['finish_position'] <= num_entries:
-                        raise forms.ValidationError(f"Finish position {form.cleaned_data['finish_position']} needs to be between 1 and {num_entries} (The number of race entries)")
-                    if 'qualifying_position' not in form.cleaned_data:
-                        raise forms.ValidationError("Every entry needs a 'qualifying position'")
-                    if form.cleaned_data['qualifying_position'] in qualifying_positions:
-                        raise forms.ValidationError("Every 'qualifying position' needs to be unique ")
-                    if not 0 < form.cleaned_data['qualifying_position'] <= num_entries:
-                        raise forms.ValidationError(f"Qualifying position {form.cleaned_data['qualifying_position']} needs to be between 1 and {num_entries} (The number of race entries)")
+                    if not form.cleaned_data['bot']:
+                        if 'finish_position' not in form.cleaned_data or form.cleaned_data['finish_position'] is None:
+                            raise forms.ValidationError("Every entry needs a 'finish position'")
+                        else:
+                            if form.cleaned_data['finish_position'] in finish_positions:
+                                raise forms.ValidationError("Every 'finish position' needs to be unique ")
+                            if not 0 < form.cleaned_data['finish_position'] <= num_entries:
+                                raise forms.ValidationError(f"Finish position {form.cleaned_data['finish_position']} needs to be between 1 and {num_entries} (The number of race entries)")
 
-                    qualifying_positions.add(form.cleaned_data['qualifying_position'])
-                    finish_positions.add(form.cleaned_data['finish_position'])
+                            finish_positions.add(form.cleaned_data['finish_position'])
 
-                    print(qualifying_positions)
-                    print(finish_positions)
+                        if 'qualifying_position' not in form.cleaned_data or form.cleaned_data['qualifying_position'] is None:
+                            raise forms.ValidationError("Every entry needs a 'qualifying position'")
+                        else:
+                            if form.cleaned_data['qualifying_position'] in qualifying_positions:
+                                raise forms.ValidationError("Every 'qualifying position' needs to be unique ")
+                            if not 0 < form.cleaned_data['qualifying_position'] <= num_entries:
+                                raise forms.ValidationError(f"Qualifying position {form.cleaned_data['qualifying_position']} needs to be between 1 and {num_entries} (The number of race entries)")
 
-                    # Bot
-                    if form.cleaned_data['bot']:
-                        form.cleaned_data['driver'] = None
-                        form.cleaned_data['team'] = None
-                    else:
+                            qualifying_positions.add(form.cleaned_data['qualifying_position'])
+
                         if not (form.cleaned_data['driver'] and form.cleaned_data['team']):
                             raise forms.ValidationError(f"Not all non-bot entries have a driver or a team.")
+
+                    # Bot
+                    else:
+                        form.instance.driver = None
+                        form.instance.team = None
+                    
+            except AttributeError:
+                pass
+        # Pass 2
+        leftover_quali = sorted(list(set(range(1,num_entries+1)).difference(qualifying_positions)))
+        print('leftover_quali', leftover_quali)
+        i = 0
+        for form in self.forms:
+            try:
+                if form.cleaned_data:
+                    # Bot quali position
+                    if form.cleaned_data['bot']:
+                        print(form.cleaned_data['qualifying_position'])
+                        if form.cleaned_data['qualifying_position'] is None:
+                            form.instance.qualifying_position = leftover_quali[i]
+                            i += 1
+                        print(form.cleaned_data['qualifying_position'])
+                    
                     
             except AttributeError:
                 pass

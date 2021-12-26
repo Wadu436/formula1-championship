@@ -71,18 +71,15 @@ class RaceEntryInlineFormset(forms.models.BaseInlineFormSet):
                 pass
         # Pass 2
         leftover_quali = sorted(list(set(range(1,num_entries+1)).difference(qualifying_positions)))
-        print('leftover_quali', leftover_quali)
         i = 0
         for form in self.forms:
             try:
                 if form.cleaned_data:
                     # Bot quali position
                     if form.cleaned_data['bot']:
-                        print(form.cleaned_data['qualifying_position'])
                         if form.cleaned_data['qualifying_position'] is None:
                             form.instance.qualifying_position = leftover_quali[i]
                             i += 1
-                        print(form.cleaned_data['qualifying_position'])
                     
                     
             except AttributeError:

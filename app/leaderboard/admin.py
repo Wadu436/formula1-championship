@@ -109,7 +109,7 @@ class RaceEntryInlineFormset(forms.models.BaseInlineFormSet):
             try:
                 if form.cleaned_data:
                     # Bot quali position
-                    if form.cleaned_data['bot']:
+                    if form.instance.bot:
                         if form.cleaned_data['qualifying_position'] is None:
                             form.instance.qualifying_position = leftover_quali[i]
                             i += 1

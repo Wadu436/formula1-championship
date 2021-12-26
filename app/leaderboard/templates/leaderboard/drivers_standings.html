@@ -30,8 +30,7 @@
                     <tr class="leaderboard-row">
                         <td class="align-middle fw-lighter">{{forloop.counter}}</td>
                         <td class="align-middle">{{driver.name}}</td>
-                        <td class="align-middle fw-lighter">{{driver.country.unicode_flag}}
-                            {{driver.country.ioc_code}}</td>
+                        <td class="align-middle fw-lighter"><i class="{{ driver.country.flag_css }}"></i> {{driver.country.ioc_code}}</td>
                         <td class="align-middle" style="height: 100%;">
                             <div class="d-inline-flex align-items-center" style="height: 2rem;">
                                 <span class="team-color-bar mx-2" style="background-color: {{driver.team.color}};"></span>

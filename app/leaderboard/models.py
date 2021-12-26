@@ -328,7 +328,7 @@ class RaceEntry(models.Model):
         validators=[MinValueValidator(1)],
     )
 
-    best_lap_time = models.DurationField()
+    best_lap_time = models.DurationField(null=True, blank=True)
 
     pit_stops = models.IntegerField(default=1, validators=[MinValueValidator(0)],)
 

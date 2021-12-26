@@ -65,8 +65,8 @@ class RaceEntryInlineFormset(forms.models.BaseInlineFormSet):
                         form.instance.driver = None
                         form.instance.team = None
                         form.instance.bot = True
-
-                    if not form.cleaned_data['bot']:
+                        
+                    elif not form.cleaned_data['bot']:
                         if 'finish_position' not in form.cleaned_data or form.cleaned_data['finish_position'] is None:
                             raise forms.ValidationError("Every entry needs a 'finish position'")
                         else:

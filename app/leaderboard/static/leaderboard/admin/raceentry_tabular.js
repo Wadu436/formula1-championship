@@ -42,10 +42,12 @@
         updateOnChange();
 
         // Set finish position
-        $(this).find("td.field-finish_position > input")[0].value = $(this)
-          .parent()
-          .children()
-          .filter(".dynamic-race_entries").length;
+        if (!$(this).find("td.field-finish_position > input")[0].value) {
+          $(this).find("td.field-finish_position > input")[0].value = $(this)
+            .parent()
+            .children()
+            .filter(".dynamic-race_entries").length;
+        }
       }
     );
   });

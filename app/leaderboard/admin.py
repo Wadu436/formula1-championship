@@ -36,9 +36,13 @@ class RaceEntryInlineFormset(forms.models.BaseInlineFormSet):
             try:
                 if form.cleaned_data:
                     # Validate common
-                    if 'finish_position' not in form.cleaned_data or not 0 < form.cleaned_data['finish_position'] <= num_entries:
+                    if 'finish_position' not in form.cleaned_data:
+                        raise forms.ValidationError("Every entry needs a 'finish position'")
+                    if not 0 < form.cleaned_data['finish_position'] <= num_entries:
                         raise forms.ValidationError(f"Finish position {form.cleaned_data['finish_position']} needs to be between 1 and {num_entries} (The number of race entries)")
-                    if 'qualifying_position' not in form.cleaned_data or not 0 < form.cleaned_data['qualifying_position'] <= num_entries:
+                    if 'qualifying_position' not in form.cleaned_data:
+                        raise forms.ValidationError("Every entry needs a 'qualifying position'")
+                    if not 0 < form.cleaned_data['qualifying_position'] <= num_entries:
                         raise forms.ValidationError(f"Qualifying position {form.cleaned_data['qualifying_position']} needs to be between 1 and {num_entries} (The number of race entries)")
 
                     # Bot

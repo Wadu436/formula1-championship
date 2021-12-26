@@ -35,6 +35,9 @@ class Track(models.Model):
     def fastest_laps(self) -> QuerySet["RaceEntry"]:
         return RaceEntry.objects.filter(race__track=self).order_by("best_lap_time")
 
+    class Meta:
+        ordering = ('location',)
+
 
 class Team(models.Model):
     name = models.CharField(max_length=64)
@@ -44,6 +47,9 @@ class Team(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+    class Meta:
+        ordering = ('name',)
 
 
 class Driver(models.Model):
@@ -62,6 +68,9 @@ class Driver(models.Model):
             "team": self.team.pk if self.team else None,
         }
         return data
+
+    class Meta:
+        ordering = ('name',)
 
 class Championship(models.Model):
     name = models.CharField(max_length=64)
@@ -128,6 +137,7 @@ class Championship(models.Model):
 
     class Meta:
         get_latest_by = "start_date"
+        ordering = ('start_date',)
 
 class Race(models.Model):
     class RaceLength(models.TextChoices):
@@ -295,6 +305,9 @@ class Race(models.Model):
             total_points[fastest_entry] += 1
 
         return [(entry, total_points[entry]) for entry in entries]
+
+    class Meta:
+        ordering = ('championship', 'championship_order')
         
 
 
@@ -375,7 +388,9 @@ class RaceEntry(models.Model):
             return f"P{self.finish_position}: {self.driver}"
         else:
             return f"P{self.finish_position}: Bot"
-
+        
+    class Meta:
+        ordering = ('race', 'finish_position')
 
 class DNAEntry(models.Model):
     race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name="dna_entries")
@@ -388,17 +403,29 @@ class DNAEntry(models.Model):
 
     def __str__(self):
         return f"DNA: {self.driver}"
+    
+    class Meta:
+        ordering = ('race',)
 
 class RuleChapter(models.Model):
     number=models.IntegerField()
     name=models.CharField(max_length=64)
+
+    class Meta:
+        ordering = ('number',)
 
 class RuleEntry(models.Model):
     chapter=models.ForeignKey(RuleChapter, on_delete=models.RESTRICT, related_name="entries")
     number=models.IntegerField()
     text=models.TextField()
 
+    class Meta:
+        ordering = ('chapter', 'number')
+
 class ConstructorMultiplier(models.Model):
     championship=models.ForeignKey(Championship, on_delete=models.CASCADE, related_name="multipliers")
     constructor=models.ForeignKey(Team, on_delete=models.RESTRICT, related_name="multipliers" )
     multiplier=models.FloatField()
+
+    class Meta:
+        ordering = ('championship', 'constructor')

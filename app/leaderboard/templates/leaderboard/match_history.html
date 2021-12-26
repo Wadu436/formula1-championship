@@ -38,13 +38,11 @@
 
                     {% if not entry.bot %}
                     {% alias entry.driver.name as name %}
-                    {% alias entry.driver.country.unicode_flag as nationality_flag%}
                     {% alias entry.driver.country.ioc_code as nationality%}
                     {% alias entry.team.color as team_color%}
                     {% alias entry.team as team%}
                     {% else %}
                     {% alias "Bot" as name %}
-                    {% alias "🤖" as nationality_flag%}
                     {% alias "BOT" as nationality %}
                     {% alias "pink" as team_color %}
                     {% alias "Dutcho" as team %}
@@ -60,7 +58,12 @@
                         {% endif %}>
                         <td class="align-middle fw-lighter">{{entry.finish_position}}</td>
                         <td class="align-middle">{{name}}</td>
-                        <td class="align-middle fw-lighter">{{nationality_flag}}
+                        <td class="align-middle fw-lighter">
+                            {% if not entry.bot %}
+                            <i class="{{ entry.driver.country.flag_css }}"></i>
+                            {% else %}
+                            🤖
+                            {% endif %}
                             {{nationality}}</td>
                         <td class="align-middle" style="height: 100%;">
                             <div class="d-inline-flex align-items-center" style="height: 2rem;">

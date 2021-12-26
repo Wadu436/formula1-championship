@@ -51,9 +51,13 @@ urlpatterns = [
         name="rules",
     ),
     path(
-        "/",
+        "match_history/<int:race_id>/", 
+        views.match_history, 
+        name="match_history"
+    ),
+    path(
+        "",
         views.latest_drivers_standings,
         name="index",
     ),
-    path("match_history/<int:race_id>", views.match_history, name="match_history"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

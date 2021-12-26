@@ -32,8 +32,9 @@
                         <td class="align-middle" style="height: 2rem;">
                             <span class="team-color-bar mx-2" style="background-color: {{team.color}};"></span>
                         </td>
-                        <td class="align-middle" style="height: 100%;">{{team.name}}</td>                        
-                        <td class="align-middle fw-lighter">{{team.country.unicode_flag}}{{team.country.ioc_code}}</td>
+                        <td class="align-middle" style="height: 100%;">{{team.name}}</td>
+                        <td class="align-middle fw-lighter"><i
+                                class="{{ team.country.flag_css }}"></i>{{team.country.ioc_code}}</td>
                         <td class="align-middle fw-lighter">{{score}}</td>
                     </tr>
                     {% endfor %}

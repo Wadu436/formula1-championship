@@ -162,6 +162,8 @@ class Race(models.Model):
         choices=RaceLength.choices,
     )
 
+    driver_of_the_day = models.ForeignKey(Driver, on_delete=models.RESTRICT, related_name='driver_of_the_day_set', null=True, blank=True)
+
     class Meta:
         constraints = [
             models.UniqueConstraint(

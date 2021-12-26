@@ -9,8 +9,19 @@
 <div class="d-flex flex-column align-items-center mt-3 mx-0" style="width: 100%;">
     <div class="fw-lighter fs-1">{{ race.championship }} Round {{ race.championship_order }}</div>
     <div class="fw-lighter fs-3">Match History</div>
-    <div class="fw-lighter fs-3"><i class="flag2x {{ race.track.country.flag_css }}"></i> {{ race.track.location }} -
-        {{ race.track.name }} - {{ race.laps }} laps</div>
+    <div class="fw-lighter fs-3 d-flex align-items-center justify-content-between col-8">
+        {% if previous_race and previous_race.finished %}
+        <div><a href="{% url 'match_history' previous_race.id%}"><img src="{% static 'leaderboard/left-arrow.svg' %}" style="height: 2rem; width: 2rem;"></img></a></div>
+        {% else %}
+        <div style="height: 2rem; width: 2rem;"></div>
+        {% endif %}
+        <div><i class="flag2x {{ race.track.country.flag_css }}"></i> {{ race.track.location }} - {{ race.track.name }} - {{ race.laps }} laps</div>
+        {% if next_race and next_race.finished %}
+        <div><a href="{% url 'match_history' next_race.id%}"><img src="{% static 'leaderboard/left-arrow.svg' %}" style="height: 2rem; width: 2rem; transform: rotate(180deg);"></img></a></div>
+        {% else %}
+        <div style="height: 2rem; width: 2rem;"></div>
+        {% endif %}
+    </div>
     <div class="col-8">
         <div>
             <table class="table table-striped leaderboard-table table-borderless" style="font-size: 1rem;">

@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -86,14 +87,18 @@ def track_detail(request, track_id):
 
 
 def match_history(request, race_id):
-    race = Race.objects.filter(id=race_id).first()
-    if race:
+    race: Optional[Race] = Race.objects.filter(id=race_id).first()
+    if race is not None:
+        previous_race = Race.objects.filter(championship=race.championship, championship_order=race.championship_order-1).first()
+        next_race = Race.objects.filter(championship=race.championship, championship_order=race.championship_order+1).first()
         context = {
             "race": race,
             "current_championship": race.championship,
             "championships": Championship.objects.all(),
             "in_championship": True,
-            "fastest_lap": race.race_entries.order_by("best_lap_time").first()
+            "fastest_lap": race.race_entries.order_by("best_lap_time").first(),
+            "previous_race": previous_race,
+            "next_race": next_race,
         }
         return render(request, "leaderboard/match_history.html", context=context)
     else:

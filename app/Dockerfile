@@ -53,5 +53,6 @@ RUN chmod +x ./entrypoint.prod.sh
 USER app
 
 RUN mkdir $APP_HOME/staticfiles
+RUN mkdir $APP_HOME/mediafiles
 
 ENTRYPOINT ["./entrypoint.prod.sh"]

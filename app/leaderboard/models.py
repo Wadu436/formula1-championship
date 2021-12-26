@@ -275,17 +275,12 @@ class Race(models.Model):
         }
 
         # Get entries
-        dna_entries: QuerySet[RaceEntry] = self.dna_entries.all()
-        player_entries: QuerySet[RaceEntry] = self.race_entries.filter(bot=False)
-        bot_entries: QuerySet[RaceEntry] = self.race_entries.filter(bot=True)
         entries: QuerySet[RaceEntry] = self.race_entries.order_by('finish_position')
 
         fastest_entry: RaceEntry = self.race_entries.order_by("best_lap_time").first()
 
-        num_entries = len(dna_entries) + len(player_entries)
-
-        if num_entries == 0 or self.finished == False:
-            return (dict(), dict())
+        if self.finished == False:
+            return []
 
         # Calculate Points
         total_points = {

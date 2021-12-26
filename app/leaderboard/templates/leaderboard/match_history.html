@@ -58,7 +58,13 @@
                         {% elif entry.driver == race.driver_of_the_day and not entry.bot %}
                         style="background-image: linear-gradient(90deg, rgba(0,82,255,0.25) 0%, rgba(255,255,255,0) 100%);"
                         {% endif %}>
-                        <td class="align-middle fw-lighter">{{entry.finish_position}}</td>
+                        <td class="align-middle fw-lighter">
+                            {% if entry.dnf %}
+                            DNF
+                            {% else %}
+                            {{entry.finish_position}}
+                            {% endif %}
+                        </td>
                         <td class="align-middle">{{name}}</td>
                         <td class="align-middle fw-lighter">{{nationality_flag}}
                             {{nationality}}</td>

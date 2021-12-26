@@ -394,3 +394,8 @@ class RuleEntry(models.Model):
     chapter=models.ForeignKey(RuleChapter, on_delete=models.RESTRICT, related_name="entries")
     number=models.IntegerField()
     text=models.TextField()
+
+class ConstructorMultiplier(models.Model):
+    championship=models.ForeignKey(Championship, on_delete=models.CASCADE, related_name="multipliers")
+    constructor=models.ForeignKey(Team, on_delete=models.RESTRICT, related_name="multipliers" )
+    multiplier=models.FloatField()

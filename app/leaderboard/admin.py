@@ -15,6 +15,9 @@ class TeamAdmin(admin.ModelAdmin):
 class TrackAdmin(admin.ModelAdmin):
     list_display = ("location", "name")
 
+class ConstructorMultiplierInline(admin.TabularInline):
+    model = models.ConstructorMultiplier
+    extra = 0
 
 @admin.register(models.Championship, site=admin.site)
 class ChampionshpipAdmin(admin.ModelAdmin):
@@ -22,6 +25,7 @@ class ChampionshpipAdmin(admin.ModelAdmin):
     formfield_overrides = {
         db.models.ManyToManyField: {'widget': CheckboxSelectMultiple},
     }
+    inlines=[ConstructorMultiplierInline]
 
 @admin.register(models.Driver, site=admin.site)
 class DriverAdmin(admin.ModelAdmin):

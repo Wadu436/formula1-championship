@@ -4,23 +4,41 @@ from django.forms.widgets import CheckboxSelectMultiple
 
 from . import models
 
+class ModelAdminWithoutRelatedEdits(admin.ModelAdmin):
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        for field in form.base_fields.values():
+            field.widget.can_add_related = False
+            field.widget.can_change_related = False
+            field.widget.can_delete_related = False
+        return form
 
 # Register your models here.
 @admin.register(models.Team, site=admin.site)
-class TeamAdmin(admin.ModelAdmin):
+class TeamAdmin(ModelAdminWithoutRelatedEdits):
     list_display = ("name",)
 
 
 @admin.register(models.Track, site=admin.site)
-class TrackAdmin(admin.ModelAdmin):
+class TrackAdmin(ModelAdminWithoutRelatedEdits):
     list_display = ("location", "name")
+    
 
 class ConstructorMultiplierInline(admin.TabularInline):
     model = models.ConstructorMultiplier
     extra = 0
 
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        for field in formset.form.base_fields.values():
+            field.widget.can_add_related = False
+            field.widget.can_change_related = False
+            field.widget.can_delete_related = False
+        return formset
+
+
 @admin.register(models.Championship, site=admin.site)
-class ChampionshpipAdmin(admin.ModelAdmin):
+class ChampionshpipAdmin(ModelAdminWithoutRelatedEdits):
     list_display = ("name",)
     formfield_overrides = {
         db.models.ManyToManyField: {'widget': CheckboxSelectMultiple},
@@ -28,7 +46,7 @@ class ChampionshpipAdmin(admin.ModelAdmin):
     inlines=[ConstructorMultiplierInline]
 
 @admin.register(models.Driver, site=admin.site)
-class DriverAdmin(admin.ModelAdmin):
+class DriverAdmin(ModelAdminWithoutRelatedEdits):
     list_display = ("name", "team")
 
 class RaceEntryInlineFormset(forms.models.BaseInlineFormSet):
@@ -106,6 +124,14 @@ class RaceEntryInline(admin.TabularInline):
             "leaderboard/admin/raceentry_tabular.js",
         )
 
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        for field in formset.form.base_fields.values():
+            field.widget.can_add_related = False
+            field.widget.can_change_related = False
+            field.widget.can_delete_related = False
+        return formset
+
 class DNAEntryInline(admin.TabularInline):
     model = models.DNAEntry
     extra = 0
@@ -114,9 +140,17 @@ class DNAEntryInline(admin.TabularInline):
             "leaderboard/jquery-3.6.0.min.js",
             "leaderboard/admin/raceentry_tabular.js",
         )
+    
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        for field in formset.form.base_fields.values():
+            field.widget.can_add_related = False
+            field.widget.can_change_related = False
+            field.widget.can_delete_related = False
+        return formset
 
 @admin.register(models.Race, site=admin.site)
-class RaceAdmin(admin.ModelAdmin):
+class RaceAdmin(ModelAdminWithoutRelatedEdits):
     list_display = ("__str__", "championship", "track")
     list_filter = ("championship", "track")
     inlines = [
@@ -128,8 +162,16 @@ class RuleEntryInline(admin.TabularInline):
     model = models.RuleEntry
     extra = 0
 
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        for field in formset.form.base_fields.values():
+            field.widget.can_add_related = False
+            field.widget.can_change_related = False
+            field.widget.can_delete_related = False
+        return formset
+
 @admin.register(models.RuleChapter, site=admin.site)
-class RulesAdmin(admin.ModelAdmin):
+class RulesAdmin(ModelAdminWithoutRelatedEdits):
     list_display = ("name",)
     name = "Rules"
     inlines = [RuleEntryInline, ]

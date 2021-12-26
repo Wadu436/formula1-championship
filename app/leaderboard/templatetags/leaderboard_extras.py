@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+import markdown
 from django import template
 
 register = template.Library()
@@ -43,3 +44,9 @@ def tires(tire_string):
                 case "I":
                     tires.append('leaderboard/tires/inter.png') 
     return tires
+
+@register.filter
+def parse_markdown(text):
+    md = markdown.Markdown()
+    html = md.convert(text)
+    return html

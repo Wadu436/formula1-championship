@@ -11,6 +11,7 @@ psycopg2-binary = "*"
 gunicorn = "*"
 pillow = "*"
 pytz = "*"
+markdown = "*"
 
 [dev-packages]
 black = "*"

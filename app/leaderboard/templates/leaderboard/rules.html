@@ -19,7 +19,7 @@
         {% for entry in rule.entries.all %}
             <div class='row'>
                 <div class='col col-sm-auto'>{{rule.number}}.{{entry.number}}</div>
-                <div class='col'>{{entry.text|linebreaks}}</div>
+                <div class='col'>{{entry.text|parse_markdown|safe}}</div>
             </div>
         {% endfor %}
         </div>

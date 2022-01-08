@@ -235,11 +235,12 @@ class Race(models.Model):
 
         # Calculate Team Scores
         team_points: dict[Team, int | Decimal] = {
-            entry.team: 0 for entry in chain(player_entries, dna_entries)
+            entry.team: 0 for entry in chain(player_entries, dna_entries) if entry.team
         }
 
         for entry in chain(player_entries, dna_entries):
-            team_points[entry.team] += player_points[entry.driver]
+            if entry.team:
+                team_points[entry.team] += player_points[entry.driver]
 
         return (player_points, team_points)
 

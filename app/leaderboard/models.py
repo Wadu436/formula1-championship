@@ -58,6 +58,7 @@ class Driver(models.Model):
     nickname = models.CharField(max_length=64, null=True, blank=True)
     team = models.ForeignKey(Team, null=True, blank=True, on_delete=models.RESTRICT)
     country = CountryField()
+    number = models.IntegerField(verbose_name="Driver Number", null=True, blank=True, unique=True)
 
     def __str__(self):
         return f"{self.name}"

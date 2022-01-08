@@ -4,6 +4,7 @@ from django.forms.widgets import CheckboxSelectMultiple
 
 from . import models
 
+
 class ModelAdminWithoutRelatedEdits(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -47,7 +48,7 @@ class ChampionshpipAdmin(ModelAdminWithoutRelatedEdits):
 
 @admin.register(models.Driver, site=admin.site)
 class DriverAdmin(ModelAdminWithoutRelatedEdits):
-    list_display = ("name", "team")
+    list_display = ("name", "nickname", "team", "country", "number")
 
 class RaceEntryInlineFormset(forms.models.BaseInlineFormSet):
     def clean(self):

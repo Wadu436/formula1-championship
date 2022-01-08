@@ -7,3 +7,4 @@ db.sqlite3
 .env.prod
 .env.prod.db
 app/media
+backup

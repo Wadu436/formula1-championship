@@ -121,17 +121,19 @@ class Championship(models.Model):
         total_points: dict["Team", int | Decimal] = defaultdict(int)
         for race in team_scores:
             for team, points in race.items():
-                total_points[team] += points
-
+                if team:
+                    total_points[team] += points
+        
         for driver in self.drivers.all():
             if driver.team not in total_points:
-                total_points[driver.team] = 0
-
+                if driver.team:
+                    total_points[driver.team] = 0
+        
         for multiplier in self.multipliers.all():
             total_points[multiplier.constructor] *= multiplier.multiplier
 
         total_points_list = [(team, points) for team, points in total_points.items()]
-
+        
         total_points_list.sort(key=lambda item: (-item[1], item[0].name))
 
         return total_points_list

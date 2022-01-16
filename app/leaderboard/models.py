@@ -166,7 +166,7 @@ class Championship(models.Model):
 class ChampionshipDriver(models.Model):
     championship = models.ForeignKey(Championship, on_delete=models.CASCADE)
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
-    team = models.ForeignKey(Team, on_delete=models.RESTRICT)
+    team = models.ForeignKey(Team, on_delete=models.RESTRICT, blank=True, null=True)
 
 
 class Race(models.Model):

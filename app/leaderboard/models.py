@@ -37,7 +37,7 @@ class Track(models.Model):
         return RaceEntry.objects.filter(race__track=self).order_by("best_lap_time")
 
     class Meta:
-        ordering = ('location',)
+        ordering = ("location",)
 
 
 class Team(models.Model):
@@ -50,7 +50,7 @@ class Team(models.Model):
         return f"{self.name}"
 
     class Meta:
-        ordering = ('name',)
+        ordering = ("name",)
 
 
 class Driver(models.Model):
@@ -58,7 +58,9 @@ class Driver(models.Model):
     nickname = models.CharField(max_length=64, null=True, blank=True)
     team = models.ForeignKey(Team, null=True, blank=True, on_delete=models.RESTRICT)
     country = CountryField()
-    number = models.IntegerField(verbose_name="Driver Number", null=True, blank=True, unique=True)
+    number = models.IntegerField(
+        verbose_name="Driver Number", null=True, blank=True, unique=True
+    )
 
     def __str__(self):
         return f"{self.name}"
@@ -72,19 +74,33 @@ class Driver(models.Model):
         return data
 
     class Meta:
-        ordering = ('name',)
+        ordering = ("name",)
+
 
 class Championship(models.Model):
     name = models.CharField(max_length=64)
     start_date = models.DateField()
-    drivers = models.ManyToManyField(Driver, blank=True)
+    # drivers = models.ManyToManyField(Driver, blank=True)
+    drivers = models.ManyToManyField(Driver, blank=True, through="ChampionshipDriver")
 
     def __str__(self):
         return f"{self.name}"
 
+    def get_driver_team_map(self) -> dict[Driver, Team]:
+         # Initialize with base teams
+        driver_team_map = {driver: driver.team for driver in Driver.objects.all()}
+        
+        # Overwrite with championship teams
+        for driver in self.drivers.all():
+            cd = ChampionshipDriver.objects.get(driver=driver, championship=self)
+            if cd.team:
+                driver_team_map[driver] = cd.team
+
+        return driver_team_map
+
     def get_drivers_standings(
         self, first_race=None, last_race=None
-    ) -> list[tuple[Driver, int | Decimal]]:
+    ) -> list[tuple[Driver, Team, int | Decimal]]:
         first_race = first_race or 0
         last_race = last_race or self.races.count()
 
@@ -101,11 +117,13 @@ class Championship(models.Model):
             if driver not in total_points:
                 total_points[driver] = 0
 
+        driver_team_map = self.get_driver_team_map()
+
         total_points_list = [
-            (driver, points) for driver, points in total_points.items()
+            (driver, driver_team_map[driver], points) for driver, points in total_points.items()
         ]
 
-        total_points_list.sort(key=lambda item: (-item[1], item[0].name))
+        total_points_list.sort(key=lambda item: (-item[2], item[0].name))
 
         return total_points_list
 
@@ -119,29 +137,37 @@ class Championship(models.Model):
             race.get_points()[1] for race in self.races.all()
         ]
 
+        driver_team_map = self.get_driver_team_map()
+
         total_points: dict["Team", int | Decimal] = defaultdict(int)
         for race in team_scores:
             for team, points in race.items():
                 if team:
                     total_points[team] += points
-        
+
         for driver in self.drivers.all():
-            if driver.team not in total_points:
-                if driver.team:
-                    total_points[driver.team] = 0
-        
+            if driver_team_map[driver] and driver_team_map[driver] not in total_points:
+                total_points[driver_team_map[driver]] = 0
+
         for multiplier in self.multipliers.all():
             total_points[multiplier.constructor] *= multiplier.multiplier
 
         total_points_list = [(team, points) for team, points in total_points.items()]
-        
+
         total_points_list.sort(key=lambda item: (-item[1], item[0].name))
 
         return total_points_list
 
     class Meta:
         get_latest_by = "start_date"
-        ordering = ('start_date',)
+        ordering = ("start_date",)
+
+
+class ChampionshipDriver(models.Model):
+    championship = models.ForeignKey(Championship, on_delete=models.CASCADE)
+    driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.RESTRICT)
+
 
 class Race(models.Model):
     class RaceLength(models.TextChoices):
@@ -166,7 +192,13 @@ class Race(models.Model):
         choices=RaceLength.choices,
     )
 
-    driver_of_the_day = models.ForeignKey(Driver, on_delete=models.RESTRICT, related_name='driver_of_the_day_set', null=True, blank=True)
+    driver_of_the_day = models.ForeignKey(
+        Driver,
+        on_delete=models.RESTRICT,
+        related_name="driver_of_the_day_set",
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         constraints = [
@@ -181,7 +213,9 @@ class Race(models.Model):
             f"{self.championship} Race {self.championship_order}: {self.track.location}"
         )
 
-    def get_points(self) -> tuple[dict[Driver, int | Decimal], dict[Team, int | Decimal]]:
+    def get_points(
+        self,
+    ) -> tuple[dict[Driver, int | Decimal], dict[Team, int | Decimal]]:
         SCORING_SYSTEM = {
             1: 25,
             2: 18,
@@ -226,7 +260,9 @@ class Race(models.Model):
         if len(dna_entries) > 0:
             # Sum of the first #DNA_ENTRIES bot scores
             total_bot_points = sum(sorted(bot_points, reverse=True)[: len(dna_entries)])
-            dna_score = Decimal(total_bot_points) / Decimal(2 * len(dna_entries))  # DNA Drivers receive half points
+            dna_score = Decimal(total_bot_points) / Decimal(
+                2 * len(dna_entries)
+            )  # DNA Drivers receive half points
             dna_score = round(dna_score, 1)
             if dna_score > 0:
                 for entry in dna_entries:
@@ -234,7 +270,6 @@ class Race(models.Model):
             else:
                 for entry in dna_entries:
                     player_points[entry.driver] = 0
-            
 
         # Calculate Team Scores
         team_points: dict[Team, int | Decimal] = {
@@ -263,7 +298,7 @@ class Race(models.Model):
                 return track.medium_laps
             case "L":
                 return track.long_laps
-            case "F":
+            case _:
                 return track.full_laps
 
     def podium(self) -> list[Optional["RaceEntry"]]:
@@ -293,7 +328,7 @@ class Race(models.Model):
         }
 
         # Get entries
-        entries: QuerySet[RaceEntry] = self.race_entries.order_by('finish_position')
+        entries: QuerySet[RaceEntry] = self.race_entries.order_by("finish_position")
 
         fastest_entry: RaceEntry = self.race_entries.order_by("best_lap_time").first()
 
@@ -312,8 +347,7 @@ class Race(models.Model):
         return [(entry, total_points[entry]) for entry in entries]
 
     class Meta:
-        ordering = ('championship', 'championship_order')
-        
+        ordering = ("championship", "championship_order")
 
 
 class RaceEntry(models.Model):
@@ -345,18 +379,22 @@ class RaceEntry(models.Model):
         validators=[MinValueValidator(1)],
         blank=True,
     )
-    grid_penalty = models.IntegerField(default=0, validators=[MinValueValidator(0)],)
+    grid_penalty = models.IntegerField(
+        default=0,
+        validators=[MinValueValidator(0)],
+    )
     finish_position = models.IntegerField(
         validators=[MinValueValidator(1)],
     )
 
     best_lap_time = models.DurationField(null=True, blank=True)
 
-    pit_stops = models.IntegerField(default=1, validators=[MinValueValidator(0)],)
-
-    dnf = models.BooleanField(
-        verbose_name="Did Not Finish", default=False
+    pit_stops = models.IntegerField(
+        default=1,
+        validators=[MinValueValidator(0)],
     )
+
+    dnf = models.BooleanField(verbose_name="Did Not Finish", default=False)
 
     tires = models.CharField(max_length=32, null=True, blank=True)
 
@@ -366,17 +404,19 @@ class RaceEntry(models.Model):
                 fields=["race", "driver"], name="raceentry_unique_driver_race"
             ),
             models.UniqueConstraint(
-                fields=["race", "qualifying_position"], name="raceentry_unique_driver_qualifying_position"
+                fields=["race", "qualifying_position"],
+                name="raceentry_unique_driver_qualifying_position",
             ),
             models.UniqueConstraint(
-                fields=["race", "finish_position"], name="raceentry_unique_driver_finish_position"
+                fields=["race", "finish_position"],
+                name="raceentry_unique_driver_finish_position",
             ),
             models.CheckConstraint(
                 check=(
                     Q(
                         bot=True,
                         driver__isnull=True,
-                        team__isnull=True,   
+                        team__isnull=True,
                     )
                     | Q(
                         bot=False,
@@ -393,9 +433,10 @@ class RaceEntry(models.Model):
             return f"P{self.finish_position}: {self.driver}"
         else:
             return f"P{self.finish_position}: Bot"
-        
+
     class Meta:
-        ordering = ('race', 'finish_position')
+        ordering = ("race", "finish_position")
+
 
 class DNAEntry(models.Model):
     race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name="dna_entries")
@@ -408,29 +449,38 @@ class DNAEntry(models.Model):
 
     def __str__(self):
         return f"DNA: {self.driver}"
-    
+
     class Meta:
-        ordering = ('race',)
+        ordering = ("race",)
+
 
 class RuleChapter(models.Model):
-    number=models.IntegerField()
-    name=models.CharField(max_length=64)
+    number = models.IntegerField()
+    name = models.CharField(max_length=64)
 
     class Meta:
-        ordering = ('number',)
+        ordering = ("number",)
+
 
 class RuleEntry(models.Model):
-    chapter=models.ForeignKey(RuleChapter, on_delete=models.RESTRICT, related_name="entries")
-    number=models.IntegerField()
-    text=models.TextField()
+    chapter = models.ForeignKey(
+        RuleChapter, on_delete=models.RESTRICT, related_name="entries"
+    )
+    number = models.IntegerField()
+    text = models.TextField()
 
     class Meta:
-        ordering = ('chapter', 'number')
+        ordering = ("chapter", "number")
+
 
 class ConstructorMultiplier(models.Model):
-    championship=models.ForeignKey(Championship, on_delete=models.CASCADE, related_name="multipliers")
-    constructor=models.ForeignKey(Team, on_delete=models.RESTRICT, related_name="multipliers" )
-    multiplier=models.FloatField()
+    championship = models.ForeignKey(
+        Championship, on_delete=models.CASCADE, related_name="multipliers"
+    )
+    constructor = models.ForeignKey(
+        Team, on_delete=models.RESTRICT, related_name="multipliers"
+    )
+    multiplier = models.FloatField()
 
     class Meta:
-        ordering = ('championship', 'constructor')
+        ordering = ("championship", "constructor")

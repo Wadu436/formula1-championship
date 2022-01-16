@@ -37,14 +37,22 @@ class ConstructorMultiplierInline(admin.TabularInline):
             field.widget.can_delete_related = False
         return formset
 
+class ChampionshipDriverInline(admin.TabularInline):
+    model = models.ChampionshipDriver
+    extra = 0
+
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        for field in formset.form.base_fields.values():
+            field.widget.can_add_related = False
+            field.widget.can_change_related = False
+            field.widget.can_delete_related = False
+        return formset
 
 @admin.register(models.Championship, site=admin.site)
 class ChampionshpipAdmin(ModelAdminWithoutRelatedEdits):
     list_display = ("name",)
-    formfield_overrides = {
-        db.models.ManyToManyField: {'widget': CheckboxSelectMultiple},
-    }
-    inlines=[ConstructorMultiplierInline]
+    inlines=[ChampionshipDriverInline, ConstructorMultiplierInline]
 
 @admin.register(models.Driver, site=admin.site)
 class DriverAdmin(ModelAdminWithoutRelatedEdits):

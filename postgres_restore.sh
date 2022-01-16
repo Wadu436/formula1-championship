@@ -26,4 +26,4 @@ select backup in "${backups[@]}"; do
 done
 
 docker cp $backup $CONTAINER:/db.dump
-docker exec -ti $CONTAINER pg_restore -U $POSTGRES_USER -c -d $POSTGRES_DB db.dump
+docker exec $CONTAINER pg_restore -U $POSTGRES_USER -c -d $POSTGRES_DB db.dump

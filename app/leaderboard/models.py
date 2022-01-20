@@ -34,7 +34,7 @@ class Track(models.Model):
         return f"{self.location}"
 
     def fastest_laps(self) -> QuerySet["RaceEntry"]:
-        return RaceEntry.objects.filter(race__track=self).order_by("best_lap_time")
+        return RaceEntry.objects.filter(race__track=self).exclude(best_lap_time=None).order_by("best_lap_time")
 
     class Meta:
         ordering = ("location",)

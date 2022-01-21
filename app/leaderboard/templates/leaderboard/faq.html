@@ -17,7 +17,7 @@
         {% endif %}
         <div class='mb-4'>
             <div class='row h5'>
-                <div class='col'>{{qa.question}}</div>
+                <div class='col'>{{qa.question|parse_markdown|safe}}</div>
             </div>
             <div class='col'>{{qa.answer|parse_markdown|safe}}</div>
         </div>

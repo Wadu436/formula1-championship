@@ -189,3 +189,8 @@ class RulesAdmin(ModelAdminWithoutRelatedEdits):
     list_display = ("name",)
     name = "Rules"
     inlines = [RuleEntryInline, ]
+
+@admin.register(models.FAQ, site=admin.site)
+class RulesAdmin(ModelAdminWithoutRelatedEdits):
+    list_display = ("question",)
+    name = "FAQ"

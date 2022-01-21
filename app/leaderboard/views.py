@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
-from .models import Championship, Driver, Race, RuleChapter, Track
+from .models import FAQ, Championship, Driver, Race, RuleChapter, Track
 
 
 # API views
@@ -111,6 +111,12 @@ def rules(request):
     }
     return render(request, "leaderboard/rules.html", context=context)
 
+def faq(request):
+    context = {
+        "championships": Championship.objects.all(),
+        "faq": FAQ.objects.all(),
+    }
+    return render(request, "leaderboard/faq.html", context=context)
 
 # Latest redirect views
 def latest_drivers_standings(request):

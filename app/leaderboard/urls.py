@@ -47,14 +47,11 @@ urlpatterns = [
     ),
     path(
         "rules/",
-        views.rules, 
+        views.rules,
         name="rules",
     ),
-    path(
-        "match_history/<int:race_id>/", 
-        views.match_history, 
-        name="match_history"
-    ),
+    path("match_history/<int:race_id>/", views.match_history, name="match_history"),
+    path("faq/", views.faq, name="faq"),
     path(
         "",
         views.latest_drivers_standings,

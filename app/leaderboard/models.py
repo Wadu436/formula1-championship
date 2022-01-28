@@ -484,3 +484,11 @@ class ConstructorMultiplier(models.Model):
 
     class Meta:
         ordering = ("championship", "constructor")
+
+class FAQ(models.Model):
+    order = models.IntegerField()
+    question = models.TextField()
+    answer = models.TextField()
+
+    class Meta:
+        ordering = ("order",)

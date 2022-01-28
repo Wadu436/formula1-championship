@@ -1,0 +1,30 @@
+{% extends "leaderboard/base.html" %}
+
+{% load leaderboard_extras %}
+{% load static %}
+
+
+{% block title %}FAQ{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center mt-3 mx-0" style="width: 100%;">
+    <div class="align-middle fw-lighter fs-1">FAQ</div>
+    <div id="faq" class="col-10 container">
+        {% if faq %}
+        {% for qa in faq %}
+        {% if forloop.counter != 1 %}
+        <hr>
+        {% endif %}
+        <div class='mb-4'>
+            <div class='row h5'>
+                <div class='col'>{{qa.question|parse_markdown|safe}}</div>
+            </div>
+            <div class='col'>{{qa.answer|parse_markdown|safe}}</div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class='fs-4' style="text-align: center;">Nothing to see here...</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

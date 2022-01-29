@@ -52,13 +52,14 @@
                         <div class="fs-6 fw-light">Fastest Laps</div>
                         <div id="podium" class="">
                             {% if last_race %} {% for entry in track.fastest_laps|slice:":3" %}
-                            <div class="d-flex justify-content-between align-items-end">
-                                <div class="me-2 h3">{{ entry.driver.name }}</div>
-                                {% if entry.best_lap_time %}
-                                <div class="me-2 h4">{{ entry.best_lap_time|duration }}</div>
-                                {% else %}
-                                <div class="me-2 h4">-:--.---</div>
-                                {% endif %}
+                            <div class="d-flex justify-content-between align-items-end mb-2">
+                                <div class="m-0 d-flex align-items-end">
+                                    <span class="h3 m-0 me-2">{{ entry.driver.name }}</span>
+                                    <a href="{% url 'match_history' last_race.id %}" class="fs-6 m-0">{{ entry.race.championship.name }} R{{ entry.race.championship_order }}</a>
+                                </div>
+                                <div class="m-0 h4 d-flex align-items-end">
+                                    {% if entry.best_lap_time %} {{ entry.best_lap_time|duration }} {% else %} -:--.--- {% endif %}
+                                </div>
                             </div>
                             {% endfor %} {% else %} <div class="h3">N/A</div> {% endif %}
                         </div>

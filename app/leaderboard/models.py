@@ -160,7 +160,7 @@ class Championship(models.Model):
 
     class Meta:
         get_latest_by = "start_date"
-        ordering = ("start_date",)
+        ordering = ("-start_date",)
 
 
 class ChampionshipDriver(models.Model):

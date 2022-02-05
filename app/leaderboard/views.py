@@ -6,7 +6,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from .models import FAQ, Championship, Driver, Race, RuleChapter, Track
-from .stats import stats_pace
+from .stats import stats_race_table
 
 
 # API views
@@ -126,7 +126,7 @@ def stats(request, championship_id):
             "current_championship": championship,
             "championships": Championship.objects.all(),
             "in_championship": True,
-            "pace_table": stats_pace(championship),
+            "race_table": stats_race_table(championship),
         }
         return render(request, "leaderboard/stats.html", context=context)
     else:

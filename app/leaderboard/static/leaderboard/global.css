@@ -216,4 +216,46 @@ a:hover {
 .pace-average {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
+    padding-right: 0 !important;
+}
+
+.stats-container {
+    padding: 0.5rem;
+    margin: 0.5rem;
+    border: 0.1rem solid lightgray;
+}
+
+.stats-pace-table {
+    margin: 0;
+}
+
+.finish-first {
+    background-color: gold !important;
+}
+
+.finish-second {
+    background-color: silver !important;
+}
+
+.finish-third {
+    background-color: #cd7f32 !important; /* bronze */
+    color: white;
+}
+
+.finish-points {
+    background-color: #d1f3c5 !important;
+}
+
+.finish-no-points {
+    background-color: gray;
+    color: white
+}
+
+.finish-dnf {
+    background-color: #15151d !important;
+    color: white;
+}
+
+.finish-none {
+    background-color: lightgray;
 }

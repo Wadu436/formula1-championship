@@ -1,13 +1,10 @@
-import datetime
-import json
-import math
+
 from collections import defaultdict
 from decimal import Decimal
 from itertools import chain
 from typing import Optional
 
 from colorfield.fields import ColorField
-from django.core import serializers, validators
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Q
@@ -83,18 +80,18 @@ class Championship(models.Model):
     # drivers = models.ManyToManyField(Driver, blank=True)
     drivers = models.ManyToManyField(Driver, blank=True, through="ChampionshipDriver")
 
+    races: QuerySet["Race"]
+
     def __str__(self):
         return f"{self.name}"
 
-    def get_driver_team_map(self) -> dict[Driver, Team]:
+    def get_driver_team_map(self) -> dict[int, Team]:
          # Initialize with base teams
-        driver_team_map = {driver: driver.team for driver in Driver.objects.all()}
-        
-        # Overwrite with championship teams
-        for driver in self.drivers.all():
-            cd = ChampionshipDriver.objects.get(driver=driver, championship=self)
+        driver_team_map = {driver.id: driver.team for driver in Driver.objects.all().select_related('team')}
+
+        for cd in ChampionshipDriver.objects.filter(championship=self).select_related('team'):
             if cd.team:
-                driver_team_map[driver] = cd.team
+                driver_team_map[cd.driver_id] = cd.team
 
         return driver_team_map
 
@@ -104,23 +101,25 @@ class Championship(models.Model):
         first_race = first_race or 0
         last_race = last_race or self.races.count()
 
-        race_scores: list[dict[Driver, int | Decimal]] = [
-            race.get_points()[0] for race in self.races.all()
+        race_scores: list[dict[int, int | Decimal]] = [
+            race.get_points()[0] for race in self.races.all().prefetch_related('dna_entries', 'race_entries')
         ]
 
-        total_points: dict[Driver, int | Decimal] = defaultdict(int)
+        total_points: dict[int, int | Decimal] = defaultdict(int)
         for race in race_scores:
             for driver, points in race.items():
                 total_points[driver] += points
 
-        for driver in self.drivers.all():
+        for driver in self.drivers.all().values_list('id', flat=True):
             if driver not in total_points:
                 total_points[driver] = 0
 
         driver_team_map = self.get_driver_team_map()
 
+        driver_map = {driver.id: driver for driver in Driver.objects.all()}
+
         total_points_list = [
-            (driver, driver_team_map[driver], points) for driver, points in total_points.items()
+            (driver_map[driver], driver_team_map[driver], points) for driver, points in total_points.items()
         ]
 
         total_points_list.sort(key=lambda item: (-item[2], item[1].name if item[1] else None, item[0].name))
@@ -133,26 +132,28 @@ class Championship(models.Model):
         first_race = first_race or 0
         last_race = last_race or self.races.count()
 
-        team_scores: list[dict["Team", int | Decimal]] = [
-            race.get_points()[1] for race in self.races.all()
+        team_scores: list[dict[int, int | Decimal]] = [
+            race.get_points()[1] for race in self.races.all().prefetch_related('dna_entries', 'race_entries')
         ]
 
         driver_team_map = self.get_driver_team_map()
 
-        total_points: dict["Team", int | Decimal] = defaultdict(int)
+        total_points: dict[int, int | Decimal] = defaultdict(int)
         for race in team_scores:
             for team, points in race.items():
                 if team:
                     total_points[team] += points
 
         for driver in self.drivers.all():
-            if driver_team_map[driver] and driver_team_map[driver] not in total_points:
-                total_points[driver_team_map[driver]] = 0
+            if driver_team_map[driver.id] and driver_team_map[driver.id].id not in total_points:
+                total_points[driver_team_map[driver.id].id] = 0
 
         for multiplier in self.multipliers.all():
-            total_points[multiplier.constructor] *= multiplier.multiplier
+            total_points[multiplier.constructor.id] *= multiplier.multiplier
 
-        total_points_list = [(team, points) for team, points in total_points.items()]
+        team_map = {team.id: team for team in Team.objects.all()}
+
+        total_points_list = [(team_map[team], points) for team, points in total_points.items()]
 
         total_points_list.sort(key=lambda item: (-item[1], item[0].name))
 
@@ -200,6 +201,9 @@ class Race(models.Model):
         blank=True,
     )
 
+    race_entries: QuerySet["RaceEntry"]
+    dna_entries: QuerySet["DNAEntry"]
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -215,7 +219,7 @@ class Race(models.Model):
 
     def get_points(
         self,
-    ) -> tuple[dict[Driver, int | Decimal], dict[Team, int | Decimal]]:
+    ) -> tuple[dict[int, int | Decimal], dict[int, int | Decimal]]:
         SCORING_SYSTEM = {
             1: 25,
             2: 18,
@@ -230,17 +234,27 @@ class Race(models.Model):
         }
 
         # Get entries
-        dna_entries: QuerySet[RaceEntry] = self.dna_entries.all()
-        player_entries: QuerySet[RaceEntry] = self.race_entries.filter(bot=False)
-        bot_entries: QuerySet[RaceEntry] = self.race_entries.filter(bot=True)
-        entries = self.race_entries.all()
-
-        fastest_entry: RaceEntry = self.race_entries.order_by("best_lap_time").first()
+        dna_entries: list[RaceEntry] = list(self.dna_entries.all())
+        entries: list[RaceEntry] = list(self.race_entries.all())
+        player_entries = [entry for entry in entries if not entry.bot]
+        bot_entries = [entry for entry in entries if entry.bot]
 
         num_entries = len(dna_entries) + len(player_entries)
 
-        if num_entries == 0 or self.finished == False:
+        if num_entries == 0 or self.finished == False or len(entries)==0:
             return (dict(), dict())
+
+        # In Python
+        # fastest_entry = None
+        # fastest_time = None
+        # for entry in entries:
+        #     if fastest_time is None or (entry.best_lap_time is not None and entry.best_lap_time < fastest_time):
+        #         fastest_entry = entry
+        #         fastest_time = entry.best_lap_time
+        try:
+            fastest_entry = max((entry for entry in entries if entry.best_lap_time is not None), key=lambda e: e.best_lap_time)
+        except ValueError:
+            fastest_entry = entries[0]
 
         # Calculate Points
         total_points = {
@@ -252,7 +266,7 @@ class Race(models.Model):
             total_points[fastest_entry] += 1
 
         player_points: dict[Driver, int | Decimal] = {
-            entry.driver: total_points[entry] for entry in player_entries
+            entry.driver_id: total_points[entry] for entry in player_entries
         }
         bot_points: list[int | Decimal] = [total_points[entry] for entry in bot_entries]
 
@@ -266,19 +280,19 @@ class Race(models.Model):
             dna_score = round(dna_score, 1)
             if dna_score > 0:
                 for entry in dna_entries:
-                    player_points[entry.driver] = dna_score
+                    player_points[entry.driver_id] = dna_score
             else:
                 for entry in dna_entries:
-                    player_points[entry.driver] = 0
+                    player_points[entry.driver_id] = 0
 
         # Calculate Team Scores
         team_points: dict[Team, int | Decimal] = {
-            entry.team: 0 for entry in chain(player_entries, dna_entries) if entry.team
+            entry.team_id: 0 for entry in chain(player_entries, dna_entries) if entry.team_id
         }
 
         for entry in chain(player_entries, dna_entries):
-            if entry.team:
-                team_points[entry.team] += player_points[entry.driver]
+            if entry.team_id:
+                team_points[entry.team_id] += player_points[entry.driver_id]
 
         return (player_points, team_points)
 
@@ -347,7 +361,12 @@ class Race(models.Model):
         return [(entry, total_points[entry]) for entry in entries]
 
     def fastest_lap(self) -> "RaceEntry":
-        return self.race_entries.order_by("best_lap_time").first()
+        entries = self.race_entries.all()
+        try:
+            fastest_entry = max((entry for entry in entries if entry.best_lap_time is not None), key=lambda e: e.best_lap_time)
+        except ValueError:
+            fastest_entry = entries[0]
+        return fastest_entry
 
     class Meta:
         ordering = ("championship", "championship_order")
@@ -359,6 +378,7 @@ class RaceEntry(models.Model):
         on_delete=models.CASCADE,
         related_name="race_entries",
     )
+    race_id: int
     driver = models.ForeignKey(
         Driver,
         on_delete=models.RESTRICT,
@@ -366,6 +386,7 @@ class RaceEntry(models.Model):
         blank=True,
         related_name="race_entries",
     )
+    driver_id: int
     team = models.ForeignKey(
         Team,
         on_delete=models.RESTRICT,
@@ -373,6 +394,7 @@ class RaceEntry(models.Model):
         blank=True,
         related_name="race_entries",
     )
+    team_id: int
 
     bot = models.BooleanField(verbose_name="Is Bot", default=False)
 

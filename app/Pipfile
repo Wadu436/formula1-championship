@@ -12,6 +12,7 @@ gunicorn = "*"
 pillow = "*"
 pytz = "*"
 markdown = "*"
+django-debug-toolbar = "*"
 
 [dev-packages]
 black = "*"

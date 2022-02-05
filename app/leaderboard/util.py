@@ -11,6 +11,6 @@ def timing(f):
         ts = perf_counter()
         result = f(*args, **kw)
         te = perf_counter()
-        logger.info(f'func:{f.__name__} args:[{args}, {kw}] took: {te-ts:2.4f} sec')
+        logger.info(f'func:{f.__name__} args:[{args}, {kw}] took: {te-ts:2.8f} sec')
         return result
     return wrap

@@ -118,8 +118,10 @@ body {
 
 .nav-link {
     color: white;
-    font-weight: bold;
+    font-weight: normal;
+    font-size: 1.2rem;
     text-transform: uppercase;
+    height: fit-content;
 }
 
 .nav-link:hover {
@@ -133,6 +135,15 @@ body {
 
 .navbar-light:hover .navbar-nav:hover .nav-link:hover {
     color:white
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo {
+    margin-right: 2rem;
 }
 
 @media screen and (max-width: 992px) {

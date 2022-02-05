@@ -1,9 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
 
+html {
+    font-size: 15px;
+  }
+
 body {
     font-family: "Roboto", sans-serif !important;
     --bs-primary-rgb: 230,0,0; 
     --bs-primary: #e60000;
+
 }
 
 .team-color-bar {
@@ -258,4 +263,37 @@ a:hover {
 
 .finish-none {
     background-color: lightgray;
+}
+
+.footer-container {
+    margin-top: 2rem;
+    display: flex;
+    background-color: #f0f0f0;
+    color: #6f6f6f;
+    padding: 0.3rem;
+    font-size: small;
+    justify-content: right;
+}
+
+.footer-container a {
+    color: #1f1f1f;
+    text-decoration: none;
+}
+
+.footer-text {
+    margin-right: .6rem;
+    display: flex;
+    align-items: center;
+}
+
+.footer-github {
+    display: flex;
+    align-items: center;
+}
+
+.page-container {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
 }

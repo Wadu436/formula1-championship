@@ -25,6 +25,8 @@
 </head>
 
 <body>
+    <div class="page-container">
+    <div>
     <nav class="navbar navbar-expand-lg bg-primary navbar-light">
         <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
@@ -96,10 +98,22 @@
             </div>
         </div>
     </nav>
-
     {% block content %}
     <span>Content</span>
     {% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-container">
+        <div class="footer-text">
+            <span>Made by Wadu436 with contributions by Albion. Source code available on</span> 
+            <a href="https://github.com/Wadu436/formula1-championship" class="footer-github">
+            <img src="{% static 'leaderboard/github-logo.svg' %}" style="height: 1rem; width: 1rem;" class="mx-1"></img> 
+                Github
+            </a>
+        </div>
+    </div>
+    </div>
 </body>
 
 </html>

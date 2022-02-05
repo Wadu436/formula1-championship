@@ -57,10 +57,10 @@
 
                     <li class="nav-item dropdown ms-5">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                            aria-expanded="false">Leaderboard</a>
+                            aria-expanded="false">Leaderboards</a>
                         <ul class="dropdown-menu">
-                            <a class="dropdown-item" href="{% if current_championship %}{% url 'drivers_standings' current_championship.id %}{% else %}{% url 'drivers_standings' championships.0.id %}{% endif %}">Driver's Championship</a>
-                            <a class="dropdown-item" href="{% if current_championship %}{% url 'constructors_standings' current_championship.id %}{% else %}{% url 'constructors_standings' championships.0.id %}{% endif %}">Constructors's Championship</a>
+                            <a class="dropdown-item" href="{% if current_championship %}{% url 'drivers_standings' current_championship.id %}{% else %}{% url 'drivers_standings' championships.0.id %}{% endif %}">Drivers' Championship</a>
+                            <a class="dropdown-item" href="{% if current_championship %}{% url 'constructors_standings' current_championship.id %}{% else %}{% url 'constructors_standings' championships.0.id %}{% endif %}">Constructors' Championship</a>
                         </ul>
                     </li>
 
@@ -72,6 +72,15 @@
                         {% url 'races' championships.0.id %}
                         {% endif %}">Schedule</a>
                     </li>
+
+                    <li class="nav-item dropdown ms-5">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                            aria-expanded="false">Stats</a>
+                        <ul class="dropdown-menu">
+                            <a class="dropdown-item" href="{% if current_championship %}{% url 'stats_pace' current_championship.id %}{% else %}{% url 'stats_pace' championships.0.id %}{% endif %}">Pace</a>
+                        </ul>
+                    </li>
+
                     <span class="vr ms-5"></span>
                     <li class="nav-item ms-5 minMarginTop">
                         <a class="nav-link" href="{% url 'track_overview' %}">Tracks</a>

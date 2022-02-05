@@ -42,7 +42,7 @@ urlpatterns = [
     ),
     path("match_history/<int:race_id>/", views.match_history, name="match_history"),
     path("faq/", views.faq, name="faq"),
-    # path("championships/<int:championship_id>/stats/pace", views.pace, name="stats_pace"),
+    path("championships/<int:championship_id>/stats/pace", views.pace, name="stats_pace"),
     # path(
     #     "championships/<int:championship_id>/stats/fastest_laps/",
     #     views.drivers_standings,

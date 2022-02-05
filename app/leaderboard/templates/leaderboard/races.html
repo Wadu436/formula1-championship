@@ -7,65 +7,65 @@
 <script src="{% static 'leaderboard/jquery-3.6.0.min.js' %}"></script>
 {% endblock %}
 
-{% block title %}Races - {{ current_championship.name }}{% endblock %}
+{% block title %}Schedule - {{ current_championship.name }}{% endblock %}
 
 {% block content %}
 <div class="d-flex flex-column align-items-center mt-3 mx-0" style="width: 100%;">
-    <div class="align-middle fw-lighter fs-1">{{ current_championship.name }}</div>
-    <div class="fw-lighter fs-3">Race Schedule</div>
+    <div class="align-middle fw-lighter fs-1">Schedule</div>
     <div class="col-10">
         <div class="d-flex flex-wrap justify-content-center">
             {% for race in races %}
             {% if race.finished %}
             <a class="race-card-container" href="{% url 'match_history' race.id %}">
-            {% else %}
-            <div class="race-card-container">
-            {% endif %}
-                <div class="race-card ps-2 pe-3 pt-2 pb-2 w-80 d-flex flex-column h-100"
-                    style="{% if race.finished %}background-color: #f8f8f8;{% endif %}">
-                    <div class="d-flex justify-content-between align-items-center w-100 schedule-header fw-light fs-5">
-                        <div>
-                            <span>Round {{ race.championship_order }}</span>
-                            {% if race.finished %}<span class='fs-6'>(Ended)</span> {% endif %}
-                        </div>
-                        <div class="d-flex align-items-center">
-                            {% if race.date_time %}
-                            <span class="mx-2 schedule-time" data-schedule-date={{race.date_time.timestamp}}>{{
-                                race.date_time|date:"F d, H:i" }}</span>
-                            {% else %}
-                            <span class="mx-2">TBD</span>
-                            {% endif %}
-                            <i class="flag2x {{ race.track.country.flag_css }}"></i>
-                        </div>
-                    </div>
-
-                    <div class="d-flex w-100 h-100 justify-content-between mt-2">
-                        <div class="d-flex flex-column justify-content-end">
-                            <div class="pt-2">
-                                <div class="h4 mb-0">{{race.track.location}}</div>
-                                <div class="fs-5 mt-0 lh-1">{{race.track.name}}</div>
-                            </div>
+                {% else %}
+                <div class="race-card-container">
+                    {% endif %}
+                    <div class="race-card ps-2 pe-3 pt-2 pb-2 w-80 d-flex flex-column h-100"
+                        style="{% if race.finished %}background-color: #f8f8f8;{% endif %}">
+                        <div
+                            class="d-flex justify-content-between align-items-center w-100 schedule-header fw-light fs-5">
                             <div>
-                                Laps: {{race.laps}}
+                                <span>Round {{ race.championship_order }}</span>
+                                {% if race.finished %}<span class='fs-6'>(Ended)</span> {% endif %}
+                            </div>
+                            <div class="d-flex align-items-center">
+                                {% if race.date_time %}
+                                <span class="mx-2 schedule-time" data-schedule-date={{race.date_time.timestamp}}>{{
+                                    race.date_time|date:"F d, H:i" }}</span>
+                                {% else %}
+                                <span class="mx-2">TBD</span>
+                                {% endif %}
+                                <i class="flag2x {{ race.track.country.flag_css }}"></i>
                             </div>
                         </div>
-                        {% if race.track.overview_image %}
-                        <div class="d-flex flex-column justify-content-end schedule-image-container">
-                            <img style="width: 100%" src="{{ race.track.overview_image.url }}" alt="">
-                        </div>
-                        {% endif %}
-                    </div>
 
-                </div>
-            {% if race.finished %}
+                        <div class="d-flex w-100 h-100 justify-content-between mt-2">
+                            <div class="d-flex flex-column justify-content-end">
+                                <div class="pt-2">
+                                    <div class="h4 mb-0">{{race.track.location}}</div>
+                                    <div class="fs-5 mt-0 lh-1">{{race.track.name}}</div>
+                                </div>
+                                <div>
+                                    Laps: {{race.laps}}
+                                </div>
+                            </div>
+                            {% if race.track.overview_image %}
+                            <div class="d-flex flex-column justify-content-end schedule-image-container">
+                                <img style="width: 100%" src="{{ race.track.overview_image.url }}" alt="">
+                            </div>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                    {% if race.finished %}
             </a>
             {% else %}
-            </div>
-            {% endif %}
-            
-            {% endfor %}
         </div>
+        {% endif %}
+
+        {% endfor %}
     </div>
+</div>
 </div>
 
 <script src="{% static 'leaderboard/date_timezone.js' %}"></script>

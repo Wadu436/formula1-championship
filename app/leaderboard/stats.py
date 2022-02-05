@@ -19,7 +19,7 @@ def average(l):
 
 def stats_pace(championship: Championship):
     standings = championship.get_drivers_standings()
-    drivers = {driver for (driver, _, _) in standings}
+    drivers = [driver for (driver, _, _) in standings]
     races = championship.races.all()
     num_races = championship.races.count()
 

@@ -119,7 +119,7 @@ def faq(request):
     }
     return render(request, "leaderboard/faq.html", context=context)
 
-def pace(request, championship_id):
+def stats(request, championship_id):
     championship = Championship.objects.filter(id=championship_id).first()
     if championship:
         context = {
@@ -128,7 +128,7 @@ def pace(request, championship_id):
             "in_championship": True,
             "pace_table": stats_pace(championship),
         }
-        return render(request, "leaderboard/stats_pace.html", context=context)
+        return render(request, "leaderboard/stats.html", context=context)
     else:
         return latest_drivers_standings(request)
 

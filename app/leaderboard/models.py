@@ -123,7 +123,7 @@ class Championship(models.Model):
             (driver, driver_team_map[driver], points) for driver, points in total_points.items()
         ]
 
-        total_points_list.sort(key=lambda item: (-item[2], item[1].name, item[0].name))
+        total_points_list.sort(key=lambda item: (-item[2], item[1].name if item[1] else None, item[0].name))
 
         return total_points_list
 

@@ -73,12 +73,13 @@
                         {% endif %}">Schedule</a>
                     </li>
 
-                    <li class="nav-item dropdown ms-5">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                            aria-expanded="false">Stats</a>
-                        <ul class="dropdown-menu">
-                            <a class="dropdown-item" href="{% if current_championship %}{% url 'stats_pace' current_championship.id %}{% else %}{% url 'stats_pace' championships.0.id %}{% endif %}">Pace</a>
-                        </ul>
+                    <li class="nav-item ms-5">
+                        <a class="nav-link" href="
+                        {% if current_championship %}
+                        {% url 'stats' current_championship.id %}
+                        {% else %}
+                        {% url 'stats' championships.0.id %}
+                        {% endif %}">Stats</a>
                     </li>
 
                     <span class="vr ms-5"></span>

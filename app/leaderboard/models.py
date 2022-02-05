@@ -252,7 +252,7 @@ class Race(models.Model):
         #         fastest_entry = entry
         #         fastest_time = entry.best_lap_time
         try:
-            fastest_entry = max((entry for entry in entries if entry.best_lap_time is not None), key=lambda e: e.best_lap_time)
+            fastest_entry = min((entry for entry in entries if entry.best_lap_time is not None), key=lambda e: e.best_lap_time)
         except ValueError:
             fastest_entry = entries[0]
 
@@ -360,12 +360,14 @@ class Race(models.Model):
 
         return [(entry, total_points[entry]) for entry in entries]
 
-    def fastest_lap(self) -> "RaceEntry":
+    def fastest_lap(self) -> Optional["RaceEntry"]:
         entries = self.race_entries.all()
-        try:
-            fastest_entry = max((entry for entry in entries if entry.best_lap_time is not None), key=lambda e: e.best_lap_time)
-        except ValueError:
-            fastest_entry = entries[0]
+        fastest_entry = None
+        if len(entries) > 0:
+            try:
+                fastest_entry = min((entry for entry in entries if entry.best_lap_time is not None), key=lambda e: e.best_lap_time)
+            except ValueError:
+                fastest_entry = entries[0]
         return fastest_entry
 
     class Meta:

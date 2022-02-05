@@ -330,7 +330,7 @@ class Race(models.Model):
         # Get entries
         entries: QuerySet[RaceEntry] = self.race_entries.order_by("finish_position")
 
-        fastest_entry: RaceEntry = self.race_entries.order_by("best_lap_time").first()
+        fastest_entry: RaceEntry = self.fastest_lap()
 
         if self.finished == False:
             return []
@@ -345,6 +345,9 @@ class Race(models.Model):
             total_points[fastest_entry] += 1
 
         return [(entry, total_points[entry]) for entry in entries]
+
+    def fastest_lap(self) -> "RaceEntry":
+        return self.race_entries.order_by("best_lap_time").first()
 
     class Meta:
         ordering = ("championship", "championship_order")

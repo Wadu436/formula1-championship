@@ -1,0 +1,94 @@
+{% extends "leaderboard/base.html" %}
+
+{% block title %}Pace - {{ current_championship.name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center mt-3 mx-0" style="width: 100%;">
+    <div class="fw-lighter fs-1">{{ current_championship.name }}</div>
+    <div class="fw-lighter fs-3">Pace</div>
+    <div class="col">
+        <div>
+            <table class="table table-borderless" style="font-size: 1rem;">
+                <colgroup>
+                    <col>
+                    <col>
+                    {% for race in pace_table.0 %}
+                        <col width="4rem">
+                    {% endfor %}
+                    <col width="4rem">
+                </colgroup>
+                <thead class="table-white">
+                    <tr>
+                        <th scope="col" class="leaderboard-header"></th>
+                        <th scope="col" class="leaderboard-header">Driver</th>
+                        {% for race in pace_table.0 %}
+                        <th scope="col" class="leaderboard-header px-0" >
+                            <div class="d-flex justify-content-center" style="width: 100%;">{{ race.track.abbreviation }}</div>
+                        </th>
+                        {% endfor %}
+                        <th scope="col" class="leaderboard-header" >
+                            <div class="d-flex justify-content-center" style="width: 100%;">Average</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for driver, pace, average in pace_table.1 %}
+                    <tr class="leaderboard-row">
+                        <td class="align-middle fw-lighter">{{forloop.counter}}</td>
+                        <td class="align-middle">{{driver.name}}</td>
+                        {% for race_pace in pace %}
+                            <td class="align-middle pace-cell">
+                            {% if race_pace %}
+                                <div class="pace-item 
+                                {% if race_pace >= 85%}
+                                    pace-great
+                                {% elif race_pace >= 75%}
+                                    pace-good
+                                {% elif race_pace >= 60%}
+                                    pace-high-mid
+                                {% elif race_pace >= 40%}
+                                    pace-low-mid
+                                {% else %}
+                                    pace-bad
+                                {% endif %}
+                                ">
+                                {{race_pace}}</div>
+                            {% else %}
+                                <div class="pace-item pace-none">
+                                -
+                                </div>
+                            {% endif %}
+                            </td>
+                        {% endfor %}
+
+                        <td class="align-middle pace-average">
+                        {% if average %}
+                            <div class="pace-item 
+                            {% if average >= 85%}
+                                pace-great
+                            {% elif average >= 75%}
+                                pace-good
+                            {% elif average >= 60%}
+                                pace-high-mid
+                            {% elif average >= 40%}
+                                pace-low-mid
+                            {% else %}
+                                pace-bad
+                            {% endif %}
+                            ">
+                            {{average}}</div>
+                        {% else %}
+                            <div class="pace-item pace-none">
+                            -
+                            </div>
+                        {% endif %}
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

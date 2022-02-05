@@ -165,3 +165,44 @@ a {
 a:hover {
     color:var(--bs-gray-700);
 }
+
+.pace-great {
+    background-color:   #57bb8a  !important;
+}
+
+.pace-good {
+    background-color: #a6c879    !important;
+}
+
+.pace-high-mid {
+    background-color:  #ffd666 !important;
+}
+
+.pace-low-mid {
+    background-color:  #f4ad6c !important;
+}
+
+.pace-bad {
+    background-color: #e67c73 !important;
+}
+
+.pace-none {
+    background-color: lightgray !important;
+}
+
+.pace-item {
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pace-cell {
+    padding: 0 !important;
+}
+
+.pace-average {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}

@@ -6,6 +6,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from .models import FAQ, Championship, Driver, Race, RuleChapter, Track
+from .stats import stats_pace
 
 
 # API views
@@ -117,6 +118,19 @@ def faq(request):
         "faq": FAQ.objects.all(),
     }
     return render(request, "leaderboard/faq.html", context=context)
+
+def pace(request, championship_id):
+    championship = Championship.objects.filter(id=championship_id).first()
+    if championship:
+        context = {
+            "current_championship": championship,
+            "championships": Championship.objects.all(),
+            "in_championship": True,
+            "pace_table": stats_pace(championship),
+        }
+        return render(request, "leaderboard/stats_pace.html", context=context)
+    else:
+        return latest_drivers_standings(request)
 
 # Latest redirect views
 def latest_drivers_standings(request):

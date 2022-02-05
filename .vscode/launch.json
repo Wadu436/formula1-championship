@@ -3,7 +3,17 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [
+    "configurations": [{
+            "name": "Debug Django (docker)",
+            "type": "python",
+            "request": "attach",
+            "pathMappings": [{
+                "localRoot": "${workspaceFolder}/app",
+                "remoteRoot": "/home/app/web"
+            }],
+            "port": 3000,
+            "host": "127.0.0.1",
+        },
         {
             "name": "Python: Run Tests (Debug)",
             "type": "python",

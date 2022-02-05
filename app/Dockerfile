@@ -33,6 +33,8 @@ COPY manage.py .
 ## DEVELOPMENT IMAGE
 FROM base as develop
 
+RUN pipenv sync --system --dev
+
 COPY data_entry.py entrypoint.sh ./
 
 RUN sed -i 's/\r$//g' ./entrypoint.sh

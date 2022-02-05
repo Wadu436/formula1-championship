@@ -150,21 +150,21 @@
                         {% endfor %}
 
                         <td class="align-middle pace-average">
-                        {% if driver_dict.pace_average %}
+                        {% if driver_dict.average_pace %}
                             <div class="pace-item 
-                            {% if driver_dict.pace_average >= 85%}
+                            {% if driver_dict.average_pace >= 85%}
                                 pace-great
-                            {% elif driver_dict.pace_average >= 75%}
+                            {% elif driver_dict.average_pace >= 75%}
                                 pace-good
-                            {% elif driver_dict.pace_average >= 60%}
+                            {% elif driver_dict.average_pace >= 60%}
                                 pace-high-mid
-                            {% elif driver_dict.pace_average >= 40%}
+                            {% elif driver_dict.average_pace >= 40%}
                                 pace-low-mid
                             {% else %}
                                 pace-bad
                             {% endif %}
                             ">
-                            {{driver_dict.pace_average}}</div>
+                            {{driver_dict.average_pace}}</div>
                         {% else %}
                             <div class="pace-item pace-none">
                             -

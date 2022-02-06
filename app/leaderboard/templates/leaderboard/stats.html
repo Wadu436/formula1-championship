@@ -7,308 +7,335 @@
     <div class="fw-lighter fs-1">Stats</div>
     <div class="col mw-100">
         {% comment %} Race Classification {% endcomment %}
-        <div class="stats-container stats-row">
-            <span class="fs-3" style="margin-left: 0.5rem;">Race Classification</span><span class="fs-6 fw-light" style="margin-left: 0.5rem;">(Ordered by Drivers' Standings)</span>
-            <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
-                <colgroup>
-                    <col>
-                    <col>
-                    {% for race in stats_table.0 %}
-                        <col width="4rem">
-                    {% endfor %}
-                    <col width="4rem">
-                </colgroup>
-                <thead class="table-white">
-                    <tr>
-                        <th scope="col" class="leaderboard-header"></th>
-                        <th scope="col" class="leaderboard-header">Driver</th>
+        <div class="stats-row">
+            <div class="stats-container">
+                <span class="fs-3" style="margin-left: 0.5rem;">Race Classification</span><span class="fs-6 fw-light" style="margin-left: 0.5rem;">(Ordered by Drivers' Standings)</span>
+                <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
+                    <colgroup>
+                        <col>
+                        <col>
                         {% for race in stats_table.0 %}
-                        <th scope="col" class="leaderboard-header px-0" >
-                            <div class="d-flex justify-content-center" style="width: 100%;">{{ race.track.abbreviation }}</div>
-                        </th>
+                            <col width="4rem">
                         {% endfor %}
-                        <th scope="col" class="leaderboard-header" style="padding-right: 0 !important;">
-                            <div class="d-flex justify-content-center" style="width: 100%; ">Average</div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in stats_table.1.results %}
-                    <tr class="leaderboard-row">
-                        <td class="align-middle fw-lighter">{{forloop.counter}}</td>
-                        <td class="align-middle">{{row.driver.name}}</td>
-                        {% for entry in row.entries %}
-                            <td class="align-middle pace-cell">
-                            {% if entry %}
+                        <col width="4rem">
+                    </colgroup>
+                    <thead class="table-white">
+                        <tr>
+                            <th scope="col" class="leaderboard-header"></th>
+                            <th scope="col" class="leaderboard-header">Driver</th>
+                            {% for race in stats_table.0 %}
+                            <th scope="col" class="leaderboard-header px-0" >
+                                <div class="d-flex justify-content-center" style="width: 100%;">{{ race.track.abbreviation }}</div>
+                            </th>
+                            {% endfor %}
+                            <th scope="col" class="leaderboard-header" style="padding-right: 0 !important;">
+                                <div class="d-flex justify-content-center" style="width: 100%; ">Average</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in stats_table.1.results %}
+                        <tr class="leaderboard-row">
+                            <td class="align-middle fw-lighter">{{forloop.counter}}</td>
+                            <td class="align-middle">{{row.driver.name}}</td>
+                            {% for entry in row.entries %}
+                                <td class="align-middle pace-cell">
+                                {% if entry %}
+                                    <div class="pace-item 
+                                    {% if entry.dnf%}
+                                        finish-dnf
+                                    {% elif entry.finish_position == 1%}
+                                        finish-first
+                                    {% elif entry.finish_position == 2%}
+                                        finish-second
+                                    {% elif entry.finish_position == 3%}
+                                        finish-third
+                                    {% elif entry.finish_position <= 10%}
+                                        finish-points
+                                    {% else %}
+                                        finish-no-points
+                                    {% endif %}
+                                    ">
+                                    {% if entry.dnf%}
+                                    DNF
+                                    {% else %}
+                                    {{entry.finish_position}}{% endif %}</div>
+                                {% else %}
+                                    <div class="pace-item finish-none">
+                                    -
+                                    </div>
+                                {% endif %}
+                                </td>
+                            {% endfor %}
+
+                            <td class="align-middle pace-average">
+                            {% if row.average_finish %}
                                 <div class="pace-item 
-                                {% if entry.dnf%}
-                                    finish-dnf
-                                {% elif entry.finish_position == 1%}
+                                {% if row.average_finish < 2 %}
                                     finish-first
-                                {% elif entry.finish_position == 2%}
+                                {% elif row.average_finish < 3 %}
                                     finish-second
-                                {% elif entry.finish_position == 3%}
+                                {% elif row.average_finish < 4 %}
                                     finish-third
-                                {% elif entry.finish_position <= 10%}
+                                {% elif row.average_finish <= 8 %}
                                     finish-points
                                 {% else %}
                                     finish-no-points
                                 {% endif %}
                                 ">
-                                {% if entry.dnf%}
-                                DNF
-                                {% else %}
-                                {{entry.finish_position}}{% endif %}</div>
+                                {{row.average_finish}}</div>
                             {% else %}
                                 <div class="pace-item finish-none">
                                 -
                                 </div>
                             {% endif %}
                             </td>
+
+                        </tr>
                         {% endfor %}
-
-                        <td class="align-middle pace-average">
-                        {% if row.average_finish %}
-                            <div class="pace-item 
-                            {% if row.average_finish < 2 %}
-                                finish-first
-                            {% elif row.average_finish < 3 %}
-                                finish-second
-                            {% elif row.average_finish < 4 %}
-                                finish-third
-                            {% elif row.average_finish <= 8 %}
-                                finish-points
-                            {% else %}
-                                finish-no-points
-                            {% endif %}
-                            ">
-                            {{row.average_finish}}</div>
-                        {% else %}
-                            <div class="pace-item finish-none">
-                            -
-                            </div>
-                        {% endif %}
-                        </td>
-
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
         {% comment %} Quali Classification {% endcomment %}
-        <div class="stats-container stats-row">
-            <span class="fs-3" style="margin-left: 0.5rem;">Qualifying Classification</span><span class="fs-6 fw-light" style="margin-left: 0.5rem;">(Ordered by Drivers' Standings)</span>
-            <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
-                <colgroup>
-                    <col>
-                    <col>
-                    {% for race in stats_table.0 %}
-                        <col width="4rem">
-                    {% endfor %}
-                    <col width="4rem">
-                </colgroup>
-                <thead class="table-white">
-                    <tr>
-                        <th scope="col" class="leaderboard-header"></th>
-                        <th scope="col" class="leaderboard-header">Driver</th>
+        <div class="stats-row">
+            <div class="stats-container">
+                <span class="fs-3" style="margin-left: 0.5rem;">Qualifying Classification</span><span class="fs-6 fw-light" style="margin-left: 0.5rem;">(Ordered by Drivers' Standings)</span>
+                <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
+                    <colgroup>
+                        <col>
+                        <col>
                         {% for race in stats_table.0 %}
-                        <th scope="col" class="leaderboard-header px-0" >
-                            <div class="d-flex justify-content-center" style="width: 100%;">{{ race.track.abbreviation }}</div>
-                        </th>
+                            <col width="4rem">
                         {% endfor %}
-                        <th scope="col" class="leaderboard-header" style="padding-right: 0 !important;">
-                            <div class="d-flex justify-content-center" style="width: 100%; ">Average</div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in stats_table.1.results %}
-                    <tr class="leaderboard-row">
-                        <td class="align-middle fw-lighter">{{forloop.counter}}</td>
-                        <td class="align-middle">{{row.driver.name}}</td>
-                        {% for entry in row.entries %}
-                            <td class="align-middle pace-cell">
-                            {% if entry %}
+                        <col width="4rem">
+                    </colgroup>
+                    <thead class="table-white">
+                        <tr>
+                            <th scope="col" class="leaderboard-header"></th>
+                            <th scope="col" class="leaderboard-header">Driver</th>
+                            {% for race in stats_table.0 %}
+                            <th scope="col" class="leaderboard-header px-0" >
+                                <div class="d-flex justify-content-center" style="width: 100%;">{{ race.track.abbreviation }}</div>
+                            </th>
+                            {% endfor %}
+                            <th scope="col" class="leaderboard-header" style="padding-right: 0 !important;">
+                                <div class="d-flex justify-content-center" style="width: 100%; ">Average</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in stats_table.1.results %}
+                        <tr class="leaderboard-row">
+                            <td class="align-middle fw-lighter">{{forloop.counter}}</td>
+                            <td class="align-middle">{{row.driver.name}}</td>
+                            {% for entry in row.entries %}
+                                <td class="align-middle pace-cell">
+                                {% if entry %}
+                                    <div class="pace-item 
+                                    {% if entry.qualifying_position == 1%}
+                                        finish-first
+                                    {% elif entry.qualifying_position == 2%}
+                                        finish-second
+                                    {% elif entry.qualifying_position == 3%}
+                                        finish-third
+                                    {% elif entry.qualifying_position <= 10%}
+                                        finish-points
+                                    {% else %}
+                                        finish-no-points
+                                    {% endif %}
+                                    ">
+                                    {{entry.qualifying_position}}</div>
+                                {% else %}
+                                    <div class="pace-item finish-none">
+                                    -
+                                    </div>
+                                {% endif %}
+                                </td>
+                            {% endfor %}
+
+                            <td class="align-middle pace-average">
+                            {% if row.average_quali %}
                                 <div class="pace-item 
-                                {% if entry.qualifying_position == 1%}
+                                {% if row.average_quali < 2 %}
                                     finish-first
-                                {% elif entry.qualifying_position == 2%}
+                                {% elif row.average_quali < 3 %}
                                     finish-second
-                                {% elif entry.qualifying_position == 3%}
+                                {% elif row.average_quali < 4 %}
                                     finish-third
-                                {% elif entry.qualifying_position <= 10%}
+                                {% elif row.average_quali <= 8 %}
                                     finish-points
                                 {% else %}
                                     finish-no-points
                                 {% endif %}
                                 ">
-                                {{entry.qualifying_position}}</div>
+                                {{row.average_quali}}</div>
                             {% else %}
                                 <div class="pace-item finish-none">
                                 -
                                 </div>
                             {% endif %}
                             </td>
+
+                        </tr>
                         {% endfor %}
-
-                        <td class="align-middle pace-average">
-                        {% if row.average_quali %}
-                            <div class="pace-item 
-                            {% if row.average_quali < 2 %}
-                                finish-first
-                            {% elif row.average_quali < 3 %}
-                                finish-second
-                            {% elif row.average_quali < 4 %}
-                                finish-third
-                            {% elif row.average_quali <= 8 %}
-                                finish-points
-                            {% else %}
-                                finish-no-points
-                            {% endif %}
-                            ">
-                            {{row.average_quali}}</div>
-                        {% else %}
-                            <div class="pace-item finish-none">
-                            -
-                            </div>
-                        {% endif %}
-                        </td>
-
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
         {% comment %} Pace {% endcomment %}
-        <div class="stats-container stats-row">
-            <div class="fs-3" style="margin-left: 0.5rem;">Pace</div>
-            <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
-                <colgroup>
-                    <col>
-                    <col>
-                    {% for race in stats_table.0 %}
-                        <col width="4rem">
-                    {% endfor %}
-                    <col width="4rem">
-                </colgroup>
-                <thead class="table-white">
-                    <tr>
-                        <th scope="col" class="leaderboard-header"></th>
-                        <th scope="col" class="leaderboard-header">Driver</th>
+        <div class="stats-row">
+            <div class="stats-container">
+                <div class="fs-3" style="margin-left: 0.5rem;">Pace</div>
+                <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
+                    <colgroup>
+                        <col>
+                        <col>
                         {% for race in stats_table.0 %}
-                        <th scope="col" class="leaderboard-header px-0" >
-                            <div class="d-flex justify-content-center" style="width: 100%;">{{ race.track.abbreviation }}</div>
-                        </th>
+                            <col width="4rem">
                         {% endfor %}
-                        <th scope="col" class="leaderboard-header" style="padding-right: 0 !important;">
-                            <div class="d-flex justify-content-center" style="width: 100%; ">Average</div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in stats_table.1.pace %}
-                    <tr class="leaderboard-row">
-                        <td class="align-middle fw-lighter">{{forloop.counter}}</td>
-                        <td class="align-middle">{{row.driver.name}}</td>
-                        {% for race_pace in row.entries %}
-                            <td class="align-middle pace-cell">
-                            {% if race_pace %}
-                                <div class="pace-item 
-                                {% if race_pace >= 85%}
+                        <col width="4rem">
+                    </colgroup>
+                    <thead class="table-white">
+                        <tr>
+                            <th scope="col" class="leaderboard-header"></th>
+                            <th scope="col" class="leaderboard-header">Driver</th>
+                            {% for race in stats_table.0 %}
+                            <th scope="col" class="leaderboard-header px-0" >
+                                <div class="d-flex justify-content-center" style="width: 100%;">{{ race.track.abbreviation }}</div>
+                            </th>
+                            {% endfor %}
+                            <th scope="col" class="leaderboard-header" style="padding-right: 0 !important;">
+                                <div class="d-flex justify-content-center" style="width: 100%; ">Average</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in stats_table.1.pace %}
+                        <tr class="leaderboard-row">
+                            <td class="align-middle fw-lighter">{{forloop.counter}}</td>
+                            <td class="align-middle">{{row.driver.name}}</td>
+                            {% for race_pace in row.entries %}
+                                <td class="align-middle pace-cell">
+                                {% if race_pace %}
+                                    <div class="pace-item
+                                    {% if race_pace >= 85%}
+                                        pace-great
+                                    {% elif race_pace >= 75%}
+                                        pace-good
+                                    {% elif race_pace >= 60%}
+                                        pace-high-mid
+                                    {% elif race_pace >= 40%}
+                                        pace-low-mid
+                                    {% else %}
+                                        pace-bad
+                                    {% endif %}
+                                    ">
+                                    {{race_pace}}</div>
+                                {% else %}
+                                    <div class="pace-item pace-none">
+                                    -
+                                    </div>
+                                {% endif %}
+                                </td>
+                            {% endfor %}
+                            <td class="align-middle pace-average">
+                            {% if row.average %}
+                                <div class="pace-item
+                                {% if row.average >= 85%}
                                     pace-great
-                                {% elif race_pace >= 75%}
+                                {% elif row.average >= 75%}
                                     pace-good
-                                {% elif race_pace >= 60%}
+                                {% elif row.average >= 60%}
                                     pace-high-mid
-                                {% elif race_pace >= 40%}
+                                {% elif row.average >= 40%}
                                     pace-low-mid
                                 {% else %}
                                     pace-bad
                                 {% endif %}
                                 ">
-                                {{race_pace}}</div>
+                                {{row.average}}</div>
                             {% else %}
                                 <div class="pace-item pace-none">
                                 -
                                 </div>
                             {% endif %}
                             </td>
+                        </tr>
                         {% endfor %}
-
-                        <td class="align-middle pace-average">
-                        {% if row.average %}
-                            <div class="pace-item 
-                            {% if row.average >= 85%}
-                                pace-great
-                            {% elif row.average >= 75%}
-                                pace-good
-                            {% elif row.average >= 60%}
-                                pace-high-mid
-                            {% elif row.average >= 40%}
-                                pace-low-mid
-                            {% else %}
-                                pace-bad
-                            {% endif %}
-                            ">
-                            {{row.average}}</div>
-                        {% else %}
-                            <div class="pace-item pace-none">
-                            -
-                            </div>
-                        {% endif %}
-                        </td>
-
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
         {% comment %} Overtakes {% endcomment %}
-        <div class="stats-container stats-row">
-            <span class="fs-3" style="margin-left: 0.5rem;">Overtakes</span>
-            <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
-                <colgroup>
-                    <col>
-                    <col>
-                    {% for race in stats_table.0 %}
-                        <col width="4rem">
-                    {% endfor %}
-                    <col width="4rem">
-                </colgroup>
-                <thead class="table-white">
-                    <tr>
-                        <th scope="col" class="leaderboard-header"></th>
-                        <th scope="col" class="leaderboard-header">Driver</th>
+        <div class="stats-row">
+            <div class="stats-container">
+                <span class="fs-3" style="margin-left: 0.5rem;">Overtakes</span>
+                <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
+                    <colgroup>
+                        <col>
+                        <col>
                         {% for race in stats_table.0 %}
-                        <th scope="col" class="leaderboard-header px-0" >
-                            <div class="d-flex justify-content-center" style="width: 100%;">{{ race.track.abbreviation }}</div>
-                        </th>
+                            <col width="4rem">
                         {% endfor %}
-                        <th scope="col" class="leaderboard-header" style="padding-right: 0 !important;">
-                            <div class="d-flex justify-content-center" style="width: 100%; ">Total</div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                    {% for row in stats_table.1.overtakes %}
-                    <tr class="leaderboard-row">
-                        <td class="align-middle fw-lighter">{{forloop.counter}}</td>
-                        <td class="align-middle">{{row.driver.name}}</td>
-                        {% comment %}  Main  {% endcomment %}
-                        {% for entry in row.entries %}
-                            <td class="align-middle pace-cell">
-                            {% if entry.overtakes is not None %}
+                        <col width="4rem">
+                    </colgroup>
+                    <thead class="table-white">
+                        <tr>
+                            <th scope="col" class="leaderboard-header"></th>
+                            <th scope="col" class="leaderboard-header">Driver</th>
+                            {% for race in stats_table.0 %}
+                            <th scope="col" class="leaderboard-header px-0" >
+                                <div class="d-flex justify-content-center" style="width: 100%;">{{ race.track.abbreviation }}</div>
+                            </th>
+                            {% endfor %}
+                            <th scope="col" class="leaderboard-header" style="padding-right: 0 !important;">
+                                <div class="d-flex justify-content-center" style="width: 100%; ">Total</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for row in stats_table.1.overtakes %}
+                        <tr class="leaderboard-row">
+                            <td class="align-middle fw-lighter">{{forloop.counter}}</td>
+                            <td class="align-middle">{{row.driver.name}}</td>
+                            {% comment %}  Main  {% endcomment %}
+                            {% for entry in row.entries %}
+                                <td class="align-middle pace-cell">
+                                {% if entry.overtakes is not None %}
+                                    <div class="pace-item 
+                                    {% if entry.overtakes >= 6 %}
+                                        overtakes-many
+                                    {% elif entry.overtakes > 0 %}
+                                        overtakes-few
+                                    {% else %}
+                                        overtakes-zero
+                                    {% endif %}
+                                    ">
+                                    {{entry.overtakes}}
+                                </div>
+                                {% else %}
+                                    <div class="pace-item overtakes-none">
+                                    -
+                                    </div>
+                                {% endif %}
+                                </td>
+                            {% endfor %}
+
+                            {% comment %} Average {% endcomment %}
+                            <td class="align-middle pace-average">
+                            {% if row.total_overtakes is not None %}
                                 <div class="pace-item 
-                                {% if entry.overtakes >= 6 %}
+                                {% if row.total_overtakes >= 50 %}
                                     overtakes-many
-                                {% elif entry.overtakes > 0 %}
+                                {% elif row.total_overtakes > 0 %}
                                     overtakes-few
                                 {% else %}
                                     overtakes-zero
                                 {% endif %}
                                 ">
-                                {{entry.overtakes}}
+                                {{row.total_overtakes}}
                             </div>
                             {% else %}
                                 <div class="pace-item overtakes-none">
@@ -316,37 +343,15 @@
                                 </div>
                             {% endif %}
                             </td>
+
+                        </tr>
                         {% endfor %}
-
-                        {% comment %} Average {% endcomment %}
-                        <td class="align-middle pace-average">
-                        {% if row.total_overtakes is not None %}
-                            <div class="pace-item 
-                            {% if row.total_overtakes >= 50 %}
-                                overtakes-many
-                            {% elif row.total_overtakes > 0 %}
-                                overtakes-few
-                            {% else %}
-                                overtakes-zero
-                            {% endif %}
-                            ">
-                            {{row.total_overtakes}}
-                        </div>
-                        {% else %}
-                            <div class="pace-item overtakes-none">
-                            -
-                            </div>
-                        {% endif %}
-                        </td>
-
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="d-flex justify-content-around stats-row flex-wrap">
-
         {% comment %} Best Quali/Finish {% endcomment %}
         <div class="stats-container d-flex flex-column align-items-center" style="width: fit-content">
             <span class="fs-3 mx-2">Best Results</span>

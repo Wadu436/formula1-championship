@@ -5,41 +5,40 @@
 {% block content %}
 <div class="d-flex flex-column align-items-center mt-3 mx-0" style="width: 100%;">
     <div class="align-middle fw-lighter fs-1">Constructor Standings</div>
-    <div class="col-8">
-        <div>
-            <table class="table table-striped leaderboard-table table-borderless" style="font-size: 1rem;">
-                <colgroup>
-                    <col style="width: 10%">
-                    <col style="width: 1%;">
-                    <col style="width: 35%;">
-                    <col style="width: 35%;">
-                    <col style="width: 15%;">
-                </colgroup>
-                <thead class="table-white">
-                    <tr>
-                        <th scope="col" class="leaderboard-header">#</th>
-                        <th scope="col" class="leaderboard-header"></th>
-                        <th scope="col" class="leaderboard-header">Team</th>
-                        <th scope="col" class="leaderboard-header">Nationality</th>
-                        <th scope="col" class="leaderboard-header">Points</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for team, score in current_championship.get_constructors_standings %}
-                    <tr class="leaderboard-row">
-                        <td class="align-middle fw-lighter">{{forloop.counter}}</td>
-                        <td class="align-middle" style="height: 2rem;">
-                            <span class="team-color-bar mx-2" style="background-color: {{team.color}};"></span>
-                        </td>
-                        <td class="align-middle" style="height: 100%;">{{team.full_name}}</td>
-                        <td class="align-middle fw-lighter"><i
-                                class="{{ team.country.flag_css }}"></i>{{team.country.ioc_code}}</td>
-                        <td class="align-middle fw-lighter">{{score}}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <div class="col-xl wrap-for-mobile">
+        <table class="table table-striped leaderboard-table table-borderless" style="font-size: 1rem;">
+            <colgroup>
+                <col style="min-width: fit-content;">
+                <col style="min-width: fit-content;">
+                <col style="min-width: fit-content;">
+                <col style="min-width: fit-content;">
+                <col style="min-width: fit-content;">
+            </colgroup>
+            <thead class="table-white">
+                <tr>
+                    <th scope="col" class="leaderboard-header">#</th>
+                    <th scope="col" class="leaderboard-header"></th>
+                    <th scope="col" class="leaderboard-header">Team</th>
+                    <th scope="col" class="leaderboard-header">Nationality</th>
+                    <th scope="col" class="leaderboard-header">Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team, score in current_championship.get_constructors_standings %}
+                <tr class="leaderboard-row">
+                    <td class="align-middle fw-lighter mx-1">{{forloop.counter}}</td>
+                    <td class="align-middle pe-0" style="height: 2rem;">
+                        <span class="team-color-bar" style="background-color: {{team.color}};"></span>
+                    </td>
+                    <td class="align-middle ps-2" style="height: 100%;">{{team.full_name}}</td>
+                    <td class="align-middle fw-lighter">
+                        <i class="{{ team.country.flag_css }} me-1"></i>{{team.country.ioc_code}}
+                    </td>
+                    <td class="align-middle fw-lighter">{{score}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

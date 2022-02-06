@@ -5,44 +5,42 @@
 {% block content %}
 <div class="d-flex flex-column align-items-center mt-3 mx-0" style="width: 100%;">
     <div class="fw-lighter fs-1">Driver Standings</div>
-    <div class="col-8">
-        <div>
-            <table class="table table-striped leaderboard-table table-borderless" style="font-size: 1rem;">
-                <colgroup>
-                    <col style="width: 15%;">
-                    <col style="width: 20%;">
-                    <col style="width: 15%;">
-                    <col style="width: 35%;">
-                    <col style="width: 15%;">
-                </colgroup>
-                <thead class="table-white">
-                    <tr>
-                        <th scope="col" class="leaderboard-header">#</th>
-                        <th scope="col" class="leaderboard-header">Driver</th>
-                        <th scope="col" class="leaderboard-header">Nationality</th>
-                        <th scope="col" class="leaderboard-header">Team</th>
-                        <th scope="col" class="leaderboard-header">Points</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for driver, team, score in current_championship.get_drivers_standings %}
-                    <tr class="leaderboard-row">
-                        <td class="align-middle fw-lighter">{{forloop.counter}}</td>
-                        <td class="align-middle">{{driver.name}}</td>
-                        <td class="align-middle fw-lighter"><i class="{{ driver.country.flag_css }}"></i>
-                            {{driver.country.ioc_code}}</td>
-                        <td class="align-middle" style="height: 100%;">
-                            <div class="d-inline-flex align-items-center" style="height: 2rem;">
-                                <span class="team-color-bar mx-2" style="background-color: {{team.color}};"></span>
-                                <span>{{team.full_name}}</span>
-                            </div>
-                        </td>
-                        <td class="align-middle fw-lighter">{{score}}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <div class="col-lg wrap-for-mobile">
+        <table class="table table-striped leaderboard-table table-borderless" style="font-size: 1rem;">
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+            </colgroup>
+            <thead class="table-white">
+                <tr>
+                    <th scope="col" class="leaderboard-header">#</th>
+                    <th scope="col" class="leaderboard-header">Driver</th>
+                    <th scope="col" class="leaderboard-header">Nationality</th>
+                    <th scope="col" class="leaderboard-header">Team</th>
+                    <th scope="col" class="leaderboard-header">Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for driver, team, score in current_championship.get_drivers_standings %}
+                <tr class="leaderboard-row">
+                    <td class="align-middle fw-lighter">{{forloop.counter}}</td>
+                    <td class="align-middle">{{driver.name}}</td>
+                    <td class="align-middle fw-lighter"><i class="{{ driver.country.flag_css }}"></i>
+                        {{driver.country.ioc_code}}</td>
+                    <td class="align-middle" style="height: 100%;">
+                        <div class="d-inline-flex align-items-center" style="height: 2rem;">
+                            <span class="team-color-bar mx-2" style="background-color: {{team.color}};"></span>
+                            <span>{{team.full_name}}</span>
+                        </div>
+                    </td>
+                    <td class="align-middle fw-lighter">{{score}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

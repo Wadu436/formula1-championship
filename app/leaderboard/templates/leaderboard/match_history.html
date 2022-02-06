@@ -21,90 +21,88 @@
         <div style="height: 2rem; width: 2rem;"></div>
         {% endif %}
     </div>
-    <div class="col-8">
-        <div>
-            <table class="table table-striped leaderboard-table table-borderless" style="font-size: 1rem;">
-                <colgroup>
-                    <col style="width: 10%;">
-                    <col style="width: 20%;">
-                    <col style="width: 10%;">
-                    <col style="width: 20%;">
-                    <col style="width: 25%;">
-                    <col style="width: 15%;">
-                </colgroup>
-                <thead class="table-white">
-                    <tr>
-                        <th scope="col" class="leaderboard-header">#</th>
-                        <th scope="col" class="leaderboard-header">Driver</th>
-                        <th scope="col" class="leaderboard-header">Nationality</th>
-                        <th scope="col" class="leaderboard-header">Team</th>
-                        <th scope="col" class="leaderboard-header">Compounds Used</th>
-                        <th scope="col" class="leaderboard-header">Fastest Lap</th>
-                        <th scope="col" class="leaderboard-header">Points</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for entry, score in race.match_history %}
+    <div class="col-xl wrap-for-mobile">
+        <table class="table table-striped leaderboard-table table-borderless" style="font-size: 1rem;">
+            <colgroup>
+                <col style="width: 10%;">
+                <col style="width: 20%;">
+                <col style="width: 10%;">
+                <col style="width: 20%;">
+                <col style="width: 25%;">
+                <col style="width: 15%;">
+            </colgroup>
+            <thead class="table-white">
+                <tr>
+                    <th scope="col" class="leaderboard-header">#</th>
+                    <th scope="col" class="leaderboard-header">Driver</th>
+                    <th scope="col" class="leaderboard-header">Nationality</th>
+                    <th scope="col" class="leaderboard-header">Team</th>
+                    <th scope="col" class="leaderboard-header">Compounds Used</th>
+                    <th scope="col" class="leaderboard-header">Fastest Lap</th>
+                    <th scope="col" class="leaderboard-header">Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry, score in race.match_history %}
 
-                    {% if not entry.bot %}
-                    {% alias entry.driver.name as name %}
-                    {% alias entry.driver.country.ioc_code as nationality%}
-                    {% alias entry.team.color as team_color%}
-                    {% alias entry.team as team%}
-                    {% else %}
-                    {% alias "Bot" as name %}
-                    {% alias "BOT" as nationality %}
-                    {% alias "pink" as team_color %}
-                    {% alias "Dutcho" as team %}
-                    {% endif %}
+                {% if not entry.bot %}
+                {% alias entry.driver.name as name %}
+                {% alias entry.driver.country.ioc_code as nationality%}
+                {% alias entry.team.color as team_color%}
+                {% alias entry.team as team%}
+                {% else %}
+                {% alias "Bot" as name %}
+                {% alias "BOT" as nationality %}
+                {% alias "pink" as team_color %}
+                {% alias "Dutcho" as team %}
+                {% endif %}
 
-                    <tr id="row{{forloop.counter}}" class="leaderboard-row" 
-                        {% if entry.driver == race.driver_of_the_day and entry == fastest_lap and not entry.bot %}
-                        style="background-image: linear-gradient(90deg, rgba(89,41,255,0.25) 0%, rgba(255,255,255,0) 100%);"
-                        {% elif entry == fastest_lap %}
-                        style="background-image: linear-gradient(90deg, rgba(178,0,255,0.25) 0%, rgba(255,255,255,0) 100%);"
-                        {% elif entry.driver == race.driver_of_the_day and not entry.bot %}
-                        style="background-image: linear-gradient(90deg, rgba(0,82,255,0.25) 0%, rgba(255,255,255,0) 100%);"
-                        {% endif %}>
-                        <td class="align-middle fw-lighter">
-                            {% if entry.dnf %}
-                            DNF
-                            {% else %}
-                            {{entry.finish_position}}
-                            {% endif %}
-                        </td>
-                        <td class="align-middle">{{name}}</td>
-                        <td class="align-middle fw-lighter">
-                            {% if not entry.bot %}
-                            <i class="{{ entry.driver.country.flag_css }}"></i>
-                            {% else %}
-                            🤖
-                            {% endif %}
-                            {{nationality}}</td>
-                        <td class="align-middle" style="height: 100%;">
-                            <div class="d-inline-flex align-items-center" style="height: 2rem;">
-                                <span class="team-color-bar mx-2" style="background-color: {{team_color}};"></span>
-                                <span>{{team}}</span>
-                            </div>
-                        </td>
-                        <td class="align-middle fw-lighter">
-                            {% tires entry.tires as t%}
-                            {% for tire in t %}
-                            <img src="{% static tire %}" alt="" style="height: 1.5rem;">
-                            {% endfor %}
-                        </td>
-                        {% if entry.best_lap_time %}
-                        <td class="align-middle {% if entry == fastest_lap %}fastest-lap{%endif%}">
-                            {{entry.best_lap_time|duration}}</td>
+                <tr id="row{{forloop.counter}}" class="leaderboard-row" 
+                    {% if entry.driver == race.driver_of_the_day and entry == fastest_lap and not entry.bot %}
+                    style="background-image: linear-gradient(90deg, rgba(89,41,255,0.25) 0%, rgba(255,255,255,0) 100%);"
+                    {% elif entry == fastest_lap %}
+                    style="background-image: linear-gradient(90deg, rgba(178,0,255,0.25) 0%, rgba(255,255,255,0) 100%);"
+                    {% elif entry.driver == race.driver_of_the_day and not entry.bot %}
+                    style="background-image: linear-gradient(90deg, rgba(0,82,255,0.25) 0%, rgba(255,255,255,0) 100%);"
+                    {% endif %}>
+                    <td class="align-middle fw-lighter">
+                        {% if entry.dnf %}
+                        DNF
                         {% else %}
-                        <td class="align-middle">--:--:---</td>
+                        {{entry.finish_position}}
                         {% endif %}
-                        <td class="align-middle fw-lighter">{{score}}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                    </td>
+                    <td class="align-middle">{{name}}</td>
+                    <td class="align-middle fw-lighter">
+                        {% if not entry.bot %}
+                        <i class="{{ entry.driver.country.flag_css }}"></i>
+                        {% else %}
+                        🤖
+                        {% endif %}
+                        {{nationality}}</td>
+                    <td class="align-middle" style="height: 100%;">
+                        <div class="d-inline-flex align-items-center" style="height: 2rem;">
+                            <span class="team-color-bar mx-2" style="background-color: {{team_color}};"></span>
+                            <span>{{team}}</span>
+                        </div>
+                    </td>
+                    <td class="align-middle fw-lighter">
+                        {% tires entry.tires as t%}
+                        {% for tire in t %}
+                        <img src="{% static tire %}" alt="" style="height: 1.5rem;">
+                        {% endfor %}
+                    </td>
+                    {% if entry.best_lap_time %}
+                    <td class="align-middle {% if entry == fastest_lap %}fastest-lap{%endif%}">
+                        {{entry.best_lap_time|duration}}</td>
+                    {% else %}
+                    <td class="align-middle">--:--:---</td>
+                    {% endif %}
+                    <td class="align-middle fw-lighter">{{score}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

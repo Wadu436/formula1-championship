@@ -229,7 +229,7 @@ a:hover {
     margin: 0.5rem;
     border: 0.1rem solid #dfdfdf;
     border-radius: 0.5rem;
-    max-width: 100%;
+    min-width: fit-content;
 }
 
 .stats-row {
@@ -329,4 +329,13 @@ a:hover {
 
 .table-stats {
     width: fit-content;
+}
+
+.wrap-for-mobile {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.table > :not(caption) td {
+    padding: 1rem;
 }

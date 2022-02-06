@@ -5,9 +5,9 @@
 {% block content %}
 <div class="d-flex flex-column align-items-center mt-3 mx-0" style="width: 100%;">
     <div class="fw-lighter fs-1">Stats</div>
-    <div class="col">
+    <div class="col mw-100">
         {% comment %} Race Classification {% endcomment %}
-        <div class="stats-container">
+        <div class="stats-container stats-row">
             <span class="fs-3" style="margin-left: 0.5rem;">Race Classification</span><span class="fs-6 fw-light" style="margin-left: 0.5rem;">(Ordered by Drivers' Standings)</span>
             <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
                 <colgroup>
@@ -96,7 +96,7 @@
             </table>
         </div>
         {% comment %} Quali Classification {% endcomment %}
-        <div class="stats-container">
+        <div class="stats-container stats-row">
             <span class="fs-3" style="margin-left: 0.5rem;">Qualifying Classification</span><span class="fs-6 fw-light" style="margin-left: 0.5rem;">(Ordered by Drivers' Standings)</span>
             <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
                 <colgroup>
@@ -180,7 +180,7 @@
             </table>
         </div>
         {% comment %} Pace {% endcomment %}
-        <div class="stats-container">
+        <div class="stats-container stats-row">
             <div class="fs-3" style="margin-left: 0.5rem;">Pace</div>
             <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
                 <colgroup>
@@ -264,7 +264,7 @@
             </table>
         </div>
         {% comment %} Overtakes {% endcomment %}
-        <div class="stats-container">
+        <div class="stats-container stats-row">
             <span class="fs-3" style="margin-left: 0.5rem;">Overtakes</span>
             <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
                 <colgroup>
@@ -345,7 +345,7 @@
             </table>
         </div>
 
-        <div class="d-flex justify-content-around">
+        <div class="d-flex justify-content-around stats-row flex-wrap">
 
         {% comment %} Best Quali/Finish {% endcomment %}
         <div class="stats-container d-flex flex-column align-items-center" style="width: fit-content">

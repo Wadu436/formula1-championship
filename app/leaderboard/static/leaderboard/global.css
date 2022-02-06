@@ -8,7 +8,7 @@ body {
     font-family: "Roboto", sans-serif !important;
     --bs-primary-rgb: 230,0,0; 
     --bs-primary: #e60000;
-
+    max-width: 100vw;
 }
 
 .team-color-bar {
@@ -229,6 +229,12 @@ a:hover {
     margin: 0.5rem;
     border: 0.1rem solid #dfdfdf;
     border-radius: 0.5rem;
+    max-width: 100%;
+}
+
+.stats-row {
+    overflow-x: auto;
+    max-width: 100%;
 }
 
 .stats-pace-table {
@@ -296,6 +302,7 @@ a:hover {
 .page-container {
     display: flex;
     height: 100%;
+    width: 100%;
     flex-direction: column;
     justify-content: space-between;
 }

@@ -273,7 +273,7 @@ a:hover {
     color: #6f6f6f;
     padding: 0.3rem;
     font-size: small;
-    justify-content: right;
+    justify-content: space-between;
 }
 
 .footer-container a {
@@ -282,6 +282,7 @@ a:hover {
 }
 
 .footer-text {
+    margin-left: .6rem;
     margin-right: .6rem;
     display: flex;
     align-items: center;

@@ -272,21 +272,21 @@ def stats_race_table(championship: Championship):
                     "driver": driver,
                     "wins": {
                         "value": most_consecutive_wins[driver.id],
-                        "first": most_consecutive_wins_unique[0] if len(race_wins_unique) > 0 else None,
-                        "second": most_consecutive_wins_unique[1] if len(race_wins_unique) > 1 else None,
-                        "third": most_consecutive_wins_unique[2] if len(race_wins_unique) > 2 else None,
+                        "first": most_consecutive_wins_unique[0] if len(most_consecutive_wins_unique) > 0 else None,
+                        "second": most_consecutive_wins_unique[1] if len(most_consecutive_wins_unique) > 1 else None,
+                        "third": most_consecutive_wins_unique[2] if len(most_consecutive_wins_unique) > 2 else None,
                         },
                     "podiums": {
                         "value": most_consecutive_podiums[driver.id],
-                        "first": most_consecutive_podiums_unique[0] if len(race_wins_unique) > 0 else None,
-                        "second": most_consecutive_podiums_unique[1] if len(race_wins_unique) > 1 else None,
-                        "third": most_consecutive_podiums_unique[2] if len(race_wins_unique) > 2 else None,
+                        "first": most_consecutive_podiums_unique[0] if len(most_consecutive_podiums_unique) > 0 else None,
+                        "second": most_consecutive_podiums_unique[1] if len(most_consecutive_podiums_unique) > 1 else None,
+                        "third": most_consecutive_podiums_unique[2] if len(most_consecutive_podiums_unique) > 2 else None,
                         },
                     "points": {
                         "value": most_consecutive_points[driver.id],
-                        "first": most_consecutive_points_unique[0] if len(race_wins_unique) > 0 else None,
-                        "second": most_consecutive_points_unique[1] if len(race_wins_unique) > 1 else None,
-                        "third": most_consecutive_points_unique[2] if len(race_wins_unique) > 2 else None,
+                        "first": most_consecutive_points_unique[0] if len(most_consecutive_points_unique) > 0 else None,
+                        "second": most_consecutive_points_unique[1] if len(most_consecutive_points_unique) > 1 else None,
+                        "third": most_consecutive_points_unique[2] if len(most_consecutive_points_unique) > 2 else None,
                         },
                 } for driver in drivers
             ],
@@ -298,21 +298,21 @@ def stats_race_table(championship: Championship):
                     "driver": driver,
                     "wins": {
                         "value": most_consecutive_no_wins[driver.id],
-                        "first": most_consecutive_no_wins_unique[0] if len(race_wins_unique) > 0 else None,
-                        "second": most_consecutive_no_wins_unique[1] if len(race_wins_unique) > 1 else None,
-                        "third": most_consecutive_no_wins_unique[2] if len(race_wins_unique) > 2 else None,
+                        "first": most_consecutive_no_wins_unique[0] if len(most_consecutive_no_wins_unique) > 0 else None,
+                        "second": most_consecutive_no_wins_unique[1] if len(most_consecutive_no_wins_unique) > 1 else None,
+                        "third": most_consecutive_no_wins_unique[2] if len(most_consecutive_no_wins_unique) > 2 else None,
                         },
                     "podiums": {
                         "value": most_consecutive_no_podiums[driver.id],
-                        "first": most_consecutive_no_podiums_unique[0] if len(race_wins_unique) > 0 else None,
-                        "second": most_consecutive_no_podiums_unique[1] if len(race_wins_unique) > 1 else None,
-                        "third": most_consecutive_no_podiums_unique[2] if len(race_wins_unique) > 2 else None,
+                        "first": most_consecutive_no_podiums_unique[0] if len(most_consecutive_no_podiums_unique) > 0 else None,
+                        "second": most_consecutive_no_podiums_unique[1] if len(most_consecutive_no_podiums_unique) > 1 else None,
+                        "third": most_consecutive_no_podiums_unique[2] if len(most_consecutive_no_podiums_unique) > 2 else None,
                         },
                     "points": {
                         "value": most_consecutive_no_points[driver.id],
-                        "first": most_consecutive_no_points_unique[0] if len(race_wins_unique) > 0 else None,
-                        "second": most_consecutive_no_points_unique[1] if len(race_wins_unique) > 1 else None,
-                        "third": most_consecutive_no_points_unique[2] if len(race_wins_unique) > 2 else None,
+                        "first": most_consecutive_no_points_unique[0] if len(most_consecutive_no_points_unique) > 0 else None,
+                        "second": most_consecutive_no_points_unique[1] if len(most_consecutive_no_points_unique) > 1 else None,
+                        "third": most_consecutive_no_points_unique[2] if len(most_consecutive_no_points_unique) > 2 else None,
                         },
                 } for driver in drivers
             ],
@@ -324,21 +324,21 @@ def stats_race_table(championship: Championship):
                     "driver": driver,
                     "races": {
                         "value": most_consecutive_first_races[driver.id],
-                        "first": most_consecutive_first_races_unique[0] if len(race_wins_unique) > 0 else None,
-                        "second": most_consecutive_first_races_unique[1] if len(race_wins_unique) > 1 else None,
-                        "third": most_consecutive_first_races_unique[2] if len(race_wins_unique) > 2 else None,
+                        "first": most_consecutive_first_races_unique[0] if len(most_consecutive_first_races_unique) > 0 else None,
+                        "second": most_consecutive_first_races_unique[1] if len(most_consecutive_first_races_unique) > 1 else None,
+                        "third": most_consecutive_first_races_unique[2] if len(most_consecutive_first_races_unique) > 2 else None,
                         },
                     "podiums": {
                         "value": most_consecutive_first_podiums[driver.id],
-                        "first": most_consecutive_first_podiums_unique[0] if len(race_wins_unique) > 0 else None,
-                        "second": most_consecutive_first_podiums_unique[1] if len(race_wins_unique) > 1 else None,
-                        "third": most_consecutive_first_podiums_unique[2] if len(race_wins_unique) > 2 else None,
+                        "first": most_consecutive_first_podiums_unique[0] if len(most_consecutive_first_podiums_unique) > 0 else None,
+                        "second": most_consecutive_first_podiums_unique[1] if len(most_consecutive_first_podiums_unique) > 1 else None,
+                        "third": most_consecutive_first_podiums_unique[2] if len(most_consecutive_first_podiums_unique) > 2 else None,
                         },
                     "points": {
                         "value": most_consecutive_first_points[driver.id],
-                        "first": most_consecutive_first_points_unique[0] if len(race_wins_unique) > 0 else None,
-                        "second": most_consecutive_first_points_unique[1] if len(race_wins_unique) > 1 else None,
-                        "third": most_consecutive_first_points_unique[2] if len(race_wins_unique) > 2 else None,
+                        "first": most_consecutive_first_points_unique[0] if len(most_consecutive_first_points_unique) > 0 else None,
+                        "second": most_consecutive_first_points_unique[1] if len(most_consecutive_first_points_unique) > 1 else None,
+                        "third": most_consecutive_first_points_unique[2] if len(most_consecutive_first_points_unique) > 2 else None,
                         },
                 } for driver in drivers
             ],
@@ -346,5 +346,8 @@ def stats_race_table(championship: Championship):
             reverse=True)
         }
     )
-
+    print(most_consecutive_first_points_unique)
+    print(most_consecutive_first_points_unique[0] if len(race_wins_unique) > 0 else None)
+    print(most_consecutive_first_points_unique[1] if len(race_wins_unique) > 1 else None)
+    print(most_consecutive_first_points_unique[2] if len(race_wins_unique) > 2 else None)
     return stats_table

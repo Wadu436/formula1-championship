@@ -263,6 +263,172 @@
                 </tbody>
             </table>
         </div>
+        {% comment %} Overtakes {% endcomment %}
+        <div class="stats-container">
+            <span class="fs-3" style="margin-left: 0.5rem;">Overtakes</span>
+            <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
+                <colgroup>
+                    <col>
+                    <col>
+                    {% for race in race_table.0 %}
+                        <col width="4rem">
+                    {% endfor %}
+                    <col width="4rem">
+                </colgroup>
+                <thead class="table-white">
+                    <tr>
+                        <th scope="col" class="leaderboard-header"></th>
+                        <th scope="col" class="leaderboard-header">Driver</th>
+                        {% for race in race_table.0 %}
+                        <th scope="col" class="leaderboard-header px-0" >
+                            <div class="d-flex justify-content-center" style="width: 100%;">{{ race.track.abbreviation }}</div>
+                        </th>
+                        {% endfor %}
+                        <th scope="col" class="leaderboard-header" style="padding-right: 0 !important;">
+                            <div class="d-flex justify-content-center" style="width: 100%; ">Total</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    {% for driver, driver_dict in race_table.1 %}
+                    <tr class="leaderboard-row">
+                        <td class="align-middle fw-lighter">{{forloop.counter}}</td>
+                        <td class="align-middle">{{driver.name}}</td>
+                        {% comment %}  Main  {% endcomment %}
+                        {% for entry in driver_dict.entries %}
+                            <td class="align-middle pace-cell">
+                            {% if entry.overtakes is not None %}
+                                <div class="pace-item 
+                                {% if entry.overtakes >= 6 %}
+                                    overtakes-many
+                                {% elif entry.overtakes > 0 %}
+                                    overtakes-few
+                                {% else %}
+                                    overtakes-zero
+                                {% endif %}
+                                ">
+                                {{entry.overtakes}}
+                            </div>
+                            {% else %}
+                                <div class="pace-item overtakes-none">
+                                -
+                                </div>
+                            {% endif %}
+                            </td>
+                        {% endfor %}
+
+                        {% comment %} Average {% endcomment %}
+                        <td class="align-middle pace-average">
+                        {% if driver_dict.total_overtakes is not None %}
+                            <div class="pace-item 
+                            {% if driver_dict.total_overtakes >= 50 %}
+                                overtakes-many
+                            {% elif driver_dict.total_overtakes > 0 %}
+                                overtakes-few
+                            {% else %}
+                                overtakes-zero
+                            {% endif %}
+                            ">
+                            {{driver_dict.total_overtakes}}
+                        </div>
+                        {% else %}
+                            <div class="pace-item overtakes-none">
+                            -
+                            </div>
+                        {% endif %}
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% comment %} Best Quali/Finish {% endcomment %}
+        <div class="stats-container" style="width: 20%">
+            <span class="fs-3" style="margin-left: 0.5rem;">Best Results</span>
+            <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
+                <colgroup>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
+                <thead class="table-white">
+                    <tr>
+                        <th scope="col" class="leaderboard-header"></th>
+                        <th scope="col" class="leaderboard-header">Driver</th>
+                        <th scope="col" class="leaderboard-header">
+                            <div class="d-flex justify-content-center" style="width: 100%; ">Qualifying</div>
+                        </th>
+                        <th scope="col" class="leaderboard-header">
+                            <div class="d-flex justify-content-center" style="width: 100%; ">Race</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for driver, driver_dict in race_table.1 %}
+                    <tr class="leaderboard-row">
+                        <td class="align-middle fw-lighter">{{forloop.counter}}</td>
+                        <td class="align-middle">{{driver.name}}</td>
+
+                        {% comment %} Quali {% endcomment %}
+                        <td class="align-middle pace-cell">
+                            <div class="justify-content-center d-flex">
+                            {% if driver_dict.best_quali.qualifying_position %}
+                                <div class="pace-item 
+                                {% if driver_dict.best_quali.qualifying_position == 1%}
+                                    finish-first
+                                {% elif driver_dict.best_quali.qualifying_position == 2%}
+                                    finish-second
+                                {% elif driver_dict.best_quali.qualifying_position == 3%}
+                                    finish-third
+                                {% elif driver_dict.best_quali.qualifying_position <= 10%}
+                                    finish-points
+                                {% else %}
+                                    finish-no-points
+                                {% endif %}
+                                ">
+                                {{driver_dict.best_quali.qualifying_position}}</div>
+                            {% else %}
+                                <div class="pace-item finish-none">
+                                -
+                                </div>
+                            {% endif %}
+                            </div>
+                        </td>
+
+                        {% comment %}  Race  {% endcomment %}
+                        <td class="align-middle pace-cell">
+                            <div class="justify-content-center d-flex">
+                            {% if driver_dict.best_finish.finish_position %}
+                                <div class="pace-item 
+                                {% if driver_dict.best_finish.finish_position == 1%}
+                                    finish-first
+                                {% elif driver_dict.best_finish.finish_position == 2%}
+                                    finish-second
+                                {% elif driver_dict.best_finish.finish_position == 3%}
+                                    finish-third
+                                {% elif driver_dict.best_finish.finish_position <= 10%}
+                                    finish-points
+                                {% else %}
+                                    finish-no-points
+                                {% endif %}
+                                ">
+                                {{driver_dict.best_finish.finish_position}}</div>
+                            {% else %}
+                                <div class="pace-item finish-none">
+                                -
+                                </div>
+                            {% endif %}
+                            </div>
+                        </td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}

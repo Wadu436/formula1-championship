@@ -298,3 +298,20 @@ a:hover {
     flex-direction: column;
     justify-content: space-between;
 }
+
+.overtakes-many {
+    background-color: #9acc59;
+}
+
+.overtakes-few {
+    background-color: #d4ff9d;
+}
+
+.overtakes-zero {
+    background-color: #ebffe7;
+}
+
+.overtakes-none {
+    background-color: lightgray;
+}
+

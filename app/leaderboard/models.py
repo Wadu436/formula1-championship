@@ -400,6 +400,13 @@ class RaceEntry(models.Model):
 
     bot = models.BooleanField(verbose_name="Is Bot", default=False)
 
+    overtakes = models.IntegerField(
+        verbose_name="Overtakes",
+        validators=[MinValueValidator(0)],
+        blank=True,
+        null=True,
+    )
+
     # Should be not null if not DNA
     qualifying_position = models.IntegerField(
         verbose_name="Qualifying Position",

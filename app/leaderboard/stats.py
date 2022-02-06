@@ -1,3 +1,4 @@
+import math
 from time import perf_counter
 from typing import Optional
 
@@ -252,18 +253,18 @@ def stats_race_table(championship: Championship):
                 "total_overtakes": total_overtakes(finish_dict[driver.id]),
             } for driver in drivers], key=lambda e: e["total_overtakes"], reverse=True),
             
-            "best_results": sorted([(driver, best_race_result_dict[driver.id], best_quali_result_dict[driver.id]) for driver in drivers], key=lambda e: (e[1].finish_position, e[2].qualifying_position)),
+            "best_results": sorted([(driver, best_race_result_dict[driver.id], best_quali_result_dict[driver.id]) for driver in drivers], key=lambda e: (e[1].finish_position if e[1] else math.inf, e[2].qualifying_position if e[2] else math.inf)),
 
             "race_wins": {
                 "entries": sorted([(driver, race_wins_dict[driver.id]) for driver in drivers], key=lambda e: e[1], reverse=True),
-                "first": race_wins_unique[0],
-                "second": race_wins_unique[1],
-                "third": race_wins_unique[2],
+                "first": race_wins_unique[0] if len(race_wins_unique) > 0 else None,
+                "second": race_wins_unique[1] if len(race_wins_unique) > 1 else None,
+                "third": race_wins_unique[2] if len(race_wins_unique) > 2 else None,
             },
 
             "pace": sorted(
                 [{"driver": driver, "entries": pace_dict[driver.id], "average": average_int(pace_dict[driver.id])} for driver in drivers],
-                key= lambda e: e["average"], reverse=True
+                key= lambda e: e["average"] or math.inf, reverse=True
             ),
 
             "consecutive": sorted([
@@ -271,21 +272,21 @@ def stats_race_table(championship: Championship):
                     "driver": driver,
                     "wins": {
                         "value": most_consecutive_wins[driver.id],
-                        "first": most_consecutive_wins_unique[0],
-                        "second": most_consecutive_wins_unique[1],
-                        "third": most_consecutive_wins_unique[2],
+                        "first": most_consecutive_wins_unique[0] if len(race_wins_unique) > 0 else None,
+                        "second": most_consecutive_wins_unique[1] if len(race_wins_unique) > 1 else None,
+                        "third": most_consecutive_wins_unique[2] if len(race_wins_unique) > 2 else None,
                         },
                     "podiums": {
                         "value": most_consecutive_podiums[driver.id],
-                        "first": most_consecutive_podiums_unique[0],
-                        "second": most_consecutive_podiums_unique[1],
-                        "third": most_consecutive_podiums_unique[2],
+                        "first": most_consecutive_podiums_unique[0] if len(race_wins_unique) > 0 else None,
+                        "second": most_consecutive_podiums_unique[1] if len(race_wins_unique) > 1 else None,
+                        "third": most_consecutive_podiums_unique[2] if len(race_wins_unique) > 2 else None,
                         },
                     "points": {
                         "value": most_consecutive_points[driver.id],
-                        "first": most_consecutive_points_unique[0],
-                        "second": most_consecutive_points_unique[1],
-                        "third": most_consecutive_points_unique[2],
+                        "first": most_consecutive_points_unique[0] if len(race_wins_unique) > 0 else None,
+                        "second": most_consecutive_points_unique[1] if len(race_wins_unique) > 1 else None,
+                        "third": most_consecutive_points_unique[2] if len(race_wins_unique) > 2 else None,
                         },
                 } for driver in drivers
             ],
@@ -297,21 +298,21 @@ def stats_race_table(championship: Championship):
                     "driver": driver,
                     "wins": {
                         "value": most_consecutive_no_wins[driver.id],
-                        "first": most_consecutive_no_wins_unique[0],
-                        "second": most_consecutive_no_wins_unique[1],
-                        "third": most_consecutive_no_wins_unique[2],
+                        "first": most_consecutive_no_wins_unique[0] if len(race_wins_unique) > 0 else None,
+                        "second": most_consecutive_no_wins_unique[1] if len(race_wins_unique) > 1 else None,
+                        "third": most_consecutive_no_wins_unique[2] if len(race_wins_unique) > 2 else None,
                         },
                     "podiums": {
                         "value": most_consecutive_no_podiums[driver.id],
-                        "first": most_consecutive_no_podiums_unique[0],
-                        "second": most_consecutive_no_podiums_unique[1],
-                        "third": most_consecutive_no_podiums_unique[2],
+                        "first": most_consecutive_no_podiums_unique[0] if len(race_wins_unique) > 0 else None,
+                        "second": most_consecutive_no_podiums_unique[1] if len(race_wins_unique) > 1 else None,
+                        "third": most_consecutive_no_podiums_unique[2] if len(race_wins_unique) > 2 else None,
                         },
                     "points": {
                         "value": most_consecutive_no_points[driver.id],
-                        "first": most_consecutive_no_points_unique[0],
-                        "second": most_consecutive_no_points_unique[1],
-                        "third": most_consecutive_no_points_unique[2],
+                        "first": most_consecutive_no_points_unique[0] if len(race_wins_unique) > 0 else None,
+                        "second": most_consecutive_no_points_unique[1] if len(race_wins_unique) > 1 else None,
+                        "third": most_consecutive_no_points_unique[2] if len(race_wins_unique) > 2 else None,
                         },
                 } for driver in drivers
             ],
@@ -323,21 +324,21 @@ def stats_race_table(championship: Championship):
                     "driver": driver,
                     "races": {
                         "value": most_consecutive_first_races[driver.id],
-                        "first": most_consecutive_first_races_unique[0],
-                        "second": most_consecutive_first_races_unique[1],
-                        "third": most_consecutive_first_races_unique[2],
+                        "first": most_consecutive_first_races_unique[0] if len(race_wins_unique) > 0 else None,
+                        "second": most_consecutive_first_races_unique[1] if len(race_wins_unique) > 1 else None,
+                        "third": most_consecutive_first_races_unique[2] if len(race_wins_unique) > 2 else None,
                         },
                     "podiums": {
                         "value": most_consecutive_first_podiums[driver.id],
-                        "first": most_consecutive_first_podiums_unique[0],
-                        "second": most_consecutive_first_podiums_unique[1],
-                        "third": most_consecutive_first_podiums_unique[2],
+                        "first": most_consecutive_first_podiums_unique[0] if len(race_wins_unique) > 0 else None,
+                        "second": most_consecutive_first_podiums_unique[1] if len(race_wins_unique) > 1 else None,
+                        "third": most_consecutive_first_podiums_unique[2] if len(race_wins_unique) > 2 else None,
                         },
                     "points": {
                         "value": most_consecutive_first_points[driver.id],
-                        "first": most_consecutive_first_points_unique[0],
-                        "second": most_consecutive_first_points_unique[1],
-                        "third": most_consecutive_first_points_unique[2],
+                        "first": most_consecutive_first_points_unique[0] if len(race_wins_unique) > 0 else None,
+                        "second": most_consecutive_first_points_unique[1] if len(race_wins_unique) > 1 else None,
+                        "third": most_consecutive_first_points_unique[2] if len(race_wins_unique) > 2 else None,
                         },
                 } for driver in drivers
             ],

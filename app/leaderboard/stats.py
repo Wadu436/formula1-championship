@@ -98,7 +98,8 @@ def stats_race_table(championship: Championship):
     
     for i, race in enumerate(races):
         race: Race
-        points = race.get_points()[0]
+        race_points_dict = race.get_points()
+        points = race_points_dict['player_points']
 
         # Quali classification & Race classification
         # Best quali/race result
@@ -346,8 +347,4 @@ def stats_race_table(championship: Championship):
             reverse=True)
         }
     )
-    print(most_consecutive_first_points_unique)
-    print(most_consecutive_first_points_unique[0] if len(race_wins_unique) > 0 else None)
-    print(most_consecutive_first_points_unique[1] if len(race_wins_unique) > 1 else None)
-    print(most_consecutive_first_points_unique[2] if len(race_wins_unique) > 2 else None)
     return stats_table

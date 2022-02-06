@@ -1,4 +1,5 @@
 
+import math
 from collections import defaultdict
 from decimal import Decimal
 from itertools import chain
@@ -101,14 +102,17 @@ class Championship(models.Model):
         first_race = first_race or 0
         last_race = last_race or self.races.count()
 
-        race_scores: list[dict[int, int | Decimal]] = [
-            race.get_points()[0] for race in self.races.all().prefetch_related('dna_entries', 'race_entries')
+        race_scores = [
+            race.get_points() for race in self.races.all().prefetch_related('dna_entries', 'race_entries')
         ]
 
         total_points: dict[int, int | Decimal] = defaultdict(int)
+        player_finishes: dict[int, list[int | float]] = defaultdict(list)
         for race in race_scores:
-            for driver, points in race.items():
+            for driver, points in race['player_points'].items():
                 total_points[driver] += points
+            for driver, finish in race['player_finishes'].items():
+                player_finishes[driver].append(finish)
 
         for (driver_id, penalty_points) in self.championshipdriver_set.all().values_list('driver_id', 'penalty_points'):
             if driver_id not in total_points:
@@ -116,7 +120,11 @@ class Championship(models.Model):
             # Penalty points
             total_points[driver_id] -= penalty_points
         
-
+        for driver, _ in total_points.items():
+            if len(player_finishes[driver]) == 0:
+                player_finishes[driver] = [math.inf]
+            else:
+                player_finishes[driver] = sorted(player_finishes[driver])
 
         driver_team_map = self.get_driver_team_map()
 
@@ -126,8 +134,7 @@ class Championship(models.Model):
             (driver_map[driver], driver_team_map[driver], points) for driver, points in total_points.items()
         ]
 
-        total_points_list.sort(key=lambda item: (-item[2], item[1].name if item[1] else None, item[0].name))
-
+        total_points_list.sort(key=lambda item: (-item[2], player_finishes[item[0].id], item[1].name if item[1] else None, item[0].name))
         return total_points_list
 
     def get_constructors_standings(
@@ -136,17 +143,20 @@ class Championship(models.Model):
         first_race = first_race or 0
         last_race = last_race or self.races.count()
 
-        team_scores: list[dict[int, int | Decimal]] = [
-            race.get_points()[1] for race in self.races.all().prefetch_related('dna_entries', 'race_entries')
+        team_scores: list[dict] = [
+            race.get_points() for race in self.races.all().prefetch_related('dna_entries', 'race_entries')
         ]
 
         driver_team_map = self.get_driver_team_map()
 
         total_points: dict[int, int | Decimal] = defaultdict(int)
+        team_finishes: dict[int, list[int | float]] = defaultdict(list)
         for race in team_scores:
-            for team, points in race.items():
+            for team, points in race['team_points'].items():
                 if team:
                     total_points[team] += points
+            for team, finishes in race['team_finishes'].items():
+                team_finishes[team].extend(finishes)
 
         for driver_id, penalty_points in self.championshipdriver_set.all().values_list('driver_id', 'penalty_points'):
             if driver_team_map[driver_id] and driver_team_map[driver_id].id not in total_points:
@@ -157,11 +167,17 @@ class Championship(models.Model):
             total_points[multiplier.constructor.id] *= Decimal(multiplier.multiplier)
             total_points[multiplier.constructor.id] -= multiplier.penalty_points
 
+        for constructor_id, _ in total_points.items():
+            if len(team_finishes[constructor_id]) == 0:
+                team_finishes[constructor_id] = [math.inf]
+            else:
+                team_finishes[constructor_id] = sorted(team_finishes[constructor_id])
+
         team_map = {team.id: team for team in Team.objects.all()}
 
         total_points_list = [(team_map[team], points) for team, points in total_points.items()]
 
-        total_points_list.sort(key=lambda item: (-item[1], item[0].name))
+        total_points_list.sort(key=lambda item: (-item[1], team_finishes[item[0].id], item[0].name))
 
         return total_points_list
 
@@ -226,7 +242,7 @@ class Race(models.Model):
 
     def get_points(
         self,
-    ) -> tuple[dict[int, int | Decimal], dict[int, int | Decimal]]:
+    ) -> dict:
         SCORING_SYSTEM = {
             1: 25,
             2: 18,
@@ -249,7 +265,7 @@ class Race(models.Model):
         num_entries = len(dna_entries) + len(player_entries)
 
         if num_entries == 0 or self.finished == False or len(entries)==0:
-            return (dict(), dict())
+            return {"player_points": {}, "team_points": {}, "player_finishes": {}, "team_finishes": {}}
 
         # In Python
         # fastest_entry = None
@@ -272,7 +288,7 @@ class Race(models.Model):
         if fastest_entry.finish_position <= 10:
             total_points[fastest_entry] += 1
 
-        player_points: dict[Driver, int | Decimal] = {
+        player_points: dict[int, int | Decimal] = {
             entry.driver_id: total_points[entry] for entry in player_entries
         }
         bot_points: list[int | Decimal] = [total_points[entry] for entry in bot_entries]
@@ -293,15 +309,22 @@ class Race(models.Model):
                     player_points[entry.driver_id] = 0
 
         # Calculate Team Scores
-        team_points: dict[Team, int | Decimal] = {
+        team_points: dict[int, int | Decimal] = {
             entry.team_id: 0 for entry in chain(player_entries, dna_entries) if entry.team_id
         }
+
+        player_finishes = {}
+        team_finishes = {entry.team_id: [] for entry in player_entries}
+
+        for entry in player_entries:
+            player_finishes[entry.driver_id] = entry.finish_position
+            team_finishes[entry.team_id].append(entry.finish_position)
 
         for entry in chain(player_entries, dna_entries):
             if entry.team_id:
                 team_points[entry.team_id] += player_points[entry.driver_id]
 
-        return (player_points, team_points)
+        return {"player_points": player_points, "team_points": team_points, "player_finishes": player_finishes, "team_finishes": team_finishes}
 
     def winner(self) -> Optional["RaceEntry"]:
         if self.finished:

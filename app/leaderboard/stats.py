@@ -264,7 +264,7 @@ def stats_race_table(championship: Championship):
 
             "pace": sorted(
                 [{"driver": driver, "entries": pace_dict[driver.id], "average": average_int(pace_dict[driver.id])} for driver in drivers],
-                key= lambda e: e["average"] or math.inf, reverse=True
+                key= lambda e: e["average"] or -math.inf, reverse=True
             ),
 
             "consecutive": sorted([

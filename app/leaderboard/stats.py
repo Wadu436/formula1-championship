@@ -68,7 +68,7 @@ def total_overtakes(l):
 def stats_race_table(championship: Championship):    
     standings = championship.get_drivers_standings()
 
-    races = list(championship.races.all().prefetch_related('race_entries', 'track')) # Also preload track for the html :)
+    races = list(championship.races.all().prefetch_related('race_entries', 'track', 'dna_entries')) # Also preload track for the html :)
     drivers = [driver for (driver, _, _) in standings]
     num_races = len(races)
     finish_dict: dict[int, list[Optional[RaceEntry]]] = {driver.id: [None]*num_races for driver in drivers}
@@ -345,7 +345,5 @@ def stats_race_table(championship: Championship):
             reverse=True)
         }
     )
-
-    print(stats_table[1]["best_results"])
 
     return stats_table

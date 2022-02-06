@@ -45,7 +45,7 @@ urlpatterns = [
     path("championships/<int:championship_id>/stats/", views.stats, name="stats"),
     path(
         "",
-        views.latest_drivers_standings,
+        views.index,
         name="index",
     ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -132,11 +132,20 @@ def stats(request, championship_id):
     else:
         return latest_drivers_standings(request)
 
+# Index
+def index(request):
+    latest_championship = Championship.objects.latest("start_date")
+    context = {
+            "current_championship": latest_championship,
+            "championships": Championship.objects.all(),
+            "in_championship": True,
+        }
+    return render(request, "leaderboard/drivers_standings.html", context=context)
+
 # Latest redirect views
 def latest_drivers_standings(request):
     latest_championship = Championship.objects.latest("start_date")
     return redirect(reverse("drivers_standings", args=[latest_championship.id]))
-
 
 def latest_constructors_standings(request):
     latest_championship = Championship.objects.latest("start_date")

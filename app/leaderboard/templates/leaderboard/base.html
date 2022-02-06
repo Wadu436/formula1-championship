@@ -47,7 +47,7 @@
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             {% for championship in championships %}
 
-                            {% if in_championship %}
+                            {% if in_championship and view_name != 'index' %}                            
                             <a class="dropdown-item" href="{% url view_name championship.id%}">{{ championship.name }}</a>
                             {% else %}
                             <a class="dropdown-item" href="{% url 'drivers_standings' championship.id%}">{{ championship.name }}</a>

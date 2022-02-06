@@ -227,7 +227,8 @@ a:hover {
 .stats-container {
     padding: 0.5rem;
     margin: 0.5rem;
-    border: 0.1rem solid lightgray;
+    border: 0.1rem solid #dfdfdf;
+    border-radius: 0.5rem;
 }
 
 .stats-pace-table {
@@ -266,7 +267,7 @@ a:hover {
 }
 
 .footer-container {
-    margin-top: 2rem;
+    margin-top: 1.2rem;
     display: flex;
     background-color: #f0f0f0;
     color: #6f6f6f;

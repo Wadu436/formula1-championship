@@ -6,8 +6,9 @@
 <div class="d-flex flex-column align-items-center mt-3 mx-0" style="width: 100%;">
     <div class="fw-lighter fs-1">Stats</div>
     <div class="col">
+        {% comment %} Race Classification {% endcomment %}
         <div class="stats-container">
-            <div class="fs-3">Finish Position</div>
+            <span class="fs-3" style="margin-left: 0.5rem;">Race Classification</span>
             <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
                 <colgroup>
                     <col>
@@ -75,7 +76,7 @@
                                 finish-second
                             {% elif driver_dict.average_finish < 4 %}
                                 finish-third
-                            {% elif driver_dict.average_finish <= 10 %}
+                            {% elif driver_dict.average_finish <= 8 %}
                                 finish-points
                             {% else %}
                                 finish-no-points
@@ -94,8 +95,93 @@
                 </tbody>
             </table>
         </div>
+        {% comment %} Quali Classification {% endcomment %}
         <div class="stats-container">
-            <div class="fs-3">Pace</div>
+            <span class="fs-3" style="margin-left: 0.5rem;">Qualifying Classification</span>
+            <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
+                <colgroup>
+                    <col>
+                    <col>
+                    {% for race in race_table.0 %}
+                        <col width="4rem">
+                    {% endfor %}
+                    <col width="4rem">
+                </colgroup>
+                <thead class="table-white">
+                    <tr>
+                        <th scope="col" class="leaderboard-header"></th>
+                        <th scope="col" class="leaderboard-header">Driver</th>
+                        {% for race in race_table.0 %}
+                        <th scope="col" class="leaderboard-header px-0" >
+                            <div class="d-flex justify-content-center" style="width: 100%;">{{ race.track.abbreviation }}</div>
+                        </th>
+                        {% endfor %}
+                        <th scope="col" class="leaderboard-header" style="padding-right: 0 !important;">
+                            <div class="d-flex justify-content-center" style="width: 100%; ">Average</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for driver, driver_dict in race_table.1 %}
+                    <tr class="leaderboard-row">
+                        <td class="align-middle fw-lighter">{{forloop.counter}}</td>
+                        <td class="align-middle">{{driver.name}}</td>
+                        {% for entry in driver_dict.entries %}
+                            <td class="align-middle pace-cell">
+                            {% if entry %}
+                                <div class="pace-item 
+                                {% if entry.qualifying_position == 1%}
+                                    finish-first
+                                {% elif entry.qualifying_position == 2%}
+                                    finish-second
+                                {% elif entry.qualifying_position == 3%}
+                                    finish-third
+                                {% elif entry.qualifying_position <= 10%}
+                                    finish-points
+                                {% else %}
+                                    finish-no-points
+                                {% endif %}
+                                ">
+                                {{entry.qualifying_position}}</div>
+                            {% else %}
+                                <div class="pace-item finish-none">
+                                -
+                                </div>
+                            {% endif %}
+                            </td>
+                        {% endfor %}
+
+                        <td class="align-middle pace-average">
+                        {% if driver_dict.average_quali %}
+                            <div class="pace-item 
+                            {% if driver_dict.average_quali < 2 %}
+                                finish-first
+                            {% elif driver_dict.average_quali < 3 %}
+                                finish-second
+                            {% elif driver_dict.average_quali < 4 %}
+                                finish-third
+                            {% elif driver_dict.average_quali <= 8 %}
+                                finish-points
+                            {% else %}
+                                finish-no-points
+                            {% endif %}
+                            ">
+                            {{driver_dict.average_quali}}</div>
+                        {% else %}
+                            <div class="pace-item finish-none">
+                            -
+                            </div>
+                        {% endif %}
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% comment %} Pace {% endcomment %}
+        <div class="stats-container">
+            <div class="fs-3" style="margin-left: 0.5rem;">Pace</div>
             <table class="table table-borderless stats-pace-table" style="font-size: 1rem;">
                 <colgroup>
                     <col>

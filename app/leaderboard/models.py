@@ -110,9 +110,13 @@ class Championship(models.Model):
             for driver, points in race.items():
                 total_points[driver] += points
 
-        for driver in self.drivers.all().values_list('id', flat=True):
-            if driver not in total_points:
-                total_points[driver] = 0
+        for (driver_id, penalty_points) in self.championshipdriver_set.all().values_list('driver_id', 'penalty_points'):
+            if driver_id not in total_points:
+                total_points[driver_id] = 0
+            # Penalty points
+            total_points[driver_id] -= penalty_points
+        
+
 
         driver_team_map = self.get_driver_team_map()
 
@@ -144,12 +148,14 @@ class Championship(models.Model):
                 if team:
                     total_points[team] += points
 
-        for driver in self.drivers.all():
-            if driver_team_map[driver.id] and driver_team_map[driver.id].id not in total_points:
-                total_points[driver_team_map[driver.id].id] = 0
+        for driver_id, penalty_points in self.championshipdriver_set.all().values_list('driver_id', 'penalty_points'):
+            if driver_team_map[driver_id] and driver_team_map[driver_id].id not in total_points:
+                total_points[driver_team_map[driver_id].id] = 0
+            total_points[driver_team_map[driver_id].id] -= penalty_points
 
         for multiplier in self.multipliers.all():
-            total_points[multiplier.constructor.id] *= multiplier.multiplier
+            total_points[multiplier.constructor.id] *= Decimal(multiplier.multiplier)
+            total_points[multiplier.constructor.id] -= multiplier.penalty_points
 
         team_map = {team.id: team for team in Team.objects.all()}
 
@@ -168,6 +174,7 @@ class ChampionshipDriver(models.Model):
     championship = models.ForeignKey(Championship, on_delete=models.CASCADE)
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.RESTRICT, blank=True, null=True)
+    penalty_points = models.IntegerField(verbose_name="Penalty Points", default=0)
 
 
 class Race(models.Model):
@@ -514,7 +521,8 @@ class ConstructorMultiplier(models.Model):
     constructor = models.ForeignKey(
         Team, on_delete=models.RESTRICT, related_name="multipliers"
     )
-    multiplier = models.FloatField()
+    multiplier = models.FloatField(default=1)
+    penalty_points = models.IntegerField(default=0)
 
     class Meta:
         ordering = ("championship", "constructor")

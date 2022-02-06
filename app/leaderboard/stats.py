@@ -76,9 +76,28 @@ def stats_race_table(championship: Championship):
     best_race_result_dict: dict[int, Optional[RaceEntry]] = {driver.id: None for driver in drivers}
     best_quali_result_dict: dict[int, Optional[RaceEntry]] = {driver.id: None for driver in drivers}
     race_wins_dict: dict[int, int] = {driver.id: 0 for driver in drivers}
+    most_consecutive_wins: dict[int, int] = {driver.id: 0 for driver in drivers}
+    most_consecutive_wins_tmp: dict[int, int] = {driver.id: 0 for driver in drivers}
+    most_consecutive_podiums: dict[int, int] = {driver.id: 0 for driver in drivers}
+    most_consecutive_podiums_tmp: dict[int, int] = {driver.id: 0 for driver in drivers}
+    most_consecutive_points: dict[int, int] = {driver.id: 0 for driver in drivers}
+    most_consecutive_points_tmp: dict[int, int] = {driver.id: 0 for driver in drivers}
 
+    most_consecutive_no_wins: dict[int, int] = {driver.id: 0 for driver in drivers}
+    most_consecutive_no_wins_tmp: dict[int, int] = {driver.id: 0 for driver in drivers}
+    most_consecutive_no_podiums: dict[int, int] = {driver.id: 0 for driver in drivers}
+    most_consecutive_no_podiums_tmp: dict[int, int] = {driver.id: 0 for driver in drivers}
+    most_consecutive_no_points: dict[int, int] = {driver.id: 0 for driver in drivers}
+    most_consecutive_no_points_tmp: dict[int, int] = {driver.id: 0 for driver in drivers}
+
+    most_consecutive_first_races: dict[int, int] = {driver.id: 0 for driver in drivers}
+    most_consecutive_first_podiums: dict[int, int] = {driver.id: 0 for driver in drivers}
+    most_consecutive_first_points: dict[int, int] = {driver.id: 0 for driver in drivers}
+    most_consecutive_first_tmp: dict[int, bool] = {driver.id: True for driver in drivers}
+    
     for i, race in enumerate(races):
         race: Race
+        points = race.get_points()[0]
 
         # Quali classification & Race classification
         # Best quali/race result
@@ -101,6 +120,62 @@ def stats_race_table(championship: Championship):
                 if entry.finish_position == 1:
                     race_wins_dict[entry.driver_id] += 1
 
+                # consecutive with
+                if entry.finish_position == 1:
+                    most_consecutive_wins_tmp[entry.driver_id] += 1
+                else:
+                    if most_consecutive_wins_tmp[entry.driver_id] > most_consecutive_wins[entry.driver_id]:
+                        most_consecutive_wins[entry.driver_id] = most_consecutive_wins_tmp[entry.driver_id]
+                    most_consecutive_wins_tmp[entry.driver_id] = 0
+                
+                if entry.finish_position <= 3:
+                    most_consecutive_podiums_tmp[entry.driver_id] += 1
+                else:
+                    if most_consecutive_podiums_tmp[entry.driver_id] > most_consecutive_podiums[entry.driver_id]:
+                        most_consecutive_podiums[entry.driver_id] = most_consecutive_podiums_tmp[entry.driver_id]
+                    most_consecutive_podiums_tmp[entry.driver_id] = 0
+
+                if entry.finish_position <= 10:
+                    most_consecutive_points_tmp[entry.driver_id] += 1
+                else:
+                    if most_consecutive_points_tmp[entry.driver_id] > most_consecutive_points[entry.driver_id]:
+                        most_consecutive_points[entry.driver_id] = most_consecutive_points_tmp[entry.driver_id]
+                    most_consecutive_points_tmp[entry.driver_id] = 0
+
+                # Consecutive without
+                if entry.finish_position == 1:
+                    if most_consecutive_no_wins_tmp[entry.driver_id] > most_consecutive_no_wins[entry.driver_id]:
+                        most_consecutive_no_wins[entry.driver_id] = most_consecutive_no_wins_tmp[entry.driver_id]
+                    most_consecutive_no_wins_tmp[entry.driver_id] = 0
+
+                    if most_consecutive_no_podiums_tmp[entry.driver_id] > most_consecutive_no_podiums[entry.driver_id]:
+                        most_consecutive_no_podiums[entry.driver_id] = most_consecutive_no_podiums_tmp[entry.driver_id]
+                    most_consecutive_no_podiums_tmp[entry.driver_id] = 0
+
+                    if most_consecutive_no_points_tmp[entry.driver_id] > most_consecutive_no_points[entry.driver_id]:
+                        most_consecutive_no_points[entry.driver_id] = most_consecutive_no_points_tmp[entry.driver_id]
+                    most_consecutive_no_points_tmp[entry.driver_id] = 0
+                else:
+                    if entry.finish_position <= 3:
+                        most_consecutive_no_podiums_tmp[entry.driver_id] += 1
+
+                    most_consecutive_no_points_tmp[entry.driver_id] += points[entry.driver_id]
+
+                    most_consecutive_no_wins_tmp[entry.driver_id] += 1
+
+                # Before first win
+                if entry.finish_position == 1:
+                    most_consecutive_first_tmp[entry.driver_id] = False
+                elif most_consecutive_first_tmp[entry.driver_id]:
+                    if entry.finish_position <= 3:
+                        most_consecutive_first_podiums[entry.driver_id] += 1
+
+                    most_consecutive_first_points[entry.driver_id] += points[entry.driver_id]
+
+                    most_consecutive_first_races[entry.driver_id] += 1
+
+                        
+
         # Pace
         fastest_lap = race.fastest_lap()
         if fastest_lap is None:
@@ -119,23 +194,158 @@ def stats_race_table(championship: Championship):
             if entry.driver_id and not entry.dnf and entry.best_lap_time is not None:
                 pace = score(entry.best_lap_time.total_seconds())
                 pace_dict[entry.driver_id][i] = round(pace)
+
+    # With
+    for driver_id, streak in most_consecutive_wins_tmp.items():
+        if streak > most_consecutive_wins[driver_id]:
+            most_consecutive_wins[driver_id] = streak
+
+    for driver_id, streak in most_consecutive_podiums_tmp.items():
+        if streak > most_consecutive_podiums[driver_id]:
+            most_consecutive_podiums[driver_id] = streak
+
+    for driver_id, streak in most_consecutive_points_tmp.items():
+        if streak > most_consecutive_points[driver_id]:
+            most_consecutive_points[driver_id] = streak
+
+    # Without
+    for driver_id, streak in most_consecutive_no_wins_tmp.items():
+        if streak > most_consecutive_no_wins[driver_id]:
+            most_consecutive_no_wins[driver_id] = streak
+
+    for driver_id, streak in most_consecutive_no_podiums_tmp.items():
+        if streak > most_consecutive_no_podiums[driver_id]:
+            most_consecutive_no_podiums[driver_id] = streak
+
+    for driver_id, streak in most_consecutive_no_points_tmp.items():
+        if streak > most_consecutive_no_points[driver_id]:
+            most_consecutive_no_points[driver_id] = streak
+
+
+    race_wins_unique = sorted(list(set(race_wins_dict.values())), reverse=True)
     
+    most_consecutive_wins_unique = sorted(list(set(most_consecutive_wins.values())), reverse=True)
+    most_consecutive_podiums_unique = sorted(list(set(most_consecutive_podiums.values())), reverse=True)
+    most_consecutive_points_unique = sorted(list(set(most_consecutive_points.values())), reverse=True)
 
+    most_consecutive_no_wins_unique = sorted(list(set(most_consecutive_no_wins.values())), reverse=True)
+    most_consecutive_no_podiums_unique = sorted(list(set(most_consecutive_no_podiums.values())), reverse=True)
+    most_consecutive_no_points_unique = sorted(list(set(most_consecutive_no_points.values())), reverse=True)
 
+    most_consecutive_first_races_unique = sorted(list(set(most_consecutive_first_races.values())), reverse=True)
+    most_consecutive_first_podiums_unique = sorted(list(set(most_consecutive_first_podiums.values())), reverse=True)
+    most_consecutive_first_points_unique = sorted(list(set(most_consecutive_first_points.values())), reverse=True)
 
-    finish_table = (races, [
-        (driver, {
-            "entries": finish_dict[driver.id], 
-            "pace": pace_dict[driver.id], 
-            "average_finish": average_finish_position(finish_dict[driver.id]), 
-            "average_quali": average_quali_position(finish_dict[driver.id]), 
-            "best_finish": best_race_result_dict[driver.id],
-            "best_quali": best_quali_result_dict[driver.id],
-            "race_wins": race_wins_dict[driver.id],
-            "total_overtakes": total_overtakes(finish_dict[driver.id]),
-            "average_pace": average_int(pace_dict[driver.id]),
-            }
-            ) for driver in drivers
-            ])
+    stats_table = (
+        races,
+        {
+            "results": [{
+                    "driver": driver,
+                    "entries": finish_dict[driver.id],
+                    "average_finish": average_finish_position(finish_dict[driver.id]),
+                    "average_quali": average_quali_position(finish_dict[driver.id]),
+                } for driver in drivers],
+            
+            "overtakes": sorted([{
+                "driver": driver,
+                "entries": finish_dict[driver.id],
+                "total_overtakes": total_overtakes(finish_dict[driver.id]),
+            } for driver in drivers], key=lambda e: e["total_overtakes"], reverse=True),
+            
+            "best_results": sorted([(driver, best_race_result_dict[driver.id], best_quali_result_dict[driver.id]) for driver in drivers], key=lambda e: (e[1].finish_position, e[2].qualifying_position)),
 
-    return finish_table
+            "race_wins": {
+                "entries": sorted([(driver, race_wins_dict[driver.id]) for driver in drivers], key=lambda e: e[1], reverse=True),
+                "first": race_wins_unique[0],
+                "second": race_wins_unique[1],
+                "third": race_wins_unique[2],
+            },
+
+            "pace": sorted(
+                [{"driver": driver, "entries": pace_dict[driver.id], "average": average_int(pace_dict[driver.id])} for driver in drivers],
+                key= lambda e: e["average"], reverse=True
+            ),
+
+            "consecutive": sorted([
+                {
+                    "driver": driver,
+                    "wins": {
+                        "value": most_consecutive_wins[driver.id],
+                        "first": most_consecutive_wins_unique[0],
+                        "second": most_consecutive_wins_unique[1],
+                        "third": most_consecutive_wins_unique[2],
+                        },
+                    "podiums": {
+                        "value": most_consecutive_podiums[driver.id],
+                        "first": most_consecutive_podiums_unique[0],
+                        "second": most_consecutive_podiums_unique[1],
+                        "third": most_consecutive_podiums_unique[2],
+                        },
+                    "points": {
+                        "value": most_consecutive_points[driver.id],
+                        "first": most_consecutive_points_unique[0],
+                        "second": most_consecutive_points_unique[1],
+                        "third": most_consecutive_points_unique[2],
+                        },
+                } for driver in drivers
+            ],
+            key=lambda e: (e["wins"]["value"], e["podiums"]["value"], e["points"]["value"]),
+            reverse=True),
+
+            "consecutive_without": sorted([
+                {
+                    "driver": driver,
+                    "wins": {
+                        "value": most_consecutive_no_wins[driver.id],
+                        "first": most_consecutive_no_wins_unique[0],
+                        "second": most_consecutive_no_wins_unique[1],
+                        "third": most_consecutive_no_wins_unique[2],
+                        },
+                    "podiums": {
+                        "value": most_consecutive_no_podiums[driver.id],
+                        "first": most_consecutive_no_podiums_unique[0],
+                        "second": most_consecutive_no_podiums_unique[1],
+                        "third": most_consecutive_no_podiums_unique[2],
+                        },
+                    "points": {
+                        "value": most_consecutive_no_points[driver.id],
+                        "first": most_consecutive_no_points_unique[0],
+                        "second": most_consecutive_no_points_unique[1],
+                        "third": most_consecutive_no_points_unique[2],
+                        },
+                } for driver in drivers
+            ],
+            key=lambda e: (e["podiums"]["value"], e["points"]["value"], e["wins"]["value"]),
+            reverse=True),
+
+            "before_first_win": sorted([
+                {
+                    "driver": driver,
+                    "races": {
+                        "value": most_consecutive_first_races[driver.id],
+                        "first": most_consecutive_first_races_unique[0],
+                        "second": most_consecutive_first_races_unique[1],
+                        "third": most_consecutive_first_races_unique[2],
+                        },
+                    "podiums": {
+                        "value": most_consecutive_first_podiums[driver.id],
+                        "first": most_consecutive_first_podiums_unique[0],
+                        "second": most_consecutive_first_podiums_unique[1],
+                        "third": most_consecutive_first_podiums_unique[2],
+                        },
+                    "points": {
+                        "value": most_consecutive_first_points[driver.id],
+                        "first": most_consecutive_first_points_unique[0],
+                        "second": most_consecutive_first_points_unique[1],
+                        "third": most_consecutive_first_points_unique[2],
+                        },
+                } for driver in drivers
+            ],
+            key=lambda e: (e["podiums"]["value"], e["points"]["value"], e["races"]["value"]),
+            reverse=True)
+        }
+    )
+
+    print(stats_table[1]["best_results"])
+
+    return stats_table

@@ -126,7 +126,7 @@ def stats(request, championship_id):
             "current_championship": championship,
             "championships": Championship.objects.all(),
             "in_championship": True,
-            "race_table": stats_race_table(championship),
+            "stats_table": stats_race_table(championship),
         }
         return render(request, "leaderboard/stats.html", context=context)
     else:

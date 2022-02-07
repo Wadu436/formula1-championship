@@ -58,7 +58,7 @@ def total_overtakes(l):
     s: int|float = 0
 
     for e in l:
-        if e and not e.dnf and isinstance(e.overtakes, int|float):
+        if e and isinstance(e.overtakes, int|float):
             s += e.overtakes
     
     return s

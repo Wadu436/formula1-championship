@@ -46,7 +46,7 @@ def average_quali_position(l):
     s: int|float = 0
     c = 0
     for e in l:
-        if e and not e.dnf and isinstance(e.qualifying_position, int|float):
+        if e and isinstance(e.qualifying_position, int|float):
             s += e.qualifying_position
             c += 1
     if c > 0:

@@ -52,13 +52,17 @@ def constructors_standings(request, championship_id):
 
 
 def races(request, championship_id):
-    championship: Optional[Championship] = Championship.objects.filter(id=championship_id).first()
+    championship: Optional[Championship] = Championship.objects.filter(
+        id=championship_id
+    ).first()
     if championship:
         context = {
             "current_championship": championship,
             "championships": Championship.objects.all(),
             "in_championship": True,
-            "races": championship.races.order_by('championship_order').select_related('track')
+            "races": championship.races.order_by("championship_order").select_related(
+                "track"
+            ),
         }
         return render(request, "leaderboard/races.html", context=context)
     else:
@@ -90,8 +94,14 @@ def track_detail(request, track_id):
 def match_history(request, race_id):
     race: Optional[Race] = Race.objects.filter(id=race_id).first()
     if race is not None:
-        previous_race = Race.objects.filter(championship=race.championship, championship_order=race.championship_order-1).first()
-        next_race = Race.objects.filter(championship=race.championship, championship_order=race.championship_order+1).first()
+        previous_race = Race.objects.filter(
+            championship=race.championship,
+            championship_order=race.championship_order - 1,
+        ).first()
+        next_race = Race.objects.filter(
+            championship=race.championship,
+            championship_order=race.championship_order + 1,
+        ).first()
         context = {
             "race": race,
             "current_championship": race.championship,
@@ -105,12 +115,14 @@ def match_history(request, race_id):
     else:
         return latest_races(request)
 
+
 def rules(request):
     context = {
         "championships": Championship.objects.all(),
-        "rules": RuleChapter.objects.order_by('number'),
+        "rules": RuleChapter.objects.order_by("number"),
     }
     return render(request, "leaderboard/rules.html", context=context)
+
 
 def faq(request):
     context = {
@@ -119,33 +131,49 @@ def faq(request):
     }
     return render(request, "leaderboard/faq.html", context=context)
 
+
 def stats(request, championship_id):
     championship = Championship.objects.filter(id=championship_id).first()
+    table = {
+        "head": ["A", "B", "C"],
+        "rows": [
+            [
+                {"value": 1, "color": "red"},
+                {"value": 2, "color": "green"},
+                {"value": 3, "color": "blue"},
+            ],
+        ],
+    }
+    stats_table, tables = stats_race_table(championship)
     if championship:
         context = {
             "current_championship": championship,
             "championships": Championship.objects.all(),
             "in_championship": True,
-            "stats_table": stats_race_table(championship),
+            "stats_table": stats_table,
+            "tables": tables,
         }
         return render(request, "leaderboard/stats.html", context=context)
     else:
         return latest_drivers_standings(request)
 
+
 # Index
 def index(request):
     latest_championship = Championship.objects.latest("start_date")
     context = {
-            "current_championship": latest_championship,
-            "championships": Championship.objects.all(),
-            "in_championship": True,
-        }
+        "current_championship": latest_championship,
+        "championships": Championship.objects.all(),
+        "in_championship": True,
+    }
     return render(request, "leaderboard/drivers_standings.html", context=context)
+
 
 # Latest redirect views
 def latest_drivers_standings(request):
     latest_championship = Championship.objects.latest("start_date")
     return redirect(reverse("drivers_standings", args=[latest_championship.id]))
+
 
 def latest_constructors_standings(request):
     latest_championship = Championship.objects.latest("start_date")

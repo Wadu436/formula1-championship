@@ -1,0 +1,16 @@
+.stats-table th {
+  font-weight: lighter;
+}
+
+.stats-centered {
+  text-align: center;
+}
+
+.stats-padded {
+  padding-right: 1rem;
+}
+
+.stats-table td {
+  min-width: 3rem;
+  height: 3rem;
+}

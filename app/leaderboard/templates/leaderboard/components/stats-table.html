@@ -1,0 +1,20 @@
+<table class="stats-table">
+    <thead>
+        {% for h in table.head%}
+        <th class="{{h.class}}">{{h.value}}</th>
+        {% endfor %}
+    </thead>
+    <tbody>
+        {% for row in table.rows %}
+        <tr>
+            {% for el in row %}
+                <td 
+                {%if el.class%}class="{{el.class}}"{%endif%}
+                {%if el.color or el.bg_color%}style="{%if el.color%}color: {{el.color}};{%endif%}
+                {% if el.bg_color%}background-color: {{el.bg_color}}{%endif%}"{%endif%}>{{el.value}}
+            </td>
+            {%endfor%}
+        </tr>
+        {% endfor%}
+    </tbody>
+</table>

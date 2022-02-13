@@ -43,13 +43,12 @@
                 </tr>
             </thead>
             <tbody>
-                {% for entry, score in race.match_history %}
+                {% for entry, score, team in race.match_history %}
 
                 {% if not entry.bot %}
                 {% alias entry.driver.name as name %}
                 {% alias entry.driver.country.ioc_code as nationality%}
-                {% alias entry.team.color as team_color%}
-                {% alias entry.team as team%}
+                {% alias team.color as team_color%}
                 {% else %}
                 {% alias "Bot" as name %}
                 {% alias "BOT" as nationality %}

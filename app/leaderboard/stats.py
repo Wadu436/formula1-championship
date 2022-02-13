@@ -179,9 +179,9 @@ def stats_race_table(championship: Championship):
 
                 # Quali
                 best_quali = best_quali_result_dict[entry.driver_id]
-                if (
-                    best_quali is None
-                    or entry.qualifying_position < best_quali.qualifying_position
+                if best_quali is None or (
+                    entry.qualifying_position is not None
+                    and entry.qualifying_position < best_quali.qualifying_position
                 ):
                     best_quali_result_dict[entry.driver_id] = entry
 
@@ -488,7 +488,7 @@ def stats_race_table(championship: Championship):
         row.append({"value": i + 1, "class": "stats-padded"})
         row.append({"value": driver.name, "class": "stats-padded"})
         for entry in finish_dict[driver.id]:
-            if entry is None:
+            if entry is None or entry.qualifying_position is None:
                 value = "-"
                 color = None
                 bg_color = "lightgray"

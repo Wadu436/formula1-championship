@@ -87,7 +87,6 @@ def rgb_to_hex(rgb):
 
 def three_point_gradient(start, mid, end, val):
     mid_r, mid_g, mid_b = hex_to_rgb(mid)
-    print(mid_r, mid_g, mid_b)
     val = min(max(val, 0), 1)
     if val < 0.5:
         start_r, start_g, start_b = hex_to_rgb(start)
@@ -99,8 +98,6 @@ def three_point_gradient(start, mid, end, val):
     else:
         end_r, end_g, end_b = hex_to_rgb(end)
         alpha = 2 * (val - 0.5)
-
-        print(val, alpha)
 
         mix_r = alpha * end_r + (1 - alpha) * mid_r
         mix_g = alpha * end_g + (1 - alpha) * mid_g
@@ -477,7 +474,11 @@ def stats_race_table(championship: Championship):
                 "bg_color": avg_bg_color,
             }
         )
-        race_classification_table["rows"].append(row)
+        race_classification_table["rows"].append(
+            {"row": row, "key": (avg if avg is not None else math.inf, driver.name)}
+        )
+
+    race_classification_table["rows"].sort(key=lambda row: row["key"])
 
     # Quali classification table
     quali_classification_table = init_table(races=races, final_column="Avg")
@@ -491,10 +492,6 @@ def stats_race_table(championship: Championship):
                 value = "-"
                 color = None
                 bg_color = "lightgray"
-            elif entry.dnf:
-                value = "DNF"
-                color = "white"
-                bg_color = "#15151d"
             else:
                 value = entry.qualifying_position
                 color, bg_color = finish_position_colors(entry.qualifying_position)
@@ -517,7 +514,11 @@ def stats_race_table(championship: Championship):
                 "bg_color": avg_bg_color,
             }
         )
-        quali_classification_table["rows"].append(row)
+        quali_classification_table["rows"].append(
+            {"row": row, "key": (avg if avg is not None else math.inf, driver.name)}
+        )
+
+    quali_classification_table["rows"].sort(key=lambda row: row["key"])
 
     # Pace table
     pace_table = init_table(races=races, final_column="Avg")
@@ -555,16 +556,17 @@ def stats_race_table(championship: Championship):
                 "class": "stats-centered",
                 "color": avg_color,
                 "bg_color": avg_bg_color,
-                "key": avg,
             }
         )
 
-        pace_table["rows"].append(row)
+        pace_table["rows"].append(
+            {"row": row, "key": (-avg if avg is not None else math.inf, driver.name)}
+        )
 
-    pace_table["rows"].sort(key=lambda e: e[-1]["key"] or -math.inf, reverse=True)
+    pace_table["rows"].sort(key=lambda row: row["key"])
     ## Reset first val
     for i, row in enumerate(pace_table["rows"]):
-        row[0]["value"] = i + 1
+        row["row"][0]["value"] = i + 1
 
     # Overtake table
     overtake_table = init_table(races=races, final_column="Total")
@@ -604,18 +606,126 @@ def stats_race_table(championship: Championship):
             }
         )
 
-        overtake_table["rows"].append(row)
+        overtake_table["rows"].append(
+            {
+                "row": row,
+                "key": (-(total if total is not None else math.inf), driver.name),
+            }
+        )
 
-    overtake_table["rows"].sort(key=lambda e: e[-1]["key"] or -math.inf, reverse=True)
-    # Reset first val
+    overtake_table["rows"].sort(key=lambda row: row["key"])
+    ## Reset first val
     for i, row in enumerate(overtake_table["rows"]):
-        row[0]["value"] = i + 1
+        row["row"][0]["value"] = i + 1
+
+    # Best Results
+    best_results_table = {
+        "head": [
+            {"value": "Driver"},
+            {"value": "Race", "class": "stats-centered"},
+            {"value": "Quali", "class": "stats-centered"},
+        ],
+        "rows": [],
+    }
+
+    for driver in drivers:
+        row = []
+        row.append({"value": driver.name, "class": "stats-padded"})
+
+        if (
+            best_race_result_dict[driver.id]
+            and best_race_result_dict[driver.id].finish_position
+        ):
+            race_col, race_bg_col = finish_position_colors(
+                best_race_result_dict[driver.id].finish_position
+            )
+            race_value = best_race_result_dict[driver.id].finish_position
+            race_key = best_race_result_dict[driver.id].finish_position
+        else:
+            race_col, race_bg_col = (None, "lightgray")
+            race_value = "-"
+            race_key = math.inf
+
+        if (
+            best_quali_result_dict[driver.id]
+            and best_quali_result_dict[driver.id].qualifying_position
+        ):
+            quali_col, quali_bg_col = finish_position_colors(
+                best_quali_result_dict[driver.id].qualifying_position
+            )
+            quali_value = best_quali_result_dict[driver.id].qualifying_position
+            quali_key = best_quali_result_dict[driver.id].qualifying_position
+        else:
+            quali_col, quali_bg_col = (None, "lightgray")
+            quali_value = "-"
+            quali_key = math.inf
+
+        row.append(
+            {
+                "value": race_value,
+                "class": "stats-centered",
+                "color": race_col,
+                "bg_color": race_bg_col,
+            }
+        )
+        row.append(
+            {
+                "value": quali_value,
+                "class": "stats-centered",
+                "color": quali_col,
+                "bg_color": quali_bg_col,
+            }
+        )
+
+        best_results_table["rows"].append(
+            {
+                "row": row,
+                "key": (race_key, quali_key, driver.name),
+            }
+        )
+
+    best_results_table["rows"].sort(key=lambda row: row["key"])
+
+    # Race Wins
+    race_wins_table = {
+        "head": [
+            {"value": "Driver"},
+            {"value": "Race", "class": "stats-centered"},
+            {"value": "Quali", "class": "stats-centered"},
+        ],
+        "rows": [],
+    }
+
+    for driver in drivers:
+        row = []
+        row.append({"value": driver.name, "class": "stats-padded"})
+
+        value = race_wins_dict[driver.id]
+
+        row.append(
+            {
+                "value": value,
+                "class": "stats-centered",
+                "color": None,
+                "bg_color": None,
+            }
+        )
+
+        race_wins_table["rows"].append(
+            {
+                "row": row,
+                "key": (-value, driver.name),
+            }
+        )
+
+    race_wins_table["rows"].sort(key=lambda row: row["key"])
 
     tables = {
         "finish": race_classification_table,
         "quali": quali_classification_table,
         "pace": pace_table,
         "overtakes": overtake_table,
+        "best_results": best_results_table,
     }
 
     stats_table = (

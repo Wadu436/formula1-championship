@@ -7,7 +7,7 @@
     <tbody>
         {% for row in table.rows %}
         <tr>
-            {% for el in row %}
+            {% for el in row.row %}
                 <td 
                 {%if el.class%}class="{{el.class}}"{%endif%}
                 {%if el.color or el.bg_color%}style="{%if el.color%}color: {{el.color}};{%endif%}

@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for driver, team, score in current_championship.get_drivers_standings %}
+                {% for driver, team, score in drivers_standings %}
                 <tr class="leaderboard-row">
                     <td class="align-middle fw-lighter">{{forloop.counter}}</td>
                     <td class="align-middle">{{driver.name}}</td>

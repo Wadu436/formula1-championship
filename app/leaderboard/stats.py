@@ -1,9 +1,9 @@
 import math
-from ast import match_case
 from time import perf_counter
 from typing import Optional
 
-from .models import Championship, Driver, Race, RaceEntry
+from .models import Championship, Race, RaceEntry
+from .scoring import drivers_standings, race_points
 from .util import timing
 
 
@@ -108,7 +108,7 @@ def three_point_gradient(start, mid, end, val):
 
 @timing
 def stats_race_table(championship: Championship):
-    standings = championship.get_drivers_standings()
+    standings = drivers_standings(championship)
 
     races = list(
         championship.races.all().prefetch_related(
@@ -159,7 +159,7 @@ def stats_race_table(championship: Championship):
 
     for i, race in enumerate(races):
         race: Race
-        race_points_dict = race.get_points()
+        race_points_dict = race_points(race)
         points = race_points_dict["player_points"]
 
         # Quali classification & Race classification

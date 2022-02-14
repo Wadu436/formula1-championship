@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for team, score in current_championship.get_constructors_standings %}
+                {% for team, score in constructors_standings %}
                 <tr class="leaderboard-row">
                     <td class="align-middle fw-lighter mx-1">{{forloop.counter}}</td>
                     <td class="align-middle pe-0" style="height: 2rem;">

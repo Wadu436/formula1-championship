@@ -6,6 +6,9 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from .models import FAQ, Championship, Driver, Race, RuleChapter, Track
+from .scoring import constructors_standings as calculate_constructors_standings
+from .scoring import drivers_standings as calculate_drivers_standings
+from .scoring import match_history as calculate_match_history
 from .stats import stats_race_table
 
 
@@ -28,6 +31,7 @@ def drivers_standings(request, championship_id):
     if championship:
         context = {
             "current_championship": championship,
+            "drivers_standings": calculate_drivers_standings(championship),
             "championships": Championship.objects.all(),
             "in_championship": True,
         }
@@ -41,6 +45,7 @@ def constructors_standings(request, championship_id):
     if championship:
         context = {
             "current_championship": Championship.objects.get(id=championship_id),
+            "constructors_standings": calculate_constructors_standings(championship),
             "championships": Championship.objects.all(),
             "in_championship": True,
         }
@@ -110,6 +115,7 @@ def match_history(request, race_id):
             "fastest_lap": race.race_entries.order_by("best_lap_time").first(),
             "previous_race": previous_race,
             "next_race": next_race,
+            "match_history": calculate_match_history(race),
         }
         return render(request, "leaderboard/match_history.html", context=context)
     else:

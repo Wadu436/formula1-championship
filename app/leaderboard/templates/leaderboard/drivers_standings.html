@@ -1,5 +1,8 @@
 {% extends "leaderboard/base.html" %}
 
+{% load static %}
+{%load leaderboard_extras %}
+
 {% block title %}Driver Standings - {{ current_championship.name }}{% endblock %}
 
 {% block content %}
@@ -16,7 +19,8 @@
             </colgroup>
             <thead class="table-white">
                 <tr>
-                    <th scope="col" class="leaderboard-header">#</th>
+                    <th scope="col" class="leaderboard-header" style="padding-right: 0.35rem;">#</th>
+                    <th scope="col" class="leaderboard-header" style="padding-left: 0;"></th>
                     <th scope="col" class="leaderboard-header">Driver</th>
                     <th scope="col" class="leaderboard-header">Nationality</th>
                     <th scope="col" class="leaderboard-header">Team</th>
@@ -24,9 +28,18 @@
                 </tr>
             </thead>
             <tbody>
-                {% for driver, team, score in drivers_standings %}
+                {% for driver, team, score, delta in drivers_standings %}
                 <tr class="leaderboard-row">
-                    <td class="align-middle fw-lighter">{{forloop.counter}}</td>
+                    <td class="align-middle fw-lighter" style="padding-right: 0.35rem; text-align: center">{{forloop.counter}}</td>
+                    <td class="align-middle fw-lighter" style="padding-left: 0;">
+                        {% if delta > 0 %}
+                        <img src="{% static 'leaderboard/arrow-down.svg' %}" style="height: 1rem; width: 0.85rem;"></img>
+                        <span style="color: red;">{{ delta|abs_value }}</span>
+                        {% elif delta < 0 %}
+                        <img src="{% static 'leaderboard/arrow-up.svg' %}" style="height: 1rem; width: 0.85rem;"></img>
+                        <span style="color: green;">{{ delta|abs_value }}</span>
+                        {% endif %}
+                    </td>
                     <td class="align-middle">{{driver.name}}</td>
                     <td class="align-middle fw-lighter"><i class="{{ driver.country.flag_css }}"></i>
                         {{driver.country.ioc_code}}</td>
@@ -36,7 +49,7 @@
                             <span>{{team.full_name}}</span>
                         </div>
                     </td>
-                    <td class="align-middle fw-lighter">{{score}}</td>
+                    <td class="align-middle fw-lighter" style="text-align: center">{{score}}</td>
                 </tr>
                 {% endfor %}
             </tbody>

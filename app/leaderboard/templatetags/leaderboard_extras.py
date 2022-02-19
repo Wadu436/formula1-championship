@@ -16,6 +16,7 @@ def duration(td: timedelta):
 
     return f"{minutes}:{seconds:02d}.{millis:03d}"
 
+
 @register.simple_tag
 def alias(obj):
     """
@@ -23,30 +24,41 @@ def alias(obj):
     """
     return obj
 
+
 @register.simple_tag
 def tires(tire_string):
     """
     Returns list of images (static)
     """
-    
+
     tires = []
     if tire_string:
         for tire in tire_string:
             match tire:
                 case "S":
-                    tires.append('leaderboard/tires/soft.png')
+                    tires.append("leaderboard/tires/soft.png")
                 case "M":
-                    tires.append('leaderboard/tires/medium.png') 
+                    tires.append("leaderboard/tires/medium.png")
                 case "H":
-                    tires.append('leaderboard/tires/hard.png') 
+                    tires.append("leaderboard/tires/hard.png")
                 case "W":
-                    tires.append('leaderboard/tires/wet.png') 
+                    tires.append("leaderboard/tires/wet.png")
                 case "I":
-                    tires.append('leaderboard/tires/inter.png') 
+                    tires.append("leaderboard/tires/inter.png")
     return tires
+
 
 @register.filter
 def parse_markdown(text):
     md = markdown.Markdown()
     html = md.convert(text)
     return html
+
+
+@register.filter
+def abs_value(n):
+    """
+    Returns absolute value
+    """
+
+    return abs(n)

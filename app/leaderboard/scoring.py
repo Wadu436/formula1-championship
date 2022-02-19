@@ -117,17 +117,12 @@ def race_points(
     }
 
 
-def drivers_standings(
-    championship: Championship, first_race=None, last_race=None
-) -> list[tuple[Driver, Team, int | Decimal]]:
-    first_race = first_race or 0
-    last_race = last_race or championship.races.count()
-
+def _drivers_standings_map(championship, last_race):
     race_scores = [
         race_points(race)
-        for race in championship.races.all().prefetch_related(
-            "dna_entries", "race_entries"
-        )
+        for race in championship.races.filter(
+            finished=True, championship_order__lte=last_race
+        ).prefetch_related("dna_entries", "race_entries")
     ]
 
     total_points: dict[int, int | Decimal] = defaultdict(int)
@@ -161,6 +156,80 @@ def drivers_standings(
 
     total_points_list = [
         (driver_map[driver], driver_team_map[driver], points)
+        for driver, points in total_points.items()
+    ]
+
+    total_points_list.sort(
+        key=lambda item: (
+            -item[2],
+            player_finishes[item[0].id],
+            item[1].name if item[1] else None,
+            item[0].name,
+        )
+    )
+
+    position_map = {
+        driver.id: i for (i, (driver, _, _)) in enumerate(total_points_list)
+    }
+
+    return position_map
+
+
+def drivers_standings(
+    championship: Championship,
+) -> list[tuple[Driver, Team, int | Decimal, int]]:
+    races = championship.races.filter(finished=True).prefetch_related(
+        "dna_entries", "race_entries"
+    )
+
+    race_scores = [race_points(race) for race in races]
+
+    total_points: dict[int, int | Decimal] = defaultdict(int)
+    player_finishes: dict[int, list[int | float]] = defaultdict(list)
+    for race in race_scores:
+        for driver, points in race["player_points"].items():
+            total_points[driver] += points
+        for driver, finish in race["player_finishes"].items():
+            player_finishes[driver].append(finish)
+
+    for (
+        driver_id,
+        penalty_points,
+    ) in championship.championshipdriver_set.all().values_list(
+        "driver_id", "penalty_points"
+    ):
+        if driver_id not in total_points:
+            total_points[driver_id] = 0
+        # Penalty points
+        total_points[driver_id] -= penalty_points
+
+    for driver, _ in total_points.items():
+        if len(player_finishes[driver]) == 0:
+            player_finishes[driver] = [math.inf]
+        else:
+            player_finishes[driver] = sorted(player_finishes[driver])
+
+    driver_team_map = championship.get_driver_team_map()
+
+    driver_map = {driver.id: driver for driver in Driver.objects.all()}
+
+    last_race = max(race.championship_order for race in races)
+    first_race = min(race.championship_order for race in races)
+    prev_race = max(last_race - 1, first_race)
+
+    this_rank = _drivers_standings_map(championship, last_race)
+    prev_rank = _drivers_standings_map(championship, prev_race)
+
+    # (Driver, team, points, delta)
+    total_points_list = [
+        (
+            driver_map[driver],
+            driver_team_map[driver],
+            points,
+            this_rank[driver] - prev_rank[driver]
+            if driver in this_rank and driver in prev_rank
+            else 0,
+        )
         for driver, points in total_points.items()
     ]
 

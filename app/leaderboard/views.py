@@ -169,9 +169,11 @@ def index(request):
     latest_championship = Championship.objects.latest("start_date")
     context = {
         "current_championship": latest_championship,
+        "drivers_standings": calculate_drivers_standings(latest_championship),
         "championships": Championship.objects.all(),
         "in_championship": True,
     }
+
     return render(request, "leaderboard/drivers_standings.html", context=context)
 
 

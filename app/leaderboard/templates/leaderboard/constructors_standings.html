@@ -30,7 +30,7 @@
             <tbody>
                 {% for team, score, delta in constructors_standings %}
                 <tr class="leaderboard-row">
-                    <td class="align-middle fw-lighter mx-1" style="padding-right: 0.35rem; text-align: center">{{forloop.counter}}</td>
+                    <td class="align-middle fw-lighter mx-1" style="padding-right: 0.35rem; text-align: end">{{forloop.counter}}</td>
                     <td class="align-middle fw-lighter" style="padding-left: 0;">
                         {% if delta > 0 %}
                         <img src="{% static 'leaderboard/arrow-down.svg' %}" style="height: 1rem; width: 0.85rem;"></img>
@@ -47,7 +47,7 @@
                     <td class="align-middle fw-lighter">
                         <i class="{{ team.country.flag_css }} me-1"></i>{{team.country.ioc_code}}
                     </td>
-                    <td class="align-middle fw-lighter" style="text-align: center">{{score}}</td>
+                    <td class="align-middle fw-lighter">{{score}}</td>
                 </tr>
                 {% endfor %}
             </tbody>

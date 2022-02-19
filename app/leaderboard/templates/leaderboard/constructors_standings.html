@@ -1,5 +1,8 @@
 {% extends "leaderboard/base.html" %}
 
+{% load static %}
+{% load leaderboard_extras %}
+
 {% block title %}Constructor Standings - {{ current_championship.name }}{% endblock %}
 
 {% block content %}
@@ -17,6 +20,7 @@
             <thead class="table-white">
                 <tr>
                     <th scope="col" class="leaderboard-header">#</th>
+                    <th scope="col" class="leaderboard-header" style="padding-left: 0;"></th>
                     <th scope="col" class="leaderboard-header"></th>
                     <th scope="col" class="leaderboard-header">Team</th>
                     <th scope="col" class="leaderboard-header">Nationality</th>
@@ -24,9 +28,18 @@
                 </tr>
             </thead>
             <tbody>
-                {% for team, score in constructors_standings %}
+                {% for team, score, delta in constructors_standings %}
                 <tr class="leaderboard-row">
-                    <td class="align-middle fw-lighter mx-1">{{forloop.counter}}</td>
+                    <td class="align-middle fw-lighter mx-1" style="padding-right: 0.35rem; text-align: center">{{forloop.counter}}</td>
+                    <td class="align-middle fw-lighter" style="padding-left: 0;">
+                        {% if delta > 0 %}
+                        <img src="{% static 'leaderboard/arrow-down.svg' %}" style="height: 1rem; width: 0.85rem;"></img>
+                        <span style="color: red;">{{ delta|abs_value }}</span>
+                        {% elif delta < 0 %}
+                        <img src="{% static 'leaderboard/arrow-up.svg' %}" style="height: 1rem; width: 0.85rem;"></img>
+                        <span style="color: green;">{{ delta|abs_value }}</span>
+                        {% endif %}
+                    </td>
                     <td class="align-middle pe-0" style="height: 2rem;">
                         <span class="team-color-bar" style="background-color: {{team.color}};"></span>
                     </td>
@@ -34,7 +47,7 @@
                     <td class="align-middle fw-lighter">
                         <i class="{{ team.country.flag_css }} me-1"></i>{{team.country.ioc_code}}
                     </td>
-                    <td class="align-middle fw-lighter">{{score}}</td>
+                    <td class="align-middle fw-lighter" style="text-align: center">{{score}}</td>
                 </tr>
                 {% endfor %}
             </tbody>

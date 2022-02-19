@@ -200,24 +200,14 @@ def drivers_standings(
     return ranking
 
 
-def constructors_standings(
-    championship: Championship, first_race=None, last_race=None
+def _constructors_standings_list(
+    championship: Championship, race_scores
 ) -> list[tuple["Team", int | Decimal]]:
-    first_race = first_race or 0
-    last_race = last_race or championship.races.count()
-
-    team_scores: list[dict] = [
-        race_points(race)
-        for race in championship.races.all().prefetch_related(
-            "dna_entries", "race_entries"
-        )
-    ]
-
     driver_team_map = championship.get_driver_team_map()
 
     total_points: dict[int, int | Decimal] = defaultdict(int)
     team_finishes: dict[int, list[int | float]] = defaultdict(list)
-    for race in team_scores:
+    for race in race_scores:
         for team, points in race["team_points"].items():
             if team:
                 total_points[team] += points
@@ -230,11 +220,6 @@ def constructors_standings(
     ) in championship.championshipdriver_set.all().values_list(
         "driver_id", "penalty_points"
     ):
-        if (
-            driver_team_map[driver_id]
-            and driver_team_map[driver_id].id not in total_points
-        ):
-            total_points[driver_team_map[driver_id].id] = 0
         total_points[driver_team_map[driver_id].id] -= penalty_points
 
     for multiplier in championship.multipliers.all():
@@ -258,6 +243,41 @@ def constructors_standings(
     )
 
     return total_points_list
+
+
+def constructors_standings(
+    championship: Championship, first_race=None, last_race=None
+) -> list[tuple["Team", int | Decimal, int]]:
+    races = championship.races.filter(finished=True)
+
+    race_scores = [
+        race_points(race)
+        for race in races.order_by("championship_order").prefetch_related(
+            "dna_entries", "race_entries"
+        )
+    ]
+
+    current_ranking = _constructors_standings_list(championship, race_scores)
+    prev_ranking = _constructors_standings_list(
+        championship, race_scores[:-1] if len(races) > 0 else race_scores
+    )
+
+    this_rank = {team: i for i, (team, _) in enumerate(current_ranking)}
+    prev_rank = {team: i for i, (team, _) in enumerate(prev_ranking)}
+
+    # (Driver, team, points, delta)
+    ranking = [
+        (
+            team,
+            points,
+            this_rank[team] - prev_rank[team]
+            if team in this_rank and team in prev_rank and len(races) > 1
+            else 0,
+        )
+        for team, points in current_ranking
+    ]
+
+    return ranking
 
 
 def match_history(race: Race) -> list[tuple["RaceEntry", int, "Team"]]:

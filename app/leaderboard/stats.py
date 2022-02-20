@@ -115,7 +115,7 @@ def stats_race_table(championship: Championship):
             "race_entries", "track", "dna_entries"
         )
     )  # Also preload track for the html :)
-    drivers = [driver for (driver, _, _) in standings]
+    drivers = [driver for (driver, _, _, _) in standings]
     num_races = len(races)
     finish_dict: dict[int, list[Optional[RaceEntry]]] = {
         driver.id: [None] * num_races for driver in drivers

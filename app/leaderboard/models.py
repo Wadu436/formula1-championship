@@ -81,6 +81,7 @@ class Championship(models.Model):
     drivers = models.ManyToManyField(Driver, blank=True, through="ChampionshipDriver")
 
     races: QuerySet["Race"]
+    sprint_races: QuerySet["SprintRace"]
 
     def __str__(self):
         return f"{self.name}"
@@ -110,6 +111,7 @@ class ChampionshipDriver(models.Model):
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.RESTRICT, blank=True, null=True)
     penalty_points = models.IntegerField(verbose_name="Penalty Points", default=0)
+
 
 
 class Race(models.Model):
@@ -206,6 +208,99 @@ class Race(models.Model):
     class Meta:
         ordering = ("championship", "championship_order")
 
+class SprintRace(models.Model):
+    class RaceLength(models.TextChoices):
+        FULL = "F", _("Full Race (100%)")
+        LONG = "L", _("Long Race (50%)")
+        MEDIUM = "M", _("Medium Race (25%)")
+        SHORT = "S", _("Short Race (5 laps)")
+
+    championship_order = models.IntegerField(validators=[MinValueValidator(1)])
+    championship = models.ForeignKey(
+        Championship, on_delete=models.CASCADE, related_name="sprint_races"
+    )
+    track = models.ForeignKey(Track, on_delete=models.RESTRICT, related_name="sprint_races")
+
+    date_time = models.DateTimeField(blank=True, null=True)
+    finished = models.BooleanField(default=False)
+
+    wet_race = models.BooleanField(default=False)
+
+    length = models.CharField(
+        max_length=1,
+        choices=RaceLength.choices,
+    )
+
+    driver_of_the_day = models.ForeignKey(
+        Driver,
+        on_delete=models.RESTRICT,
+        related_name="sprint_driver_of_the_day_set",
+        null=True,
+        blank=True,
+    )
+
+    race_entries: QuerySet["SprintRaceEntry"]
+    dna_entries: QuerySet["SprintDNAEntry"]
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["championship_order", "championship"],
+                name="sprint_race_unique_championship_order",
+            )
+        ]
+
+    def __str__(self):
+        return (
+            f"{self.championship} Race {self.championship_order}: {self.track.location}"
+        )
+
+    def winner(self) -> Optional["RaceEntry"]:
+        if self.finished:
+            winning_entry = self.race_entries.get(finish_position=1)
+            return winning_entry
+
+        return None
+
+    def laps(self) -> int:
+        track: Track = self.track
+        match self.length:
+            case "S":
+                return 5
+            case "M":
+                return track.medium_laps
+            case "L":
+                return track.long_laps
+            case _:
+                return track.full_laps
+
+    def podium(self) -> list[Optional["RaceEntry"]]:
+        podium = []
+        for entry in self.race_entries.order_by("finish_position"):
+            while len(podium) < entry.finish_position - 1 and len(podium) < 3:
+                podium.append(None)
+            if len(podium) >= 3:
+                return podium
+            podium.append(entry)
+        while len(podium) < 3:
+            podium.append(None)
+        return podium
+
+    def fastest_lap(self) -> Optional["RaceEntry"]:
+        entries = self.race_entries.all()
+        fastest_entry = None
+        if len(entries) > 0:
+            try:
+                fastest_entry = min(
+                    (entry for entry in entries if entry.best_lap_time is not None),
+                    key=lambda e: e.best_lap_time,
+                )
+            except ValueError:
+                fastest_entry = entries[0]
+        return fastest_entry
+
+    class Meta:
+        ordering = ("championship", "championship_order")
 
 class RaceEntry(models.Model):
     race = models.ForeignKey(
@@ -306,6 +401,93 @@ class DNAEntry(models.Model):
     )
     team = models.ForeignKey(
         Team, on_delete=models.RESTRICT, related_name="dna_entries"
+    )
+
+    def __str__(self):
+        return f"DNA: {self.driver}"
+
+    class Meta:
+        ordering = ("race",)
+
+
+class SprintRaceEntry(models.Model):
+    race = models.ForeignKey(
+        SprintRace,
+        on_delete=models.CASCADE,
+        related_name="race_entries",
+    )
+    race_id: int
+    driver = models.ForeignKey(
+        Driver,
+        on_delete=models.RESTRICT,
+        null=True,
+        blank=True,
+        related_name="sprint_race_entries",
+    )
+    driver_id: int
+    team = models.ForeignKey(
+        Team,
+        on_delete=models.RESTRICT,
+        null=True,
+        blank=True,
+        related_name="sprint_race_entries",
+    )
+    team_id: int
+
+    bot = models.BooleanField(verbose_name="Is Bot", default=False)
+
+    # Should be not null if not DNA
+    finish_position = models.IntegerField(
+        validators=[MinValueValidator(1)],
+    )
+
+    best_lap_time = models.DurationField(null=True, blank=True)
+
+    dnf = models.BooleanField(verbose_name="Did Not Finish", default=False)
+
+    tires = models.CharField(max_length=32, null=True, blank=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["race", "driver"], name="sprintraceentry_unique_driver_race"
+            ),
+            models.UniqueConstraint(
+                fields=["race", "finish_position"],
+                name="sprintraceentry_unique_driver_finish_position",
+            ),
+            models.CheckConstraint(
+                check=(
+                    Q(
+                        bot=True,
+                        driver__isnull=True,
+                        team__isnull=True,
+                    )
+                    | Q(
+                        bot=False,
+                        driver__isnull=False,
+                    )
+                ),
+                name="sprintraceentry_dna_notnull",
+            ),
+        ]
+
+        ordering = ("race", "finish_position")
+
+    def __str__(self):
+        if not self.bot:
+            return f"P{self.finish_position}: {self.driver}"
+        else:
+            return f"P{self.finish_position}: Bot"
+
+
+class SprintDNAEntry(models.Model):
+    race = models.ForeignKey(SprintRace, on_delete=models.CASCADE, related_name="dna_entries")
+    driver = models.ForeignKey(
+        Driver, on_delete=models.RESTRICT, related_name="sprint_dna_entries"
+    )
+    team = models.ForeignKey(
+        Team, on_delete=models.RESTRICT, related_name="sprint_dna_entries"
     )
 
     def __str__(self):

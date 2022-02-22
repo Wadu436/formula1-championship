@@ -1,11 +1,14 @@
 import json
 from typing import Optional
 
+import datetime
+import pytz
+
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
-from .models import FAQ, Championship, Driver, Race, RuleChapter, Track
+from .models import FAQ, Championship, Driver, Race, RuleChapter, Track, SprintRace
 from .scoring import constructors_standings as calculate_constructors_standings
 from .scoring import drivers_standings as calculate_drivers_standings
 from .scoring import match_history as calculate_match_history
@@ -60,14 +63,29 @@ def races(request, championship_id):
     championship: Optional[Championship] = Championship.objects.filter(
         id=championship_id
     ).first()
+
+    regular_races = championship.races.order_by("championship_order").select_related(
+        "track"
+    )
+    sprint_races = championship.sprint_races.order_by(
+        "championship_order"
+    ).select_related("track")
+
+    _races = sorted(
+        [("regular", race) for race in regular_races]
+        + [("sprint", race) for race in sprint_races],
+        key=lambda r: (r[1].championship_order, r[1].date_time or pytz.utc.localize(datetime.datetime.max)),
+    )
+
     if championship:
         context = {
             "current_championship": championship,
             "championships": Championship.objects.all(),
             "in_championship": True,
-            "races": championship.races.order_by("championship_order").select_related(
-                "track"
-            ),
+            # "races": championship.races.order_by("championship_order").select_related(
+            #     "track"
+            # ),
+            "races": _races
         }
         return render(request, "leaderboard/races.html", context=context)
     else:
@@ -116,6 +134,24 @@ def match_history(request, race_id):
             "previous_race": previous_race,
             "next_race": next_race,
             "match_history": calculate_match_history(race),
+        }
+        return render(request, "leaderboard/match_history.html", context=context)
+    else:
+        return latest_races(request)
+
+def sprint_match_history(request, race_id):
+    race: Optional[SprintRace] = SprintRace.objects.filter(id=race_id).first()
+    if race is not None:
+        context = {
+            "race": race,
+            "current_championship": race.championship,
+            "championships": Championship.objects.all(),
+            "in_championship": True,
+            "fastest_lap": race.race_entries.order_by("best_lap_time").first(),
+            "previous_race": None,
+            "next_race": None,
+            "match_history": calculate_match_history(race),
+            "sprint": True,
         }
         return render(request, "leaderboard/match_history.html", context=context)
     else:

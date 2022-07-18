@@ -14,9 +14,13 @@
     <div class="align-middle fw-lighter fs-1">Schedule</div>
     <div class="col-10">
         <div class="d-flex flex-wrap justify-content-center">
-            {% for race in races %}
+            {% for type, race in races %}
             {% if race.finished %}
+                {% if type == 'sprint'%}
+            <a class="race-card-container" href="{% url 'sprint_match_history' race.id %}">
+                {%else%}
             <a class="race-card-container" href="{% url 'match_history' race.id %}">
+                {%endif%}
                 {% else %}
                 <div class="race-card-container">
                     {% endif %}
@@ -25,7 +29,7 @@
                         <div
                             class="d-flex justify-content-between align-items-center w-100 schedule-header fw-light fs-5">
                             <div>
-                                <span>Round {{ race.championship_order }}</span>
+                                <span>Round {{ race.championship_order }} {% if type == 'sprint' %}Sprint{% endif %}</span>
                                 {% if race.finished %}<span class='fs-6'>(Ended)</span> {% endif %}
                             </div>
                             <div class="d-flex align-items-center">

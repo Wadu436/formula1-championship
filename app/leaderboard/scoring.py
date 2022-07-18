@@ -5,28 +5,54 @@ from itertools import chain
 
 from django.db.models.query import QuerySet
 
-from .models import Championship, DNAEntry, Driver, Race, RaceEntry, Team
+from .models import (
+    Championship,
+    DNAEntry,
+    Driver,
+    Race,
+    RaceEntry,
+    SprintDNAEntry,
+    Team,
+    SprintRace,
+    SprintRaceEntry,
+)
 
 
 def race_points(
-    race: Race,
+    race: Race | SprintRace,
 ) -> dict:
-    SCORING_SYSTEM = {
-        1: 25,
-        2: 18,
-        3: 15,
-        4: 12,
-        5: 10,
-        6: 8,
-        7: 6,
-        8: 4,
-        9: 2,
-        10: 1,
-    }
+    if isinstance(race, SprintRace):
+        SCORING_SYSTEM = {
+            1: 8,
+            2: 7,
+            3: 6,
+            4: 5,
+            5: 4,
+            6: 3,
+            7: 2,
+            8: 1,
+        }
+    else:
+        SCORING_SYSTEM = {
+            1: 25,
+            2: 18,
+            3: 15,
+            4: 12,
+            5: 10,
+            6: 8,
+            7: 6,
+            8: 4,
+            9: 2,
+            10: 1,
+        }
 
     # Get entries
-    dna_entries: list[DNAEntry] = list(race.dna_entries.all().prefetch_related("team"))
-    entries: list[RaceEntry] = list(race.race_entries.all().prefetch_related("team"))
+    dna_entries: list[DNAEntry | SprintDNAEntry] = list(
+        race.dna_entries.all().prefetch_related("team")
+    )
+    entries: list[RaceEntry | SprintRaceEntry] = list(
+        race.race_entries.all().prefetch_related("team")
+    )
     player_entries = [entry for entry in entries if not entry.bot]
     bot_entries = [entry for entry in entries if entry.bot]
 
@@ -167,22 +193,50 @@ def _drivers_standings_list(championship, race_scores):
 def drivers_standings(
     championship: Championship,
 ) -> list[tuple[Driver, Team, int | Decimal, int]]:
-    races = championship.races.filter(finished=True)
+    races = list(
+        championship.races.filter(finished=True)
+        .order_by("championship_order")
+        .prefetch_related("dna_entries", "race_entries")
+    )
+    sprint_races = list(
+        championship.sprint_races.filter(finished=True)
+        .order_by("championship_order")
+        .prefetch_related("dna_entries", "race_entries")
+    )
 
-    race_scores = [
-        race_points(race)
-        for race in races.order_by("championship_order").prefetch_related(
-            "dna_entries", "race_entries"
-        )
-    ]
+    race_scores = [race_points(race) for race in races]
+    sprint_race_scores = [race_points(race) for race in sprint_races]
 
-    current_ranking = _drivers_standings_list(championship, race_scores)
+    if len(races) > 0 and len(sprint_races) > 0:
+        prev_order = max(races[-1].championship_order, sprint_races[-1].championship_order)
+        prev_race_scores = []
+        prev_sprint_race_scores = []
+        for i, race in enumerate(races):
+            if race.championship_order < prev_order:
+                prev_race_scores.append(race_scores[i])
+        for i, sprint_race in enumerate(sprint_races):
+            if sprint_race.championship_order < prev_order:
+                prev_sprint_race_scores.append(sprint_race_scores[i])
+
+    elif len(races) > 0:
+        prev_race_scores = race_scores[:-1]
+        prev_sprint_race_scores = []
+
+    else:
+        prev_race_scores = []
+        prev_sprint_race_scores = []
+
+    current_ranking = _drivers_standings_list(
+        championship, race_scores + sprint_race_scores
+    )
     prev_ranking = _drivers_standings_list(
-        championship, race_scores[:-1] if len(races) > 0 else race_scores
+        championship, prev_race_scores + prev_sprint_race_scores
     )
 
     this_rank = {driver: i for i, (driver, _, _) in enumerate(current_ranking)}
     prev_rank = {driver: i for i, (driver, _, _) in enumerate(prev_ranking)}
+
+    print(prev_ranking)
 
     # (Driver, team, points, delta)
     ranking = [
@@ -248,18 +302,42 @@ def _constructors_standings_list(
 def constructors_standings(
     championship: Championship, first_race=None, last_race=None
 ) -> list[tuple["Team", int | Decimal, int]]:
-    races = championship.races.filter(finished=True)
+    races = list(
+        championship.races.filter(finished=True)
+        .order_by("championship_order")
+        .prefetch_related("dna_entries", "race_entries")
+    )
+    sprint_races = list(
+        championship.sprint_races.filter(finished=True)
+        .order_by("championship_order")
+        .prefetch_related("dna_entries", "race_entries")
+    )
 
-    race_scores = [
-        race_points(race)
-        for race in races.order_by("championship_order").prefetch_related(
-            "dna_entries", "race_entries"
-        )
-    ]
+    race_scores = [race_points(race) for race in races]
+    sprint_race_scores = [race_points(race) for race in sprint_races]
 
-    current_ranking = _constructors_standings_list(championship, race_scores)
+    if len(races) > 0 and len(sprint_races) > 0:
+        prev_order = max(races[-1].championship_order, sprint_races[-1].championship_order)
+        prev_race_scores = []
+        prev_sprint_race_scores = []
+        for i, race in enumerate(races):
+            if race.championship_order < prev_order:
+                prev_race_scores.append(race_scores[i])
+        for i, sprint_race in enumerate(sprint_races):
+            if sprint_race.championship_order < prev_order:
+                prev_sprint_race_scores.append(sprint_race_scores[i])
+
+    elif len(races) > 0:
+        prev_race_scores = race_scores[:-1]
+        prev_sprint_race_scores = []
+
+    else:
+        prev_race_scores = []
+        prev_sprint_race_scores = []
+
+    current_ranking = _constructors_standings_list(championship, race_scores + sprint_race_scores)
     prev_ranking = _constructors_standings_list(
-        championship, race_scores[:-1] if len(races) > 0 else race_scores
+        championship, prev_race_scores + prev_sprint_race_scores
     )
 
     this_rank = {team: i for i, (team, _) in enumerate(current_ranking)}
@@ -280,22 +358,36 @@ def constructors_standings(
     return ranking
 
 
-def match_history(race: Race) -> list[tuple["RaceEntry", int, "Team"]]:
-    SCORING_SYSTEM = {
-        1: 25,
-        2: 18,
-        3: 15,
-        4: 12,
-        5: 10,
-        6: 8,
-        7: 6,
-        8: 4,
-        9: 2,
-        10: 1,
-    }
+def match_history(
+    race: Race | SprintRace,
+) -> list[tuple[RaceEntry | SprintRaceEntry, int, Team]]:
+    if isinstance(race, SprintRace):
+        SCORING_SYSTEM = {
+            1: 8,
+            2: 7,
+            3: 6,
+            4: 5,
+            5: 4,
+            6: 3,
+            7: 2,
+            8: 1,
+        }
+    else:
+        SCORING_SYSTEM = {
+            1: 25,
+            2: 18,
+            3: 15,
+            4: 12,
+            5: 10,
+            6: 8,
+            7: 6,
+            8: 4,
+            9: 2,
+            10: 1,
+        }
 
     # Get entries
-    entries: QuerySet[RaceEntry] = race.race_entries.order_by(
+    entries: QuerySet[RaceEntry | SprintRaceEntry] = race.race_entries.order_by(
         "finish_position"
     ).prefetch_related("driver", "team")
 

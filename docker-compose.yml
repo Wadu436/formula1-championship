@@ -6,7 +6,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_USER=formula1
+      - POSTGRES_USER=formula1_championship
       - POSTGRES_PASSWORD=formula1
       - POSTGRES_DB=dev
   web:

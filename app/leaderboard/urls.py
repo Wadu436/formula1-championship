@@ -41,6 +41,7 @@ urlpatterns = [
         name="rules",
     ),
     path("match_history/<int:race_id>/", views.match_history, name="match_history"),
+    path("sprint_match_history/<int:race_id>/", views.sprint_match_history, name="sprint_match_history"),
     path("faq/", views.faq, name="faq"),
     path("championships/<int:championship_id>/stats/", views.stats, name="stats"),
     path(

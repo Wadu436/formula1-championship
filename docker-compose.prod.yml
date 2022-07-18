@@ -1,20 +1,6 @@
 version: '3.4'
 
 services:
-  traefik:
-    restart: unless-stopped
-    depends_on:
-    - nginx
-    image: "traefik:v2.5"
-    container_name: "traefik"
-    ports:
-      - 80:80
-      - 8080:8080
-      - 443:443
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "./traefik.yml:/traefik.yml:ro"
-      - "traefik_acme:/etc/traefik/acme:rw"
   db:
     image: postgres:13.0-alpine
     volumes:
@@ -22,7 +8,7 @@ services:
     env_file:
       - ./.env.prod.db
   web:
-    build: 
+    build:
       context: ./app
       target: production
     command: gunicorn project.wsgi:application --bind 0.0.0.0:80
@@ -59,4 +45,3 @@ volumes:
   postgres_data:
   static_volume:
   media_volume:
-  traefik_acme:
